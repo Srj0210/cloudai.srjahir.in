@@ -2,43 +2,55 @@ const chatContainer = document.getElementById("chat-container");
 const sendBtn = document.getElementById("send-btn");
 const input = document.getElementById("user-input");
 
-let controller; // for abort signal (stop button)
+let controller; // Abort controller for stopping
 const memory = {};
 
-// Add stop button dynamically
+// Create Stop Button
 const stopBtn = document.createElement("button");
 stopBtn.id = "stop-btn";
 stopBtn.textContent = "⏹ Stop";
-stopBtn.style.display = "none";
 stopBtn.classList.add("stop-button");
+stopBtn.style.display = "none";
 document.querySelector("footer").appendChild(stopBtn);
 
-// Append message box
+// Append message with copy button if AI
 function appendMessage(text, sender) {
-  const msg = document.createElement("div");
-  msg.classList.add("message", sender);
-  msg.innerHTML = text.replace(/\n/g, "<br>");
-  chatContainer.appendChild(msg);
+  const msgBox = document.createElement("div");
+  msgBox.classList.add("message", sender);
+
+  const msgText = document.createElement("div");
+  msgText.classList.add("msg-text");
+  msgText.innerHTML = text.trim();
+
+  msgBox.appendChild(msgText);
+
+  // Add copy button for AI messages
+  if (sender === "ai") {
+    const copyBtn = document.createElement("button");
+    copyBtn.textContent = "📋 Copy";
+    copyBtn.classList.add("copy-btn");
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(msgText.innerText);
+      copyBtn.textContent = "✅ Copied!";
+      setTimeout(() => (copyBtn.textContent = "📋 Copy"), 1500);
+    };
+    msgBox.appendChild(copyBtn);
+  }
+
+  chatContainer.appendChild(msgBox);
   chatContainer.scrollTop = chatContainer.scrollHeight;
-  return msg;
+  return msgText;
 }
 
-// Typewriter effect (streaming)
-async function typeEffect(element, text, speed = 20) {
-  element.innerHTML = "";
-  let i = 0;
-  const interval = setInterval(() => {
-    if (i < text.length) {
-      element.innerHTML += text.charAt(i);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-      i++;
-    } else {
-      clearInterval(interval);
-    }
-  }, speed);
+// Reset UI state
+function resetInput() {
+  sendBtn.disabled = false;
+  input.disabled = false;
+  stopBtn.style.display = "none";
+  input.focus();
 }
 
-// Handle message
+// Send message to backend
 async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
@@ -46,7 +58,7 @@ async function sendMessage() {
   appendMessage(text, "user");
   input.value = "";
 
-  const typing = appendMessage("💭 CloudAI is thinking...", "ai");
+  const typing = appendMessage("💭 Thinking...", "ai");
   sendBtn.disabled = true;
   input.disabled = true;
   stopBtn.style.display = "inline-block";
@@ -54,45 +66,38 @@ async function sendMessage() {
   controller = new AbortController();
 
   try {
-    let lower = text.toLowerCase();
+    const lower = text.toLowerCase();
 
-    // 🔹 CloudAI intro
+    // Local smart rules (instant replies)
     if (lower.includes("your name") || lower.includes("who are you")) {
-      typing.textContent =
-        "My name is CloudAI — your personal assistant by SRJahir Technologies.";
+      typing.innerHTML =
+        "My name is <b>CloudAI</b> — your personal assistant by SRJahir Technologies.";
       resetInput();
       return;
     }
 
-    // 🔹 Remember color
     if (lower.includes("remember my favorite color is")) {
       const color = lower.split("remember my favorite color is")[1]?.trim();
       if (color) {
         memory.favoriteColor = color;
-        typing.textContent = `Got it! Your favorite color is ${color}. I'll remember that for now.`;
-      } else {
-        typing.textContent = "Please tell me the color clearly!";
-      }
+        typing.textContent = `Got it! I'll remember your favorite color is ${color}.`;
+      } else typing.textContent = "Please tell me the color clearly!";
       resetInput();
       return;
     }
 
-    // 🔹 Recall color
     if (
       lower.includes("which color is mine favorite") ||
       lower.includes("what is my favorite color")
     ) {
-      if (memory.favoriteColor) {
-        typing.textContent = `Your favorite color is ${memory.favoriteColor}.`;
-      } else {
-        typing.textContent =
-          "I don't remember your favorite color yet. Please tell me!";
-      }
+      typing.textContent = memory.favoriteColor
+        ? `Your favorite color is ${memory.favoriteColor}.`
+        : "I don't remember your favorite color yet. Please tell me!";
       resetInput();
       return;
     }
 
-    // 🔹 Fetch from backend
+    // Call Cloudflare backend (Gemini)
     const response = await fetch(
       "https://dawn-smoke-b354.sleepyspider6166.workers.dev/",
       {
@@ -104,19 +109,17 @@ async function sendMessage() {
     );
 
     const data = await response.json();
-    typing.textContent = "";
+    typing.innerHTML = "";
 
     if (data.answer) {
-      // Split into points if long
       let formatted = data.answer
         .replace(/\*\*/g, "")
         .replace(/\*/g, "")
-        .split(/(?<=\.|\?|!)(\s+)/)
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0)
-        .join("<br>• ");
-      formatted = "• " + formatted;
-      typeEffect(typing, formatted);
+        .replace(/\n/g, "<br>")
+        .replace(/(\d+)\./g, "<br><b>$1.</b>")
+        .replace(/•/g, "<br>•");
+
+      typing.innerHTML = formatted;
     } else {
       typing.textContent = "⚠️ No valid response from CloudAI.";
     }
@@ -131,20 +134,13 @@ async function sendMessage() {
   }
 }
 
-function resetInput() {
-  sendBtn.disabled = false;
-  input.disabled = false;
-  stopBtn.style.display = "none";
-  input.focus();
-}
-
 // Stop AI mid-reply
 stopBtn.addEventListener("click", () => {
   if (controller) controller.abort();
   stopBtn.style.display = "none";
 });
 
-// Enter key send
+// Send on Enter
 sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
