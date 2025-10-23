@@ -1,4 +1,159 @@
-/* === Code Block Styling === */
+/* === CloudAI Styling by SRJahir Technologies === */
+
+* {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #0d1117;
+  color: #e6edf3;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 0;
+  background-color: #161b22;
+  border-bottom: 1px solid #30363d;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+}
+
+.logo h1 {
+  color: #58a6ff;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: #8b949e;
+  margin: 4px 0 0;
+}
+
+/* CHAT AREA */
+.chat-container {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+}
+
+.message {
+  padding: 14px 16px;
+  border-radius: 10px;
+  max-width: 80%;
+  line-height: 1.5;
+  word-wrap: break-word;
+  position: relative;
+}
+
+/* USER MESSAGE */
+.user {
+  background-color: #238636;
+  color: #fff;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+/* AI MESSAGE */
+.ai {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+  align-self: flex-start;
+  border-left: 4px solid #00b4d8;
+}
+
+/* INPUT AREA */
+.input-area {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #30363d;
+  background-color: #161b22;
+}
+
+#user-input {
+  flex: 1;
+  background-color: #0d1117;
+  color: #e6edf3;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 15px;
+  resize: none;
+  outline: none;
+  height: 60px;
+}
+
+#send-btn {
+  background-color: #58a6ff;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  margin-left: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+#send-btn:hover {
+  background-color: #1f6feb;
+}
+
+/* STOP BUTTON */
+.stop-button {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+.stop-button:hover {
+  background: #ff2e2e;
+}
+
+/* COPY BUTTON */
+.copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+.copy-btn:hover {
+  color: #00b4d8;
+}
+
+/* CODE BLOCKS (ChatGPT style) */
 pre.code-block {
   background: #0d1117;
   color: #e6edf3;
@@ -9,17 +164,39 @@ pre.code-block {
   font-family: "JetBrains Mono", monospace;
   font-size: 14px;
   line-height: 1.5;
+  margin-top: 6px;
+  margin-bottom: 6px;
 }
 
 pre.code-block code {
   color: #f8f8f2;
 }
 
-/* Optional scrollbar inside code */
 pre.code-block::-webkit-scrollbar {
   height: 6px;
 }
 pre.code-block::-webkit-scrollbar-thumb {
   background: #555;
   border-radius: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .message {
+    max-width: 100%;
+  }
+
+  #user-input {
+    height: 50px;
+  }
+
+  #send-btn {
+    padding: 8px 14px;
+    font-size: 15px;
+  }
+
+  .stop-button {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
 }
