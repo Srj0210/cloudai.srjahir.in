@@ -1,4 +1,4 @@
-/* === CloudAI Styling by SRJahir Technologies === */
+/* === CloudAI v3 Dark Mode Design by SRJahir Technologies === */
 
 * {
   box-sizing: border-box;
@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #0d1117;
+  background: #0d1117;
   color: #e6edf3;
   margin: 0;
   padding: 0;
@@ -48,40 +48,80 @@ body {
   margin: 4px 0 0;
 }
 
-/* CHAT AREA */
+/* CHAT CONTAINER */
 .chat-container {
   flex: 1;
-  padding: 15px;
+  padding: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   scroll-behavior: smooth;
 }
 
 .message {
-  padding: 14px 16px;
-  border-radius: 10px;
-  max-width: 80%;
-  line-height: 1.5;
-  word-wrap: break-word;
   position: relative;
+  border-radius: 12px;
+  padding: 14px 18px;
+  max-width: 85%;
+  line-height: 1.6;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* USER MESSAGE */
 .user {
-  background-color: #238636;
+  background: #238636;
   color: #fff;
   align-self: flex-end;
   margin-left: auto;
 }
 
-/* AI MESSAGE */
 .ai {
-  background-color: #1f1f1f;
+  background: #1f1f1f;
   color: #e0e0e0;
   align-self: flex-start;
   border-left: 4px solid #00b4d8;
+}
+
+/* COPY BUTTON */
+.copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.copy-btn:hover {
+  color: #00b4d8;
+}
+
+/* CODE BLOCKS */
+pre.code-block {
+  background: #0d1117;
+  color: #e6edf3;
+  padding: 16px;
+  border-radius: 10px;
+  overflow-x: auto;
+  border-left: 3px solid #00b4d8;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+pre.code-block::before {
+  content: attr(data-lang);
+  display: block;
+  background: #161b22;
+  color: #00b4d8;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: 6px;
 }
 
 /* INPUT AREA */
@@ -135,60 +175,6 @@ body {
 }
 .stop-button:hover {
   background: #ff2e2e;
-}
-
-/* COPY BUTTON */
-.copy-btn {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  background: transparent;
-  border: none;
-  color: #ccc;
-  cursor: pointer;
-  font-size: 14px;
-  transition: 0.2s;
-}
-.copy-btn:hover {
-  color: #00b4d8;
-}
-
-/* CODE BLOCKS (ChatGPT Style) */
-pre.code-block {
-  background: #0d1117;
-  color: #e6edf3;
-  padding: 14px;
-  border-radius: 8px;
-  overflow-x: auto;
-  border-left: 3px solid #00b4d8;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 14px;
-  line-height: 1.5;
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-
-pre.code-block code {
-  color: #f8f8f2;
-}
-
-pre.code-block::before {
-  content: attr(data-lang);
-  display: block;
-  background: #161b22;
-  color: #00b4d8;
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 6px 6px 0 0;
-  margin-bottom: 4px;
-}
-
-pre.code-block::-webkit-scrollbar {
-  height: 6px;
-}
-pre.code-block::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 10px;
 }
 
 /* RESPONSIVE */
