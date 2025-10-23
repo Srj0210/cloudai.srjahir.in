@@ -1,4 +1,5 @@
-// === CloudAI Chat Logic v3 by SRJahir Technologies ===
+// === CloudAI v4 by SRJahir Technologies ===
+// Clean version: no copy button, Gemini proxy fixed, safe rendering
 
 const chatContainer = document.getElementById("chat-container");
 const sendBtn = document.getElementById("send-btn");
@@ -14,26 +15,15 @@ stopBtn.classList.add("stop-button");
 stopBtn.style.display = "none";
 document.querySelector("footer").appendChild(stopBtn);
 
-// === Append Message to Chat ===
+// === Append Message ===
 function appendMessage(content, sender) {
   const msgBox = document.createElement("div");
   msgBox.classList.add("message", sender);
 
-  // Copy Button
-  const copyBtn = document.createElement("button");
-  copyBtn.classList.add("copy-btn");
-  copyBtn.textContent = "📋 Copy";
-  copyBtn.onclick = () => {
-    navigator.clipboard.writeText(msgBox.innerText);
-    copyBtn.textContent = "✅ Copied!";
-    setTimeout(() => (copyBtn.textContent = "📋 Copy"), 1500);
-  };
-  msgBox.appendChild(copyBtn);
-
   const msgText = document.createElement("div");
   msgText.classList.add("msg-text");
 
-  // Split & Format Code Blocks
+  // Split and detect code blocks
   const parts = content.split(/```([\s\S]*?)```/g);
   msgText.innerHTML = parts
     .map((part, i) =>
@@ -65,7 +55,7 @@ function detectLang(code) {
   return "Code";
 }
 
-// === Escape HTML to Prevent Execution ===
+// === Escape HTML for safety ===
 function escapeHtml(unsafe) {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -91,17 +81,19 @@ async function sendMessage() {
   stopBtn.style.display = "inline-block";
 
   try {
-    const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=AIzaSyDn-vRZpHtA4vKHOZ-J1x5BGLy_QTUEQhY",
-      {
-        method: "POST",
-        signal: controller.signal,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text }] }],
-        }),
-      }
-    );
+    // ✅ Safe proxy (CORS fix)
+    const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=";
+    const apiUrl =
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=AIzaSyDn-vRZpHtA4vKHOZ-J1x5BGLy_QTUEQhY";
+
+    const res = await fetch(proxyUrl + encodeURIComponent(apiUrl), {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text }] }],
+      }),
+    });
 
     const data = await res.json();
     stopBtn.style.display = "none";
@@ -110,7 +102,7 @@ async function sendMessage() {
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "⚠️ Sorry, I couldn’t generate a response.";
 
-    // Filter only code if query mentions "code"
+    // If user asked for code, extract clean code block
     if (text.toLowerCase().includes("code")) {
       const codeBlocks = reply.match(/```[\s\S]*?```/g);
       if (codeBlocks?.length) {
@@ -125,6 +117,7 @@ async function sendMessage() {
     typing.remove();
     appendMessage(reply, "ai");
   } catch (err) {
+    console.error("Error:", err);
     typing.remove();
     appendMessage("❌ Request cancelled or failed.", "ai");
   }
@@ -136,7 +129,7 @@ stopBtn.addEventListener("click", () => {
   stopBtn.style.display = "none";
 });
 
-// === Send with Button / Enter Key ===
+// === Send Events ===
 sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
