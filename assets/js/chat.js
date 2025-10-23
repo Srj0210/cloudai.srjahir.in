@@ -18,7 +18,7 @@ function appendMessage(text, sender) {
   const msgText = document.createElement("div");
   msgText.classList.add("msg-text");
 
-  // Format code blocks beautifully
+  // Format for code blocks
   if (text.includes("```")) {
     const parts = text.split(/```/);
     msgText.innerHTML = parts
@@ -78,7 +78,7 @@ async function sendMessage() {
   try {
     const lower = text.toLowerCase();
 
-    // === Local memory & logic ===
+    // === Local memory ===
     if (lower.includes("your name")) {
       typing.innerHTML =
         "My name is <b>CloudAI</b> — your personal assistant by SRJahir Technologies.";
@@ -104,7 +104,7 @@ async function sendMessage() {
       return;
     }
 
-    // === Gemini backend call ===
+    // === Gemini backend ===
     const response = await fetch(
       "https://dawn-smoke-b354.sleepyspider6166.workers.dev/",
       {
@@ -120,7 +120,7 @@ async function sendMessage() {
 
     if (data.answer) {
       let formatted = data.answer
-        .replace(/```(\w+)?/g, "```") // cleanup code tags
+        .replace(/```(\w+)?/g, "```") // clean code blocks
         .replace(/\*\*/g, "")
         .trim();
       appendMessage(formatted, "ai");
