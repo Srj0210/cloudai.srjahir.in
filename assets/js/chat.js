@@ -11,7 +11,7 @@ function appendMessage(text, sender) {
   return msg;
 }
 
-function typeEffect(element, text, speed = 30) {
+function typeEffect(element, text, speed = 25) {
   let i = 0;
   const interval = setInterval(() => {
     if (i < text.length) {
@@ -30,6 +30,8 @@ async function sendMessage() {
   input.value = "";
 
   const typing = appendMessage("💭 CloudAI is thinking...", "ai");
+  sendBtn.disabled = true;
+  input.disabled = true;
 
   try {
     const response = await fetch(
@@ -51,6 +53,10 @@ async function sendMessage() {
     }
   } catch (err) {
     typing.textContent = "❌ Error connecting to CloudAI backend.";
+  } finally {
+    sendBtn.disabled = false;
+    input.disabled = false;
+    input.focus();
   }
 }
 
