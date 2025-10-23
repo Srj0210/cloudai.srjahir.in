@@ -125,3 +125,18 @@ body {
     font-size: 15px;
   }
 }
+.stop-button {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+.stop-button:hover {
+  background: #ff2e2e;
+}
+
