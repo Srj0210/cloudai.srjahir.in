@@ -1,11 +1,10 @@
-// === CloudAI Chat Logic by SRJahir Technologies ===
+// === CloudAI Chat Logic v3 by SRJahir Technologies ===
 
 const chatContainer = document.getElementById("chat-container");
 const sendBtn = document.getElementById("send-btn");
 const input = document.getElementById("user-input");
 
 let controller;
-const memory = {};
 
 // Stop Button
 const stopBtn = document.createElement("button");
@@ -15,12 +14,12 @@ stopBtn.classList.add("stop-button");
 stopBtn.style.display = "none";
 document.querySelector("footer").appendChild(stopBtn);
 
-// === Add Message to Chat ===
+// === Append Message to Chat ===
 function appendMessage(content, sender) {
   const msgBox = document.createElement("div");
   msgBox.classList.add("message", sender);
 
-  // Add copy button
+  // Copy Button
   const copyBtn = document.createElement("button");
   copyBtn.classList.add("copy-btn");
   copyBtn.textContent = "📋 Copy";
@@ -34,7 +33,7 @@ function appendMessage(content, sender) {
   const msgText = document.createElement("div");
   msgText.classList.add("msg-text");
 
-  // Format code blocks
+  // Split & Format Code Blocks
   const parts = content.split(/```([\s\S]*?)```/g);
   msgText.innerHTML = parts
     .map((part, i) =>
@@ -42,7 +41,10 @@ function appendMessage(content, sender) {
         ? `<pre class="code-block" data-lang="${detectLang(part)}"><code>${escapeHtml(
             part.trim()
           )}</code></pre>`
-        : part.replace(/\n/g, "<br>")
+        : escapeHtml(part)
+            .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+            .replace(/\n/g, "<br>")
+            .replace(/^- /gm, "• ")
     )
     .join("");
 
@@ -51,16 +53,19 @@ function appendMessage(content, sender) {
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// === Detect Language from Code Block ===
+// === Detect Programming Language ===
 function detectLang(code) {
-  if (code.includes("<html") || code.includes("<!DOCTYPE")) return "HTML";
-  if (code.includes("console.log") || code.includes("function")) return "JS";
-  if (code.includes("body {") || code.includes("background-color")) return "CSS";
+  code = code.toLowerCase();
+  if (code.includes("<html") || code.includes("<body")) return "HTML";
+  if (code.includes("console.log") || code.includes("function")) return "JavaScript";
+  if (code.includes("background-color") || code.includes("margin")) return "CSS";
   if (code.includes("def ") || code.includes("import")) return "Python";
+  if (code.includes("SELECT") || code.includes("FROM")) return "SQL";
+  if (code.includes("<?php") || code.includes("echo")) return "PHP";
   return "Code";
 }
 
-// === Escape HTML to Prevent Injection ===
+// === Escape HTML to Prevent Execution ===
 function escapeHtml(unsafe) {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -68,7 +73,7 @@ function escapeHtml(unsafe) {
     .replace(/>/g, "&gt;");
 }
 
-// === Send Message to AI ===
+// === Send Message ===
 async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
@@ -93,12 +98,7 @@ async function sendMessage() {
         signal: controller.signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: text }],
-            },
-          ],
+          contents: [{ role: "user", parts: [{ text }] }],
         }),
       }
     );
@@ -108,12 +108,18 @@ async function sendMessage() {
 
     let reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "⚠️ Sorry, I didn’t get a proper response.";
+      "⚠️ Sorry, I couldn’t generate a response.";
 
-    // Filter only code if asked for 'code'
+    // Filter only code if query mentions "code"
     if (text.toLowerCase().includes("code")) {
       const codeBlocks = reply.match(/```[\s\S]*?```/g);
-      if (codeBlocks) reply = codeBlocks.join("\n\n");
+      if (codeBlocks?.length) {
+        reply = codeBlocks.join("\n\n");
+      } else {
+        const htmlBlock = reply.match(/<html[\s\S]*<\/html>/i);
+        if (htmlBlock) reply = "```html\n" + htmlBlock[0].trim() + "\n```";
+        else reply = reply.split(/How to|Explanation|Steps|Save:/i)[0].trim();
+      }
     }
 
     typing.remove();
@@ -124,13 +130,13 @@ async function sendMessage() {
   }
 }
 
-// === Stop Button Click ===
+// === Stop Button ===
 stopBtn.addEventListener("click", () => {
   if (controller) controller.abort();
   stopBtn.style.display = "none";
 });
 
-// === Handle Send Button & Enter Key ===
+// === Send with Button / Enter Key ===
 sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
