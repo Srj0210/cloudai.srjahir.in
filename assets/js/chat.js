@@ -2,10 +2,9 @@ const chatContainer = document.getElementById("chat-container");
 const sendBtn = document.getElementById("send-btn");
 const input = document.getElementById("user-input");
 
-let controller; // Abort controller for stopping
+let controller;
 const memory = {};
 
-// Create Stop Button
 const stopBtn = document.createElement("button");
 stopBtn.id = "stop-btn";
 stopBtn.textContent = "⏹ Stop";
@@ -13,18 +12,31 @@ stopBtn.classList.add("stop-button");
 stopBtn.style.display = "none";
 document.querySelector("footer").appendChild(stopBtn);
 
-// Append message with copy button if AI
 function appendMessage(text, sender) {
   const msgBox = document.createElement("div");
   msgBox.classList.add("message", sender);
-
   const msgText = document.createElement("div");
   msgText.classList.add("msg-text");
-  msgText.innerHTML = text.trim();
+
+  // Format code blocks beautifully
+  if (text.includes("```")) {
+    const parts = text.split(/```/);
+    msgText.innerHTML = parts
+      .map((part, i) =>
+        i % 2 === 1
+          ? `<pre class="code-block"><code>${part.trim()}</code></pre>`
+          : part.replace(/\n/g, "<br>")
+      )
+      .join("");
+  } else {
+    msgText.innerHTML = text
+      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+      .replace(/\n/g, "<br>");
+  }
 
   msgBox.appendChild(msgText);
 
-  // Add copy button for AI messages
+  // Copy button for AI messages
   if (sender === "ai") {
     const copyBtn = document.createElement("button");
     copyBtn.textContent = "📋 Copy";
@@ -42,7 +54,6 @@ function appendMessage(text, sender) {
   return msgText;
 }
 
-// Reset UI state
 function resetInput() {
   sendBtn.disabled = false;
   input.disabled = false;
@@ -50,7 +61,6 @@ function resetInput() {
   input.focus();
 }
 
-// Send message to backend
 async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
@@ -68,8 +78,8 @@ async function sendMessage() {
   try {
     const lower = text.toLowerCase();
 
-    // Local smart rules (instant replies)
-    if (lower.includes("your name") || lower.includes("who are you")) {
+    // === Local memory & logic ===
+    if (lower.includes("your name")) {
       typing.innerHTML =
         "My name is <b>CloudAI</b> — your personal assistant by SRJahir Technologies.";
       resetInput();
@@ -81,23 +91,20 @@ async function sendMessage() {
       if (color) {
         memory.favoriteColor = color;
         typing.textContent = `Got it! I'll remember your favorite color is ${color}.`;
-      } else typing.textContent = "Please tell me the color clearly!";
+      }
       resetInput();
       return;
     }
 
-    if (
-      lower.includes("which color is mine favorite") ||
-      lower.includes("what is my favorite color")
-    ) {
+    if (lower.includes("which color is mine favorite")) {
       typing.textContent = memory.favoriteColor
         ? `Your favorite color is ${memory.favoriteColor}.`
-        : "I don't remember your favorite color yet. Please tell me!";
+        : "I don't remember your favorite color yet.";
       resetInput();
       return;
     }
 
-    // Call Cloudflare backend (Gemini)
+    // === Gemini backend call ===
     const response = await fetch(
       "https://dawn-smoke-b354.sleepyspider6166.workers.dev/",
       {
@@ -113,13 +120,10 @@ async function sendMessage() {
 
     if (data.answer) {
       let formatted = data.answer
+        .replace(/```(\w+)?/g, "```") // cleanup code tags
         .replace(/\*\*/g, "")
-        .replace(/\*/g, "")
-        .replace(/\n/g, "<br>")
-        .replace(/(\d+)\./g, "<br><b>$1.</b>")
-        .replace(/•/g, "<br>•");
-
-      typing.innerHTML = formatted;
+        .trim();
+      appendMessage(formatted, "ai");
     } else {
       typing.textContent = "⚠️ No valid response from CloudAI.";
     }
@@ -134,13 +138,11 @@ async function sendMessage() {
   }
 }
 
-// Stop AI mid-reply
 stopBtn.addEventListener("click", () => {
   if (controller) controller.abort();
   stopBtn.style.display = "none";
 });
 
-// Send on Enter
 sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
