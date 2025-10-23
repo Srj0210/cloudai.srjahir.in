@@ -1,5 +1,6 @@
-// === CloudAI v4 by SRJahir Technologies ===
-// Clean version: no copy button, Gemini proxy fixed, safe rendering
+// === CloudAI v6 (Final Cloudflare Secure Version) ===
+// by SRJahir Technologies ⚡
+// Connected with secure Cloudflare Worker (env.GEMINI_API_KEY)
 
 const chatContainer = document.getElementById("chat-container");
 const sendBtn = document.getElementById("send-btn");
@@ -23,7 +24,7 @@ function appendMessage(content, sender) {
   const msgText = document.createElement("div");
   msgText.classList.add("msg-text");
 
-  // Split and detect code blocks
+  // Split message into code & normal text parts
   const parts = content.split(/```([\s\S]*?)```/g);
   msgText.innerHTML = parts
     .map((part, i) =>
@@ -63,6 +64,18 @@ function escapeHtml(unsafe) {
     .replace(/>/g, "&gt;");
 }
 
+// === Typing Animation (AI reply effect) ===
+async function typeEffect(element, text, speed = 15) {
+  element.innerHTML = "";
+  let i = 0;
+  while (i < text.length) {
+    element.innerHTML += escapeHtml(text.charAt(i));
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    await new Promise((r) => setTimeout(r, speed));
+    i++;
+  }
+}
+
 // === Send Message ===
 async function sendMessage() {
   const text = input.value.trim();
@@ -73,7 +86,7 @@ async function sendMessage() {
 
   const typing = document.createElement("div");
   typing.classList.add("message", "ai");
-  typing.innerHTML = `<span>💬 Thinking...</span>`;
+  typing.innerHTML = `<span>💬 CloudAI is thinking...</span>`;
   chatContainer.appendChild(typing);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 
@@ -81,28 +94,24 @@ async function sendMessage() {
   stopBtn.style.display = "inline-block";
 
   try {
-    // ✅ Safe proxy (CORS fix)
-    const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=";
-    const apiUrl =
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=AIzaSyDn-vRZpHtA4vKHOZ-J1x5BGLy_QTUEQhY";
+    const apiUrl = "https://cloudai-proxy.srjahir.workers.dev"; // your Cloudflare Worker URL
 
-    const res = await fetch(proxyUrl + encodeURIComponent(apiUrl), {
+    const res = await fetch(apiUrl, {
       method: "POST",
       signal: controller.signal,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text }] }],
+        prompt: text,
+        sessionId: "cloudai", // shared session memory
       }),
     });
 
     const data = await res.json();
     stopBtn.style.display = "none";
 
-    let reply =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "⚠️ Sorry, I couldn’t generate a response.";
+    let reply = data.reply || "⚠️ Sorry, no response received.";
 
-    // If user asked for code, extract clean code block
+    // Extract clean code blocks
     if (text.toLowerCase().includes("code")) {
       const codeBlocks = reply.match(/```[\s\S]*?```/g);
       if (codeBlocks?.length) {
@@ -115,7 +124,14 @@ async function sendMessage() {
     }
 
     typing.remove();
-    appendMessage(reply, "ai");
+
+    // Typing animation for final text
+    const aiMsg = document.createElement("div");
+    aiMsg.classList.add("message", "ai");
+
+    chatContainer.appendChild(aiMsg);
+    await typeEffect(aiMsg, reply, 8);
+
   } catch (err) {
     console.error("Error:", err);
     typing.remove();
@@ -127,6 +143,7 @@ async function sendMessage() {
 stopBtn.addEventListener("click", () => {
   if (controller) controller.abort();
   stopBtn.style.display = "none";
+  appendMessage("⛔ CloudAI stopped generating.", "ai");
 });
 
 // === Send Events ===
