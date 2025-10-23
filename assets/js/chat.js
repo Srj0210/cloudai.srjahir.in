@@ -8,6 +8,18 @@ function appendMessage(text, sender) {
   msg.textContent = text;
   chatContainer.appendChild(msg);
   chatContainer.scrollTop = chatContainer.scrollHeight;
+  return msg;
+}
+
+function typeEffect(element, text, speed = 30) {
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    } else clearInterval(interval);
+  }, speed);
 }
 
 async function sendMessage() {
@@ -17,39 +29,28 @@ async function sendMessage() {
   appendMessage(text, "user");
   input.value = "";
 
-  const typing = document.createElement("div");
-  typing.classList.add("message", "ai");
-  typing.textContent = "💭 CloudAI is thinking...";
-  chatContainer.appendChild(typing);
+  const typing = appendMessage("💭 CloudAI is thinking...", "ai");
 
   try {
-    const response = await fetch("https://dawn-smoke-b354.sleepyspider6166.workers.dev", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text }),
-    });
+    const response = await fetch(
+      "https://dawn-smoke-b354.sleepyspider6166.workers.dev/",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      }
+    );
 
-    if (!response.ok) {
-      typing.remove();
-      appendMessage("⚠️ Backend returned an error.", "ai");
-      return;
+    const data = await response.json();
+    typing.textContent = "";
+
+    if (data.answer) {
+      typeEffect(typing, data.answer);
+    } else {
+      typing.textContent = "⚠️ No valid response from CloudAI.";
     }
-
-    const textResponse = await response.text();
-    let data;
-    try {
-      data = JSON.parse(textResponse);
-    } catch (err) {
-      typing.remove();
-      appendMessage("⚠️ Internal error: Invalid JSON format from backend.", "ai");
-      return;
-    }
-
-    typing.remove();
-    appendMessage(data.answer || "⚠️ No response received.", "ai");
   } catch (err) {
-    typing.remove();
-    appendMessage("❌ Error connecting to CloudAI backend.", "ai");
+    typing.textContent = "❌ Error connecting to CloudAI backend.";
   }
 }
 
