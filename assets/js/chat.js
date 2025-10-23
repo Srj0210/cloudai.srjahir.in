@@ -29,7 +29,22 @@ async function sendMessage() {
       body: JSON.stringify({ message: text }),
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+      typing.remove();
+      appendMessage("⚠️ Backend returned an error.", "ai");
+      return;
+    }
+
+    const textResponse = await response.text();
+    let data;
+    try {
+      data = JSON.parse(textResponse);
+    } catch (err) {
+      typing.remove();
+      appendMessage("⚠️ Internal error: Invalid JSON format from backend.", "ai");
+      return;
+    }
+
     typing.remove();
     appendMessage(data.answer || "⚠️ No response received.", "ai");
   } catch (err) {
