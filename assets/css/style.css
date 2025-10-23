@@ -15,6 +15,7 @@ body {
   height: 100vh;
 }
 
+/* === HEADER === */
 .header {
   display: flex;
   flex-direction: column;
@@ -44,9 +45,10 @@ body {
 .tagline {
   font-size: 0.9rem;
   color: #8b949e;
-  margin: 4px 0 0;
+  margin-top: 4px;
 }
 
+/* === CHAT AREA === */
 .chat-container {
   flex: 1;
   padding: 15px;
@@ -58,26 +60,54 @@ body {
 }
 
 .message {
-  padding: 12px 16px;
+  position: relative;
+  background: #1f1f1f;
+  color: #eaeaea;
+  padding: 14px 16px;
+  margin: 10px 0;
   border-radius: 10px;
   max-width: 80%;
   line-height: 1.5;
   word-wrap: break-word;
+  white-space: pre-wrap;
+  transition: 0.2s ease-in-out;
 }
 
-.user {
-  background-color: #238636;
+.message.user {
+  background: #238636;
+  color: #fff;
   align-self: flex-end;
+  margin-left: auto;
 }
 
-.ai {
-  background-color: #30363d;
+.message.ai {
+  background: #1f1f1f;
+  color: #e0e0e0;
   align-self: flex-start;
-  color: #e6edf3;
+  border-left: 4px solid #00b4d8;
+  position: relative;
 }
 
+/* === COPY BUTTON === */
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+.copy-btn:hover {
+  color: #00b4d8;
+}
+
+/* === INPUT AREA === */
 .input-area {
   display: flex;
+  align-items: center;
   padding: 10px;
   border-top: 1px solid #30363d;
   background-color: #161b22;
@@ -105,26 +135,13 @@ body {
   padding: 10px 20px;
   cursor: pointer;
   font-size: 16px;
+  transition: 0.3s ease;
 }
-
 #send-btn:hover {
   background-color: #1f6feb;
 }
 
-@media (max-width: 600px) {
-  .message {
-    max-width: 100%;
-  }
-
-  #user-input {
-    height: 50px;
-  }
-
-  #send-btn {
-    padding: 8px 14px;
-    font-size: 15px;
-  }
-}
+/* === STOP BUTTON === */
 .stop-button {
   background: #ff4d4d;
   color: white;
@@ -140,3 +157,36 @@ body {
   background: #ff2e2e;
 }
 
+/* === SCROLLBAR === */
+.chat-container::-webkit-scrollbar {
+  width: 8px;
+}
+.chat-container::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 10px;
+}
+.chat-container::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .message {
+    max-width: 100%;
+  }
+
+  #user-input {
+    height: 50px;
+  }
+
+  #send-btn {
+    padding: 8px 14px;
+    font-size: 15px;
+  }
+
+  .copy-btn {
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+  }
+}
