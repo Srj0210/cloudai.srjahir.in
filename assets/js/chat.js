@@ -1,3 +1,5 @@
+// === CloudAI Chat Logic by SRJahir Technologies ===
+
 const chatContainer = document.getElementById("chat-container");
 const sendBtn = document.getElementById("send-btn");
 const input = document.getElementById("user-input");
@@ -5,62 +7,68 @@ const input = document.getElementById("user-input");
 let controller;
 const memory = {};
 
+// Stop Button
 const stopBtn = document.createElement("button");
 stopBtn.id = "stop-btn";
-stopBtn.textContent = "⏹ Stop";
+stopBtn.textContent = "■ Stop";
 stopBtn.classList.add("stop-button");
 stopBtn.style.display = "none";
 document.querySelector("footer").appendChild(stopBtn);
 
-function appendMessage(text, sender) {
+// === Add Message to Chat ===
+function appendMessage(content, sender) {
   const msgBox = document.createElement("div");
   msgBox.classList.add("message", sender);
+
+  // Add copy button
+  const copyBtn = document.createElement("button");
+  copyBtn.classList.add("copy-btn");
+  copyBtn.textContent = "📋 Copy";
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(msgBox.innerText);
+    copyBtn.textContent = "✅ Copied!";
+    setTimeout(() => (copyBtn.textContent = "📋 Copy"), 1500);
+  };
+  msgBox.appendChild(copyBtn);
+
   const msgText = document.createElement("div");
   msgText.classList.add("msg-text");
 
-  // Format for code blocks
-  if (text.includes("```")) {
-    const parts = text.split(/```/);
-    msgText.innerHTML = parts
-      .map((part, i) =>
-        i % 2 === 1
-          ? `<pre class="code-block"><code>${part.trim()}</code></pre>`
-          : part.replace(/\n/g, "<br>")
-      )
-      .join("");
-  } else {
-    msgText.innerHTML = text
-      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-      .replace(/\n/g, "<br>");
-  }
+  // Format code blocks
+  const parts = content.split(/```([\s\S]*?)```/g);
+  msgText.innerHTML = parts
+    .map((part, i) =>
+      i % 2 === 1
+        ? `<pre class="code-block" data-lang="${detectLang(part)}"><code>${escapeHtml(
+            part.trim()
+          )}</code></pre>`
+        : part.replace(/\n/g, "<br>")
+    )
+    .join("");
 
   msgBox.appendChild(msgText);
-
-  // Copy button for AI messages
-  if (sender === "ai") {
-    const copyBtn = document.createElement("button");
-    copyBtn.textContent = "📋 Copy";
-    copyBtn.classList.add("copy-btn");
-    copyBtn.onclick = () => {
-      navigator.clipboard.writeText(msgText.innerText);
-      copyBtn.textContent = "✅ Copied!";
-      setTimeout(() => (copyBtn.textContent = "📋 Copy"), 1500);
-    };
-    msgBox.appendChild(copyBtn);
-  }
-
   chatContainer.appendChild(msgBox);
   chatContainer.scrollTop = chatContainer.scrollHeight;
-  return msgText;
 }
 
-function resetInput() {
-  sendBtn.disabled = false;
-  input.disabled = false;
-  stopBtn.style.display = "none";
-  input.focus();
+// === Detect Language from Code Block ===
+function detectLang(code) {
+  if (code.includes("<html") || code.includes("<!DOCTYPE")) return "HTML";
+  if (code.includes("console.log") || code.includes("function")) return "JS";
+  if (code.includes("body {") || code.includes("background-color")) return "CSS";
+  if (code.includes("def ") || code.includes("import")) return "Python";
+  return "Code";
 }
 
+// === Escape HTML to Prevent Injection ===
+function escapeHtml(unsafe) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// === Send Message to AI ===
 async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
@@ -68,81 +76,61 @@ async function sendMessage() {
   appendMessage(text, "user");
   input.value = "";
 
-  const typing = appendMessage("💭 Thinking...", "ai");
-  sendBtn.disabled = true;
-  input.disabled = true;
-  stopBtn.style.display = "inline-block";
+  const typing = document.createElement("div");
+  typing.classList.add("message", "ai");
+  typing.innerHTML = `<span>💬 Thinking...</span>`;
+  chatContainer.appendChild(typing);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 
   controller = new AbortController();
+  stopBtn.style.display = "inline-block";
 
   try {
-    const lower = text.toLowerCase();
-
-    // === Local memory ===
-    if (lower.includes("your name")) {
-      typing.innerHTML =
-        "My name is <b>CloudAI</b> — your personal assistant by SRJahir Technologies.";
-      resetInput();
-      return;
-    }
-
-    if (lower.includes("remember my favorite color is")) {
-      const color = lower.split("remember my favorite color is")[1]?.trim();
-      if (color) {
-        memory.favoriteColor = color;
-        typing.textContent = `Got it! I'll remember your favorite color is ${color}.`;
-      }
-      resetInput();
-      return;
-    }
-
-    if (lower.includes("which color is mine favorite")) {
-      typing.textContent = memory.favoriteColor
-        ? `Your favorite color is ${memory.favoriteColor}.`
-        : "I don't remember your favorite color yet.";
-      resetInput();
-      return;
-    }
-
-    // === Gemini backend ===
-    const response = await fetch(
-      "https://dawn-smoke-b354.sleepyspider6166.workers.dev/",
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=AIzaSyDn-vRZpHtA4vKHOZ-J1x5BGLy_QTUEQhY",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
         signal: controller.signal,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: text }],
+            },
+          ],
+        }),
       }
     );
 
-    const data = await response.json();
-    typing.innerHTML = "";
+    const data = await res.json();
+    stopBtn.style.display = "none";
 
-    if (data.answer) {
-      let formatted = data.answer
-        .replace(/```(\w+)?/g, "```") // clean code blocks
-        .replace(/\*\*/g, "")
-        .trim();
-      appendMessage(formatted, "ai");
-    } else {
-      typing.textContent = "⚠️ No valid response from CloudAI.";
+    let reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "⚠️ Sorry, I didn’t get a proper response.";
+
+    // Filter only code if asked for 'code'
+    if (text.toLowerCase().includes("code")) {
+      const codeBlocks = reply.match(/```[\s\S]*?```/g);
+      if (codeBlocks) reply = codeBlocks.join("\n\n");
     }
+
+    typing.remove();
+    appendMessage(reply, "ai");
   } catch (err) {
-    if (err.name === "AbortError") {
-      appendMessage("🛑 Response stopped by user.", "ai");
-    } else {
-      appendMessage("❌ Error connecting to CloudAI backend.", "ai");
-    }
-  } finally {
-    resetInput();
+    typing.remove();
+    appendMessage("❌ Request cancelled or failed.", "ai");
   }
 }
 
+// === Stop Button Click ===
 stopBtn.addEventListener("click", () => {
   if (controller) controller.abort();
   stopBtn.style.display = "none";
 });
 
+// === Handle Send Button & Enter Key ===
 sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
