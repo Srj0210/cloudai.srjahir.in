@@ -1,81 +1,103 @@
+// ===================================================
+// CloudAI v8.2 Chat Script
+// by SRJahir Technologies ⚡
+// ===================================================
+
+const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
 const chatContainer = document.getElementById("chat-container");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
-// Worker URL
-const WORKER_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/"; // Replace with your deployed worker
+let chatHistory = [];
 
-// Local quota limit (resets every 24h)
-const MAX_TOKENS_PER_DAY = 50;
+// === Add message to chat ===
+function addMessage(text, sender, isCode = false) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender);
 
-// Check or reset daily quota
-function getQuota() {
-  const saved = JSON.parse(localStorage.getItem("cloudai_quota") || "{}");
-  const today = new Date().toDateString();
-
-  if (saved.date !== today) {
-    localStorage.setItem("cloudai_quota", JSON.stringify({ date: today, used: 0 }));
-    return 0;
+  if (isCode) {
+    msg.innerHTML = `<pre><code>${text}</code></pre><button class="copy-btn">Copy</button>`;
+  } else {
+    msg.innerHTML = text;
   }
-  return saved.used || 0;
-}
 
-function useQuota() {
-  const saved = JSON.parse(localStorage.getItem("cloudai_quota") || "{}");
-  const today = new Date().toDateString();
-  const used = (saved.used || 0) + 1;
-  localStorage.setItem("cloudai_quota", JSON.stringify({ date: today, used }));
-  return used;
-}
-
-// Toast
-function showToast(msg, type = "success") {
-  const toast = document.createElement("div");
-  toast.className = `toast ${type}`;
-  toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
-
-// Add message
-function addMessage(role, text) {
-  const div = document.createElement("div");
-  div.className = `message ${role}`;
-  div.innerHTML = text;
-  chatContainer.appendChild(div);
+  chatContainer.appendChild(msg);
   chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  // Enable copy button
+  const copyBtn = msg.querySelector(".copy-btn");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(text);
+      copyBtn.textContent = "Copied!";
+      setTimeout(() => (copyBtn.textContent = "Copy"), 2000);
+    });
+  }
 }
 
-// Send
-sendBtn.addEventListener("click", async () => {
+// === Typing animation ===
+function showTyping() {
+  const typing = document.createElement("div");
+  typing.classList.add("message", "ai");
+  typing.innerHTML = `
+    <div class="typing-dots">
+      <span></span><span></span><span></span>
+    </div>`;
+  chatContainer.appendChild(typing);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+  return typing;
+}
+
+// === Handle user message ===
+async function sendMessage() {
   const prompt = userInput.value.trim();
   if (!prompt) return;
 
-  addMessage("user", prompt);
+  addMessage(prompt, "user");
   userInput.value = "";
 
-  const quotaUsed = useQuota();
-  if (quotaUsed > MAX_TOKENS_PER_DAY) {
-    showToast("You used your 100% CloudAI quota.", "error");
-    return;
-  }
-
-  addMessage("ai", "⏳ Thinking...");
+  const typingEl = showTyping();
 
   try {
-    const res = await fetch(WORKER_URL, {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, history: [] }),
+      body: JSON.stringify({
+        prompt,
+        history: chatHistory,
+      }),
     });
 
-    const data = await res.json();
-    document.querySelector(".message.ai:last-child").innerHTML = data.reply
-      ? marked.parse(data.reply)
-      : "⚠️ Gemini not responding. Try again.";
+    const data = await response.json();
+    typingEl.remove();
 
-    hljs.highlightAll();
+    if (data.reply) {
+      // Detect code blocks
+      if (data.reply.includes("<") || data.reply.includes("```")) {
+        const clean = data.reply.replace(/```[a-z]*|```/g, "");
+        addMessage(clean, "ai", true);
+        hljs.highlightAll();
+      } else {
+        addMessage(data.reply, "ai");
+      }
+
+      chatHistory.push({ role: "user", text: prompt });
+      chatHistory.push({ role: "model", text: data.reply });
+    } else {
+      addMessage("⚠️ No response from CloudAI.", "ai");
+    }
   } catch (err) {
-    document.querySelector(".message.ai:last-child").innerHTML = "⚠️ Connection failed. Try again.";
+    typingEl.remove();
+    addMessage("⚠️ Connection failed. Please try again.", "ai");
+    console.error("Error:", err);
+  }
+}
+
+// === Send button + Enter key ===
+sendBtn.addEventListener("click", sendMessage);
+userInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
   }
 });
