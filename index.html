@@ -3,45 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudAI — by SRJahir Tech.</title>
+  <title>CloudAI — by SRJahir Technologies</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="./fevicon/favicon-32x32.png" />
-  <link rel="apple-touch-icon" href="./fevicon/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="fevicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="fevicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="fevicon/favicon-16x16.png">
+  <link rel="manifest" href="fevicon/site.webmanifest">
+  <link rel="shortcut icon" href="fevicon/favicon.ico" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="./assets/css/style.css" />
-
-  <!-- PrismJS for syntax highlighting -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-
-  <!-- Header -->
   <header class="header">
-    <div class="logo-container">
-      <img src="./logo.png" alt="CloudAI Logo" class="logo" id="ai-logo" />
-      <p class="brand-text">by SRJahir Tech.</p>
+    <div class="logo-section">
+      <img src="logo.png" alt="CloudAI Logo" class="logo" />
+      <p class="subtext">by SRJahir Tech.</p>
     </div>
   </header>
 
-  <!-- Chat Area -->
-  <main class="chat-container" id="chat-container">
-    <div class="message ai glow">
-      👋 <b>Hello! I'm <span style="color:#00ffff;">CloudAI</span></b> — your personal assistant.<br>
-      How can I help you today?
+  <main class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+
+    <div class="input-container">
+      <textarea id="user-input" placeholder="Type your message..."></textarea>
+      <button id="send-btn">Send</button>
     </div>
   </main>
 
-  <!-- Input -->
-  <div class="input-area">
-    <input type="text" id="user-input" placeholder="Type your message..." />
-    <button id="send-btn">Send</button>
-  </div>
+  <footer class="footer">
+    <p>CloudAI can make mistakes. Check important info.</p>
+  </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-  <script src="./assets/js/chat.js"></script>
+  <script src="assets/js/chat.js"></script>
 </body>
 </html>
