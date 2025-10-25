@@ -1,82 +1,131 @@
-// ==============================
-// CloudAI Chat System (Stable Build)
-// by SRJahir Technologies
-// ==============================
+// assets/js/chat.js
+// CloudAI front-end: Markdown rendering + localStorage memory + auto-retry
 
-const apiUrl = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+// ======= CONFIG =======
+const PROXY_URL = "https://YOUR-WORKER-SUBDOMAIN.workers.dev"; // <-- change me
+const STORAGE_KEY = "cloudai_chat_history";
+const MAX_TURNS = 8; // persist last N messages
 
-const chatContainer = document.getElementById("chat-container");
-const userInput = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
+// ======= DOM =======
+const form = document.querySelector("#chat-form");
+const input = document.querySelector("#chat-input");
+const sendBtn = document.querySelector("#send-btn");
+const messagesEl = document.querySelector("#messages");
 
-// Basic Markdown Renderer
-function renderMarkdown(text) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // bold
-    .replace(/`([^`]+)`/g, "<code>$1</code>") // inline code
-    .replace(/```(\w+)?\n([\s\S]*?)```/g, "<pre><code>$2</code></pre>") // code block
-    .replace(/\n/g, "<br>"); // new lines
+// Fallback if selectors differ
+if (!form || !input || !messagesEl) {
+  console.error("Chat elements not found. Check #chat-form, #chat-input, #messages IDs.");
 }
 
-async function typeEffect(element, html, speed = 5) {
-  const temp = document.createElement("div");
-  temp.innerHTML = html;
-  const text = temp.textContent || temp.innerText || "";
+// ======= State (persisted) =======
+let history = loadHistory();
+renderHistory(history);
 
-  for (let i = 0; i < text.length; i++) {
-    element.innerHTML = renderMarkdown(text.substring(0, i + 1));
-    await new Promise((resolve) => setTimeout(resolve, speed));
+// ======= Helpers =======
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
   }
 }
 
-function appendMessage(content, sender = "user") {
-  const msg = document.createElement("div");
-  msg.classList.add("message", sender);
-  msg.innerHTML = content;
-  chatContainer.appendChild(msg);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-  return msg;
+function saveHistory() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-MAX_TURNS)));
+  } catch {}
 }
 
-async function sendMessage() {
-  const prompt = userInput.value.trim();
-  if (!prompt) return;
+function mdToHtml(markdown) {
+  // Requires marked & DOMPurify (added in index.html)
+  const dirty = marked.parse(markdown ?? "");
+  return DOMPurify.sanitize(dirty, { USE_PROFILES: { html: true } });
+}
 
-  appendMessage(prompt, "user");
-  userInput.value = "";
+function renderMessage(role, text) {
+  const wrapper = document.createElement("div");
+  wrapper.className = `msg ${role === "user" ? "msg-user" : "msg-ai"}`;
+  wrapper.innerHTML = mdToHtml(text);
+  messagesEl.appendChild(wrapper);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
 
-  const aiMsg = appendMessage("⏳ Thinking...", "ai");
+function renderHistory(list) {
+  messagesEl.innerHTML = "";
+  for (const m of list) {
+    renderMessage(m.role, m.text);
+  }
+}
 
-  let tries = 0;
-  const maxTries = 2;
+function setSending(state) {
+  sendBtn?.toggleAttribute?.("disabled", state);
+  input?.toggleAttribute?.("disabled", state);
+}
 
-  while (tries < maxTries) {
+// Auto-retry fetch once if it fails (your “Request cancelled or failed”)
+async function postWithRetry(url, payload, tries = 2) {
+  let lastErr;
+  for (let i = 0; i < tries; i++) {
     try {
-      const response = await fetch(apiUrl, {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
-        signal: AbortSignal.timeout(20000), // 20 sec timeout
+        body: JSON.stringify(payload),
       });
-
-      if (!response.ok) throw new Error("Worker error");
-
-      const data = await response.json();
-      aiMsg.innerHTML = "";
-      await typeEffect(aiMsg, renderMarkdown(data.reply || "⚠️ No response from CloudAI."));
-      return;
-    } catch (error) {
-      console.warn("Attempt", tries + 1, "failed:", error);
-      tries++;
-      if (tries === maxTries) {
-        aiMsg.innerHTML = "❌ Request failed after retry.";
-      } else {
-        aiMsg.innerHTML = "🔄 Retrying...";
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (e) {
+      lastErr = e;
+      await new Promise(r => setTimeout(r, 800)); // brief wait before retry
     }
+  }
+  throw lastErr;
+}
+
+// ======= Send flow =======
+async function handleSend(e) {
+  e?.preventDefault?.();
+  const prompt = (input.value || "").trim();
+  if (!prompt) return;
+
+  // Show user bubble immediately
+  history.push({ role: "user", text: prompt });
+  saveHistory();
+  renderMessage("user", prompt);
+
+  input.value = "";
+  setSending(true);
+
+  try {
+    const payload = {
+      prompt,
+      history: history.slice(-MAX_TURNS), // send recent context
+    };
+
+    const data = await postWithRetry(PROXY_URL, payload, 2);
+
+    const reply = data?.reply || "⚠️ No response.";
+    history.push({ role: "model", text: reply });
+    saveHistory();
+    renderMessage("model", reply);
+  } catch (err) {
+    const msg = `Request failed. ${err?.message || ""} (auto-retry exhausted)`;
+    renderMessage("model", `> ${msg}`);
+  } finally {
+    setSending(false);
   }
 }
 
-sendBtn.addEventListener("click", sendMessage);
-userInput.addEventListener("keypress", (e) => e.key === "Enter" && sendMessage());
+// ======= Events =======
+form?.addEventListener?.("submit", handleSend);
+sendBtn?.addEventListener?.("click", handleSend);
+
+// Optional: Enter to send if you’re not already preventing default
+input?.addEventListener?.("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    handleSend(e);
+  }
+});
