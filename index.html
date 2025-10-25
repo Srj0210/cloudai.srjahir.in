@@ -3,38 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudAI — Smart Assistant by SRJahir Tech</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <title>CloudAI — by SRJahir Tech.</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./fevicon/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="./fevicon/apple-touch-icon.png" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./assets/css/style.css" />
+
+  <!-- PrismJS for syntax highlighting -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-  <link rel="icon" type="image/png" sizes="32x32" href="fevicon/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="fevicon/favicon-16x16.png" />
 </head>
 <body>
 
+  <!-- Header -->
   <header class="header">
     <div class="logo-container">
-      <img src="logo.png" alt="CloudAI Logo" class="logo" id="aiLogo" />
+      <img src="./logo.png" alt="CloudAI Logo" class="logo" id="ai-logo" />
       <p class="brand-text">by SRJahir Tech.</p>
     </div>
   </header>
 
-  <main class="chat-container" id="chatContainer">
-    <div class="message ai glow">👋 Hello! I'm <b>CloudAI</b> — your personal assistant. How can I help you today?</div>
+  <!-- Chat Area -->
+  <main class="chat-container" id="chat-container">
+    <div class="message ai glow">
+      👋 <b>Hello! I'm <span style="color:#00ffff;">CloudAI</span></b> — your personal assistant.<br>
+      How can I help you today?
+    </div>
   </main>
 
-  <div class="typing-indicator hidden" id="typingIndicator">
-    <span></span><span></span><span></span>
-  </div>
-
+  <!-- Input -->
   <div class="input-area">
-    <input type="text" id="userInput" placeholder="Type your message..." />
-    <button id="sendBtn">Send</button>
+    <input type="text" id="user-input" placeholder="Type your message..." />
+    <button id="send-btn">Send</button>
   </div>
 
-  <script src="assets/js/chat.js"></script>
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+  <script src="./assets/js/chat.js"></script>
 </body>
 </html>
