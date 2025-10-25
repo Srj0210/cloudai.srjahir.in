@@ -1,156 +1,71 @@
-// === CloudAI v6 (Final Cloudflare Secure Version) ===
-// by SRJahir Technologies ⚡
-// Connected with secure Cloudflare Worker (env.GEMINI_API_KEY)
+// ==============================
+// CloudAI Chat Script (Fixed)
+// by SRJahir Technologies
+// ==============================
 
+// ✅ Cloudflare Worker endpoint
+const apiUrl = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+
+// Select DOM elements
 const chatContainer = document.getElementById("chat-container");
+const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
-const input = document.getElementById("user-input");
 
-let controller;
-
-// Stop Button
-const stopBtn = document.createElement("button");
-stopBtn.id = "stop-btn";
-stopBtn.textContent = "■ Stop";
-stopBtn.classList.add("stop-button");
-stopBtn.style.display = "none";
-document.querySelector("footer").appendChild(stopBtn);
-
-// === Append Message ===
-function appendMessage(content, sender) {
-  const msgBox = document.createElement("div");
-  msgBox.classList.add("message", sender);
-
-  const msgText = document.createElement("div");
-  msgText.classList.add("msg-text");
-
-  // Split message into code & normal text parts
-  const parts = content.split(/```([\s\S]*?)```/g);
-  msgText.innerHTML = parts
-    .map((part, i) =>
-      i % 2 === 1
-        ? `<pre class="code-block" data-lang="${detectLang(part)}"><code>${escapeHtml(
-            part.trim()
-          )}</code></pre>`
-        : escapeHtml(part)
-            .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-            .replace(/\n/g, "<br>")
-            .replace(/^- /gm, "• ")
-    )
-    .join("");
-
-  msgBox.appendChild(msgText);
-  chatContainer.appendChild(msgBox);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
-// === Detect Programming Language ===
-function detectLang(code) {
-  code = code.toLowerCase();
-  if (code.includes("<html") || code.includes("<body")) return "HTML";
-  if (code.includes("console.log") || code.includes("function")) return "JavaScript";
-  if (code.includes("background-color") || code.includes("margin")) return "CSS";
-  if (code.includes("def ") || code.includes("import")) return "Python";
-  if (code.includes("SELECT") || code.includes("FROM")) return "SQL";
-  if (code.includes("<?php") || code.includes("echo")) return "PHP";
-  return "Code";
-}
-
-// === Escape HTML for safety ===
-function escapeHtml(unsafe) {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-// === Typing Animation (AI reply effect) ===
-async function typeEffect(element, text, speed = 15) {
-  element.innerHTML = "";
-  let i = 0;
-  while (i < text.length) {
-    element.innerHTML += escapeHtml(text.charAt(i));
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    await new Promise((r) => setTimeout(r, speed));
-    i++;
+// Typing effect for AI messages
+async function typeEffect(element, text, speed = 4) {
+  for (let i = 0; i < text.length; i++) {
+    element.innerHTML += text.charAt(i);
+    await new Promise((resolve) => setTimeout(resolve, speed));
   }
 }
 
-// === Send Message ===
-async function sendMessage() {
-  const text = input.value.trim();
-  if (!text) return;
-
-  appendMessage(text, "user");
-  input.value = "";
-
-  const typing = document.createElement("div");
-  typing.classList.add("message", "ai");
-  typing.innerHTML = `<span>💬 CloudAI is thinking...</span>`;
-  chatContainer.appendChild(typing);
+// Function to append messages
+function appendMessage(content, sender = "user") {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender);
+  msg.innerHTML = content;
+  chatContainer.appendChild(msg);
   chatContainer.scrollTop = chatContainer.scrollHeight;
+  return msg;
+}
 
-  controller = new AbortController();
-  stopBtn.style.display = "inline-block";
+// Handle send button click
+sendBtn.addEventListener("click", async () => {
+  const prompt = userInput.value.trim();
+  if (!prompt) return;
+
+  // User message
+  appendMessage(prompt, "user");
+  userInput.value = "";
+
+  // AI message placeholder
+  const aiMsg = appendMessage("<span class='loading'>⏳ Thinking...</span>", "ai");
 
   try {
-    const apiUrl = "https://cloudai-proxy.srjahir.workers.dev"; // your Cloudflare Worker URL
-
-    const res = await fetch(apiUrl, {
+    // Call Cloudflare Worker
+    const response = await fetch(apiUrl, {
       method: "POST",
-      signal: controller.signal,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt: text,
-        sessionId: "cloudai", // shared session memory
-      }),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+      signal: AbortSignal.timeout(15000), // cancel if too slow
     });
 
-    const data = await res.json();
-    stopBtn.style.display = "none";
+    if (!response.ok) throw new Error("Worker response error");
 
-    let reply = data.reply || "⚠️ Sorry, no response received.";
+    const data = await response.json();
 
-    // Extract clean code blocks
-    if (text.toLowerCase().includes("code")) {
-      const codeBlocks = reply.match(/```[\s\S]*?```/g);
-      if (codeBlocks?.length) {
-        reply = codeBlocks.join("\n\n");
-      } else {
-        const htmlBlock = reply.match(/<html[\s\S]*<\/html>/i);
-        if (htmlBlock) reply = "```html\n" + htmlBlock[0].trim() + "\n```";
-        else reply = reply.split(/How to|Explanation|Steps|Save:/i)[0].trim();
-      }
-    }
-
-    typing.remove();
-
-    // Typing animation for final text
-    const aiMsg = document.createElement("div");
-    aiMsg.classList.add("message", "ai");
-
-    chatContainer.appendChild(aiMsg);
-    await typeEffect(aiMsg, reply, 8);
-
-  } catch (err) {
-    console.error("Error:", err);
-    typing.remove();
-    appendMessage("❌ Request cancelled or failed.", "ai");
+    aiMsg.innerHTML = "";
+    await typeEffect(aiMsg, data.reply || "⚠️ No response from CloudAI.");
+  } catch (error) {
+    aiMsg.innerHTML = "❌ Request cancelled or failed.";
+    console.error("Error:", error);
   }
-}
-
-// === Stop Button ===
-stopBtn.addEventListener("click", () => {
-  if (controller) controller.abort();
-  stopBtn.style.display = "none";
-  appendMessage("⛔ CloudAI stopped generating.", "ai");
 });
 
-// === Send Events ===
-sendBtn.addEventListener("click", sendMessage);
-input.addEventListener("keypress", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+// Allow pressing Enter to send
+userInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendBtn.click();
 });
