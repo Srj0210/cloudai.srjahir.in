@@ -4,33 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CloudAI – Smart Assistant by SRJahir Tech</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Prism Syntax Highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="fevicon/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="fevicon/favicon-16x16.png" />
 </head>
 <body>
 
-  <!-- Top-Right Logo -->
+  <!-- Logo -->
   <header class="header">
     <div class="logo-container">
-      <img src="logo.png" alt="CloudAI Logo" class="logo" />
+      <img src="logo.png" alt="CloudAI Logo" class="logo" id="aiLogo" />
       <p class="brand-text">by SRJahir Tech.</p>
     </div>
   </header>
 
-  <!-- Chat Container -->
+  <!-- Chat -->
   <main class="chat-container" id="chatContainer">
-    <div class="message ai">
-      👋 Hello! I'm <b>CloudAI</b> — your personal assistant. How can I help you today?
-    </div>
+    <div class="message ai">👋 Hello! I'm <b>CloudAI</b> — your personal assistant. How can I help you today?</div>
   </main>
 
-  <!-- Typing Indicator -->
+  <!-- Typing indicator -->
   <div class="typing-indicator hidden" id="typingIndicator">
     <span></span><span></span><span></span>
   </div>
 
-  <!-- Input Box -->
+  <!-- Input -->
   <div class="input-area">
     <input type="text" id="userInput" placeholder="Type your message..." />
     <button id="sendBtn">Send</button>
