@@ -1,7 +1,7 @@
 // === CloudAI v8.3 Final Hybrid (Gemini + Tavily + Quota System) ===
 // by SRJahir Technologies ⚡
 
-const API_URL = "https://your-cloudflare-worker-url"; // replace with your worker URL
+const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/"; // replace with your worker URL
 const chatContainer = document.getElementById("chat-container");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
