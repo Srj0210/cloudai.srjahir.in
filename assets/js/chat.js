@@ -1,7 +1,7 @@
-// === CloudAI v8.3 Final Hybrid (Gemini + Tavily + Quota System) ===
-// by SRJahir Technologies ⚡
+// === CloudAI v8.3.2 Refined Hybrid (Gemini + Tavily + Quota) ===
+// by SRJahir Tech. ⚡
 
-const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/"; // replace with your worker URL
+const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
 const chatContainer = document.getElementById("chat-container");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
@@ -12,14 +12,21 @@ let quota = JSON.parse(localStorage.getItem("userQuota")) || { used: 0, reset: D
 function checkQuota() {
   const now = Date.now();
   const day = 24 * 60 * 60 * 1000;
+
+  // Reset quota every 24 hours
   if (now - quota.reset > day) {
     quota = { used: 0, reset: now };
     localStorage.setItem("userQuota", JSON.stringify(quota));
   }
+
   if (quota.used >= 100) {
     appendMessage("ai", "❌ You’ve used your 100% CloudAI quota. Try again after 24h.");
     return false;
   }
+  if (quota.used === 80) {
+    appendMessage("ai", "⚠️ You’ve used 80% of your CloudAI quota.");
+  }
+
   return true;
 }
 
@@ -29,7 +36,6 @@ function appendMessage(role, text) {
   msg.innerHTML = marked.parse(text);
   chatContainer.appendChild(msg);
 
-  // Highlight + Copy Button
   msg.querySelectorAll("pre code").forEach(block => {
     hljs.highlightElement(block);
     const btn = document.createElement("button");
@@ -49,10 +55,12 @@ function appendMessage(role, text) {
 async function sendMessage() {
   const prompt = userInput.value.trim();
   if (!prompt || !checkQuota()) return;
+
   appendMessage("user", prompt);
   userInput.value = "";
 
-  appendMessage("ai", "⏳ Thinking...");
+  appendMessage("ai", "💭 CloudAI is thinking...");
+
   quota.used++;
   localStorage.setItem("userQuota", JSON.stringify(quota));
 
@@ -64,8 +72,10 @@ async function sendMessage() {
     });
 
     if (!res.ok) throw new Error("Network error");
+
     const data = await res.json();
     document.querySelector(".ai:last-child").remove();
+
     appendMessage("ai", data.reply || "⚠️ No response from CloudAI.");
     history.push({ role: "user", text: prompt }, { role: "model", text: data.reply });
     localStorage.setItem("chatHistory", JSON.stringify(history));
