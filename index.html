@@ -3,37 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudAI - Smart Chat Assistant</title>
-  <meta name="description" content="CloudAI by SRJahir Tech — your intelligent chat assistant powered by the cloud." />
-
-  <!-- Fonts & Styles -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <title>CloudAI – Smart Assistant by SRJahir Tech</title>
   <link rel="stylesheet" href="assets/css/style.css" />
-
-  <!-- Syntax Highlight + Markdown -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="fevicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="fevicon/favicon-16x16.png" />
 </head>
-
 <body>
+
+  <!-- Top-Right Logo -->
   <header class="header">
-    <div class="logo">
-      <img src="fevicon/android-chrome-192x192.png" alt="CloudAI" />
+    <div class="logo-container">
+      <img src="logo.png" alt="CloudAI Logo" class="logo" />
+      <p class="brand-text">by SRJahir Tech.</p>
     </div>
-    <p class="tagline">by SRJahir Tech.</p>
   </header>
 
-  <main class="chat-container" id="chat-container">
+  <!-- Chat Container -->
+  <main class="chat-container" id="chatContainer">
     <div class="message ai">
-      👋 Hello! I'm <strong>CloudAI</strong> — your personal assistant. How can I help you today?
+      👋 Hello! I'm <b>CloudAI</b> — your personal assistant. How can I help you today?
     </div>
   </main>
 
-  <footer class="input-area">
-    <textarea id="user-input" placeholder="Type your message..."></textarea>
-    <button id="send-btn">Send</button>
-  </footer>
+  <!-- Typing Indicator -->
+  <div class="typing-indicator hidden" id="typingIndicator">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- Input Box -->
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Type your message..." />
+    <button id="sendBtn">Send</button>
+  </div>
 
   <script src="assets/js/chat.js"></script>
 </body>
