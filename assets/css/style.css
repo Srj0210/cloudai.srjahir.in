@@ -1,5 +1,3 @@
-/* ==== CloudAI v8.5 Theme (ChatGPT Layout + SRJahir Colors) ==== */
-
 :root {
   --bg-dark: #000;
   --bg-chat: #0d0d0d;
@@ -10,43 +8,48 @@
   --gray: #888;
 }
 
-/* Body & Layout */
+/* Body */
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
   background: var(--bg-dark);
   color: var(--text-color);
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 
-/* Logo Section */
+/* Logo */
 .header {
   position: fixed;
   top: 10px;
   right: 20px;
   text-align: center;
-  z-index: 50;
+  z-index: 100;
 }
 
 .logo {
-  width: 48px;
-  opacity: 0.9;
-  transition: opacity 0.3s;
+  width: 64px;
+  opacity: 1;
+  transition: 0.3s;
 }
 
-.logo:hover {
-  opacity: 1;
+.logo-thinking {
+  animation: blinkLogo 1.2s infinite ease-in-out;
+}
+
+@keyframes blinkLogo {
+  0%, 100% { filter: drop-shadow(0 0 8px var(--cyan)); opacity: 0.7; }
+  50% { filter: drop-shadow(0 0 20px #00ffffcc); opacity: 1; }
 }
 
 .brand-text {
   color: var(--gray);
   font-size: 11px;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
-/* Chat Area */
+/* Chat Container */
 .chat-container {
   flex: 1;
   padding: 80px 12px 90px;
@@ -54,67 +57,79 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cyan) #111;
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: var(--cyan);
+  border-radius: 4px;
 }
 
 /* Messages */
 .message {
   max-width: 70%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-radius: 10px;
   font-size: 15px;
   line-height: 1.5;
   word-wrap: break-word;
-  border: 1px solid #1f1f1f;
 }
 
 .message.ai {
   background: var(--bubble-ai);
   align-self: flex-start;
-  box-shadow: 0 0 5px #00ffff22;
+  box-shadow: 0 0 10px #00ffff44;
 }
 
 .message.user {
   background: var(--bubble-user);
   align-self: flex-end;
-  color: #fff;
-  box-shadow: 0 0 5px #00ffff44;
+  color: white;
+  box-shadow: 0 0 10px #00ffff55;
 }
 
-/* Code Replies (like ChatGPT) */
+/* Code Section */
 .code-block {
   background: #1a1a1a;
   border-radius: 10px;
   position: relative;
-  overflow-x: auto;
-  padding: 14px;
+  padding: 16px;
   font-family: monospace;
+  overflow-x: auto;
   border: 1px solid #222;
-  box-shadow: 0 0 5px #00ffff22;
+  box-shadow: 0 0 10px #00ffff22;
 }
 
 .code-block pre {
   margin: 0;
-  color: #00ffff;
+  white-space: pre-wrap;
 }
 
+/* Copy Button */
 .copy-btn {
   position: absolute;
   top: 6px;
   right: 10px;
-  background: var(--bubble-user);
+  background: linear-gradient(90deg, #00bfff, #007bff);
   border: none;
   padding: 4px 10px;
   border-radius: 6px;
   color: #fff;
   font-size: 12px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .copy-btn:hover {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
-/* Typing Dots */
+/* Typing Indicator */
 .typing-indicator {
   display: flex;
   justify-content: flex-start;
@@ -147,7 +162,7 @@ body {
   display: none;
 }
 
-/* Input */
+/* Input Area */
 .input-area {
   display: flex;
   align-items: center;
@@ -171,8 +186,8 @@ body {
 }
 
 .input-area button {
-  margin-left: 8px;
-  padding: 10px 16px;
+  margin-left: 10px;
+  padding: 10px 20px;
   border: none;
   border-radius: 8px;
   background: var(--bubble-user);
