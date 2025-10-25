@@ -1,16 +1,15 @@
-// ==== CloudAI v8.5 (ChatGPT Layout + CloudAI Theme) ====
+// ==== CloudAI v8.6 Intelligent UI Edition ====
 
 const chatContainer = document.getElementById("chatContainer");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 const typingIndicator = document.getElementById("typingIndicator");
+const aiLogo = document.getElementById("aiLogo");
 
 const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
-
-let quota = JSON.parse(localStorage.getItem("cloudai_quota")) || { used: 0, reset: Date.now() + 24 * 60 * 60 * 1000 };
 const DAILY_LIMIT = 50;
 
-// Quota Reset Logic
+let quota = JSON.parse(localStorage.getItem("cloudai_quota")) || { used: 0, reset: Date.now() + 24 * 60 * 60 * 1000 };
 if (Date.now() > quota.reset) {
   quota = { used: 0, reset: Date.now() + 24 * 60 * 60 * 1000 };
   localStorage.setItem("cloudai_quota", JSON.stringify(quota));
@@ -18,7 +17,7 @@ if (Date.now() > quota.reset) {
 
 function appendMessage(content, sender = "ai") {
   const div = document.createElement("div");
-  if (content.includes("<pre>")) {
+  if (content.includes("<pre")) {
     div.className = "code-block";
     div.innerHTML = content + `<button class="copy-btn">Copy</button>`;
   } else {
@@ -31,7 +30,7 @@ function appendMessage(content, sender = "ai") {
   const copyBtn = div.querySelector(".copy-btn");
   if (copyBtn) {
     copyBtn.addEventListener("click", () => {
-      const code = div.querySelector("pre").innerText;
+      const code = div.querySelector("code").innerText;
       navigator.clipboard.writeText(code);
       copyBtn.innerText = "Copied!";
       setTimeout(() => (copyBtn.innerText = "Copy"), 1500);
@@ -52,6 +51,7 @@ async function sendMessage() {
   userInput.value = "";
 
   typingIndicator.classList.remove("hidden");
+  aiLogo.classList.add("logo-thinking");
 
   try {
     const res = await fetch(API_URL, {
@@ -61,6 +61,7 @@ async function sendMessage() {
     });
 
     typingIndicator.classList.add("hidden");
+    aiLogo.classList.remove("logo-thinking");
 
     if (!res.ok) {
       appendMessage("⚠️ Connection failed. Try again.");
@@ -71,9 +72,15 @@ async function sendMessage() {
     quota.used++;
     localStorage.setItem("cloudai_quota", JSON.stringify(quota));
 
-    appendMessage(data.reply);
+    let reply = data.reply
+      .replace(/```(\w+)?([\s\S]*?)```/g, (_, lang, code) => {
+        return `<pre><code class="language-${lang || "markup"}">${Prism.highlight(code, Prism.languages[lang || "markup"], lang || "markup")}</code></pre>`;
+      });
+
+    appendMessage(reply);
   } catch (err) {
     typingIndicator.classList.add("hidden");
+    aiLogo.classList.remove("logo-thinking");
     appendMessage("⚠️ Network error. Please try again.");
   }
 }
