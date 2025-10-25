@@ -1,10 +1,7 @@
-/* === CloudAI v8.3.2 Refined UI === */
+/* === CloudAI v8.3.3 Perfected UI === */
 /* by SRJahir Tech. ⚡ */
 
-* {
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
+* { box-sizing: border-box; font-family: "Poppins", sans-serif; }
 
 body {
   background-color: #000;
@@ -27,16 +24,17 @@ body {
 }
 
 .logo img {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   box-shadow: 0 0 12px #00ffff55;
+  margin-bottom: 4px;
 }
 
 .tagline {
   font-size: 0.7rem;
   color: #6e7681;
-  margin-top: 4px;
+  margin-top: 6px;
   letter-spacing: 0.5px;
 }
 
@@ -47,8 +45,7 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  scroll-behavior: smooth;
+  gap: 10px;
 }
 
 /* ===== Messages ===== */
@@ -63,15 +60,15 @@ body {
 }
 
 .user {
-  background: linear-gradient(135deg, #00ffff, #007bff);
+  background: linear-gradient(135deg, #00b4d8, #007bff);
   align-self: flex-end;
   color: #fff;
-  border-radius: 14px 14px 0 14px;
+  border-radius: 14px 14px 4px 14px;
   box-shadow: 0 0 6px #00b4d855;
 }
 
 .ai {
-  background-color: #1e1e1e;
+  background-color: #121416;
   align-self: flex-start;
   color: #e6edf3;
   border-left: 3px solid #00ffff;
@@ -80,24 +77,14 @@ body {
 }
 
 /* ===== Markdown Formatting ===== */
-.message strong {
-  color: #00ffff;
-  font-weight: 600;
-}
+.message strong { color: #00e6e6; font-weight: 600; }
+.message em { color: #9be7ff; font-style: italic; }
+.message ul li { margin-bottom: 4px; }
 
-.message em {
-  color: #9be7ff;
-  font-style: italic;
-}
-
-.message ul {
-  margin-left: 20px;
-}
-
-/* ===== Code Block Styling ===== */
+/* ===== Code Blocks ===== */
 pre code {
   display: block;
-  padding: 12px;
+  padding: 16px 14px;
   background-color: #1e1e1e;
   border-radius: 10px;
   color: #e6edf3;
@@ -109,8 +96,8 @@ pre code {
 
 .copy-btn {
   position: absolute;
-  top: 6px;
-  right: 10px;
+  top: 10px;
+  right: 12px;
   background: #00ffff;
   border: none;
   border-radius: 5px;
@@ -119,13 +106,9 @@ pre code {
   color: #000;
   cursor: pointer;
   font-weight: 600;
-  transition: 0.3s;
+  transition: background 0.3s, color 0.3s;
 }
-
-.copy-btn:hover {
-  background: #00b4d8;
-  color: #fff;
-}
+.copy-btn:hover { background: #00b4d8; color: #fff; }
 
 /* ===== Input Area ===== */
 .input-area {
@@ -135,7 +118,6 @@ pre code {
   padding: 12px;
   background-color: #0d1117;
   border-top: 1px solid #1e1e1e;
-  flex-shrink: 0;
 }
 
 #user-input {
@@ -151,8 +133,13 @@ pre code {
   height: 55px;
 }
 
+#user-input:focus {
+  border-color: #00ffff;
+  box-shadow: 0 0 6px #00ffff55;
+}
+
 #send-btn {
-  background: linear-gradient(135deg, #00ffff, #007bff);
+  background: linear-gradient(135deg, #00b4d8, #007bff);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -165,10 +152,11 @@ pre code {
 }
 
 #send-btn:hover {
-  opacity: 0.85;
+  background: linear-gradient(135deg, #00ffff, #00b4d8);
+  opacity: 0.95;
 }
 
-/* ===== Animations ===== */
+/* ===== Animation ===== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -176,5 +164,5 @@ pre code {
 
 @media (max-width: 600px) {
   .message { max-width: 100%; font-size: 14px; }
-  .logo img { width: 65px; height: 65px; }
+  .logo img { width: 75px; height: 75px; }
 }
