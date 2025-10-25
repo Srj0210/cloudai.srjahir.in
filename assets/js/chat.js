@@ -1,83 +1,150 @@
-// === CloudAI Chat.js (VS Code Style + Copy Button Edition) ===
+// ===================================================
+// CloudAI v7 Hybrid Chat Script
+// Gemini + Tavily + VS Code theme + Copy Button
+// by SRJahir Technologies ⚡
+// ===================================================
 
 const chatContainer = document.getElementById("chat-container");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
-const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+let chatHistory = [];
+let isGenerating = false;
 
-function appendMessage(text, sender, isCode = false) {
-  const msgDiv = document.createElement("div");
-  msgDiv.classList.add("message", sender);
+// ⚙️ Replace with your Cloudflare Worker endpoint
+const API_URL = "https://your-worker-name.workers.dev"; 
 
-  if (isCode) {
-    const codeBlock = document.createElement("pre");
-    const codeEl = document.createElement("code");
-    codeEl.textContent = text.trim();
-    codeBlock.appendChild(codeEl);
-
-    const copyBtn = document.createElement("button");
-    copyBtn.className = "copy-btn";
-    copyBtn.innerHTML = "📋 Copy";
-    copyBtn.onclick = () => {
-      navigator.clipboard.writeText(text);
-      copyBtn.innerText = "✅ Copied!";
-      setTimeout(() => (copyBtn.innerText = "📋 Copy"), 1500);
-    };
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "code-wrapper";
-    wrapper.append(copyBtn, codeBlock);
-    msgDiv.appendChild(wrapper);
-
-    // Highlight syntax
-    setTimeout(() => hljs.highlightElement(codeEl), 50);
-  } else {
-    msgDiv.innerHTML = `<div class="msg-text">${text}</div>`;
-  }
-
-  chatContainer.appendChild(msgDiv);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
+// ---------------------------------------------------
+// ✉️ SEND MESSAGE
+// ---------------------------------------------------
 async function sendMessage() {
+  if (isGenerating) return;
   const prompt = userInput.value.trim();
   if (!prompt) return;
 
-  appendMessage(prompt, "user");
+  addMessage(prompt, "user");
   userInput.value = "";
+  scrollToBottom();
+
+  isGenerating = true;
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Thinking...";
+
+  const thinkingMsg = addMessage("💭 CloudAI is thinking...", "ai");
 
   try {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({
+        prompt,
+        history: chatHistory,
+      }),
     });
 
     const data = await response.json();
-    if (data.reply) {
-      const reply = data.reply;
-      // Detect code block style from Gemini markdown
-      if (reply.includes("<") && reply.includes(">") && reply.includes("</")) {
-        appendMessage(reply, "ai");
-      } else if (reply.match(/```[\s\S]+?```/)) {
-        const code = reply.match(/```([\s\S]+?)```/)[1];
-        appendMessage(code, "ai", true);
-      } else {
-        appendMessage(reply, "ai");
-      }
+
+    if (data.error) {
+      thinkingMsg.innerHTML = `<b>⚠️ Error:</b> ${data.error}`;
     } else {
-      appendMessage("⚠️ No response from CloudAI.", "ai");
+      const formattedReply = formatMarkdown(data.reply || "⚠️ No reply found.");
+      thinkingMsg.innerHTML = formattedReply;
+
+      // 🌈 Apply VS Code style syntax highlighting
+      document.querySelectorAll("pre code").forEach(block => {
+        hljs.highlightElement(block);
+      });
+
+      // 📋 Add copy button to each code block
+      document.querySelectorAll("pre").forEach(pre => {
+        if (!pre.querySelector(".copy-btn")) {
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "copy-btn";
+          copyBtn.textContent = "Copy";
+          copyBtn.onclick = () => copyCode(pre.innerText);
+          pre.appendChild(copyBtn);
+        }
+      });
+
+      // 💾 Update chat history
+      chatHistory.push({ role: "user", text: prompt });
+      chatHistory.push({ role: "model", text: data.reply });
     }
   } catch (err) {
-    appendMessage("❌ Request failed. Please try again.", "ai");
+    thinkingMsg.innerHTML = `<b>❌ Error:</b> ${err.message}`;
   }
+
+  isGenerating = false;
+  sendBtn.disabled = false;
+  sendBtn.textContent = "Send";
+  scrollToBottom();
 }
 
-sendBtn.addEventListener("click", sendMessage);
-userInput.addEventListener("keypress", (e) => {
+// ---------------------------------------------------
+// 💬 ADD MESSAGE TO CHAT UI
+// ---------------------------------------------------
+function addMessage(text, sender) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender);
+
+  const msgText = document.createElement("div");
+  msgText.classList.add("msg-text");
+  msgText.innerHTML = text;
+
+  msg.appendChild(msgText);
+  chatContainer.appendChild(msg);
+  scrollToBottom();
+
+  return msgText;
+}
+
+// ---------------------------------------------------
+// 🧾 FORMAT MARKDOWN + CODE BLOCKS
+// ---------------------------------------------------
+function formatMarkdown(text) {
+  let html = text
+    // Bold **text**
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    // Inline `code`
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    // Code blocks ```language ... ```
+    .replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+      const language = lang || "plaintext";
+      const escaped = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return `<pre><code class="language-${language}">${escaped}</code></pre>`;
+    })
+    // Newlines
+    .replace(/\n/g, "<br>");
+  return html;
+}
+
+// ---------------------------------------------------
+// 📋 COPY CODE BUTTON FUNCTION
+// ---------------------------------------------------
+function copyCode(codeText) {
+  navigator.clipboard.writeText(codeText);
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = "✅ Code copied!";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
+
+// ---------------------------------------------------
+// ⌨️ ENTER TO SEND
+// ---------------------------------------------------
+userInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
   }
 });
+
+sendBtn.addEventListener("click", sendMessage);
+
+// ---------------------------------------------------
+// 🔽 SCROLL TO BOTTOM
+// ---------------------------------------------------
+function scrollToBottom() {
+  chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
+}
