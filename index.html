@@ -4,36 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CloudAI - Smart Chat Assistant</title>
-  <meta name="description" content="CloudAI by SRJahir Technologies — your intelligent chat assistant powered by the cloud." />
+  <meta name="description" content="CloudAI by SRJahir Technologies — your intelligent chat assistant powered by Gemini + Tavily hybrid AI." />
 
-  <!-- === Core Styles === -->
+  <!-- === CloudAI Favicon Setup === -->
+  <link rel="apple-touch-icon" sizes="180x180" href="fevicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="fevicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="fevicon/favicon-16x16.png">
+  <link rel="manifest" href="fevicon/site.webmanifest">
+  <link rel="shortcut icon" href="fevicon/favicon.ico" type="image/x-icon">
+  <meta name="theme-color" content="#0A0A0A">
+
+  <!-- === Styles === -->
   <link rel="stylesheet" href="assets/css/style.css" />
-
-  <!-- === VS Code Syntax Highlight === -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
-
-  <!-- === Favicon === -->
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/4712/4712107.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
 </head>
 
 <body>
   <header class="header">
     <div class="logo">
-      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712107.png" alt="CloudAI Logo" />
+      <img src="logo.png" alt="CloudAI Logo" />
       <h1>CloudAI</h1>
     </div>
     <p class="tagline">by SRJahir Technologies</p>
   </header>
 
-  <!-- === Chat Container === -->
   <main class="chat-container" id="chat-container">
     <div class="message ai">
-      👋 Hello! I'm <strong>CloudAI</strong> — your personal assistant.<br>
-      How can I help you today?
+      👋 Hello! I'm <strong>CloudAI</strong> — your personal assistant. How can I help you today?
     </div>
   </main>
 
-  <!-- === Input Area === -->
   <footer class="input-area">
     <textarea id="user-input" placeholder="Type your message..."></textarea>
     <button id="send-btn">Send</button>
@@ -42,14 +42,5 @@
   <!-- === Scripts === -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="assets/js/chat.js"></script>
-
-  <!-- === Auto Scroll Fix === -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const chatContainer = document.getElementById("chat-container");
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    });
-  </script>
-
 </body>
 </html>
