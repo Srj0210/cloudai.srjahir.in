@@ -6,38 +6,36 @@
   <title>CloudAI - Smart Chat Assistant</title>
   <meta name="description" content="CloudAI by SRJahir Technologies — your intelligent chat assistant powered by the cloud." />
 
-  <!-- === Core Styles === -->
+  <!-- === Fonts & Styles === -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
 
-  <!-- === Code Syntax Highlighting === -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <!-- === Markdown Parser & Syntax Highlighter === -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 
 <body>
-  <!-- Header -->
   <header class="header">
     <div class="logo">
-      <img src="favicon/android-chrome-192x192.png" alt="CloudAI Logo" class="logo-img" />
+      <img src="assets/logo.png" alt="CloudAI Logo" />
     </div>
     <p class="tagline">by SRJahir Technologies</p>
   </header>
 
-  <!-- Chat Container -->
   <main class="chat-container" id="chat-container">
     <div class="message ai">
       👋 Hello! I'm <strong>CloudAI</strong> — your personal assistant. How can I help you today?
     </div>
   </main>
 
-  <!-- Input Area -->
   <footer class="input-area">
     <textarea id="user-input" placeholder="Type your message..."></textarea>
     <button id="send-btn">Send</button>
   </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- === Main Script === -->
   <script src="assets/js/chat.js"></script>
 </body>
 </html>
