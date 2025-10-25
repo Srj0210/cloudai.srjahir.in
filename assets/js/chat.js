@@ -1,72 +1,72 @@
 const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
-const chatContainer = document.getElementById("chatContainer");
-const userInput = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
-const typingIndicator = document.getElementById("typingIndicator");
-const aiLogo = document.getElementById("aiLogo");
+const chatContainer = document.getElementById("chat-container");
+const userInput = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+const aiLogo = document.getElementById("ai-logo");
 
-function appendMessage(content, sender = "ai") {
-  const div = document.createElement("div");
-  if (content.includes("<pre")) {
-    div.className = "code-block glow";
-    div.innerHTML = content + `<button class="copy-btn">Copy</button>`;
-  } else {
-    div.className = `message ${sender} glow`;
-    div.innerHTML = content;
-  }
-  chatContainer.appendChild(div);
-  chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
-
-  const copyBtn = div.querySelector(".copy-btn");
-  if (copyBtn) {
-    copyBtn.addEventListener("click", () => {
-      const code = div.querySelector("code").innerText;
-      navigator.clipboard.writeText(code);
-      copyBtn.innerText = "Copied!";
-      setTimeout(() => (copyBtn.innerText = "Copy"), 1500);
-    });
-  }
+// Add message to chat
+function addMessage(sender, text, isHTML = false) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender, "glow");
+  msg.innerHTML = isHTML ? text : marked.parse(text);
+  chatContainer.appendChild(msg);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-async function sendMessage() {
-  const prompt = userInput.value.trim();
-  if (!prompt) return;
+// Typing indicator
+function showTyping() {
+  const typing = document.createElement("div");
+  typing.classList.add("message", "ai", "typing");
+  typing.innerHTML = `<span></span><span></span><span></span>`;
+  chatContainer.appendChild(typing);
+  aiLogo.classList.add("logo-thinking");
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+  return typing;
+}
 
-  appendMessage(prompt, "user");
+// Copy button for code
+function addCopyButtons() {
+  document.querySelectorAll("pre code").forEach(block => {
+    const btn = document.createElement("button");
+    btn.textContent = "Copy";
+    btn.className = "copy-btn";
+    btn.onclick = () => {
+      navigator.clipboard.writeText(block.textContent);
+      btn.textContent = "Copied!";
+      setTimeout(() => (btn.textContent = "Copy"), 1500);
+    };
+    block.parentNode.appendChild(btn);
+  });
+}
+
+// Send message
+async function sendMessage() {
+  const text = userInput.value.trim();
+  if (!text) return;
+  addMessage("user", text);
   userInput.value = "";
 
-  typingIndicator.classList.remove("hidden");
-  aiLogo.classList.add("logo-thinking");
+  const typing = showTyping();
 
   try {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ prompt: text }),
     });
-
-    typingIndicator.classList.add("hidden");
-    aiLogo.classList.remove("logo-thinking");
-
-    if (!res.ok) {
-      appendMessage("⚠️ Connection failed. Try again.");
-      return;
-    }
-
     const data = await res.json();
-    let reply = data.reply.replace(/```(\w+)?([\s\S]*?)```/g, (_, lang, code) => {
-      return `<pre><code class="language-${lang || "markup"}">${Prism.highlight(
-        code,
-        Prism.languages[lang || "markup"],
-        lang || "markup"
-      )}</code></pre>`;
-    });
-
-    appendMessage(reply);
-  } catch (err) {
-    typingIndicator.classList.add("hidden");
+    typing.remove();
     aiLogo.classList.remove("logo-thinking");
-    appendMessage("⚠️ Network error. Please try again.");
+
+    const reply = data.reply || "⚠️ No response.";
+    addMessage("ai", reply, true);
+
+    Prism.highlightAll();
+    addCopyButtons();
+  } catch (err) {
+    typing.remove();
+    aiLogo.classList.remove("logo-thinking");
+    addMessage("ai", "⚠️ Error: Gemini not responding.");
   }
 }
 
