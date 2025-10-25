@@ -17,7 +17,9 @@ function appendMessage(text, sender) {
       )
       .join("");
   } else {
-    msgDiv.innerHTML = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\*(.*?)\*/g, "<i>$1</i>");
+    msgDiv.innerHTML = text
+      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+      .replace(/\*(.*?)\*/g, "<i>$1</i>");
   }
 
   chatBox.appendChild(msgDiv);
@@ -51,6 +53,8 @@ async function sendMessage() {
       body: JSON.stringify({
         prompt,
         clientId: localStorage.getItem("cloudai_id") || crypto.randomUUID(),
+        history: [],
+        tools: { web: true },
       }),
     });
 
@@ -65,7 +69,7 @@ async function sendMessage() {
     }
 
     if (data.quotaStatus === "quota_warning") {
-      alert("⚠️ You've used 80% of your daily CloudAI quota.");
+      showToast("⚠️ You've used 80% of your daily CloudAI quota.");
     }
 
     appendMessage(data.reply || "⚠️ No response from AI.", "ai");
@@ -73,6 +77,22 @@ async function sendMessage() {
     chatBox.removeChild(thinkingDiv);
     appendMessage("⚠️ Network error or API not responding.", "ai");
   }
+}
+
+function showToast(msg) {
+  const toast = document.createElement("div");
+  toast.textContent = msg;
+  toast.style.position = "fixed";
+  toast.style.top = "20px";
+  toast.style.right = "20px";
+  toast.style.background = "#00b7ff";
+  toast.style.color = "#fff";
+  toast.style.padding = "10px 16px";
+  toast.style.borderRadius = "10px";
+  toast.style.zIndex = "9999";
+  toast.style.boxShadow = "0 2px 10px rgba(0,0,0,0.3)";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
 }
 
 sendBtn.addEventListener("click", sendMessage);
