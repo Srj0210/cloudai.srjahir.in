@@ -178,3 +178,35 @@ pre.code-block::before {
     font-size: 15px;
   }
 }
+
+
+/* === Markdown / Code Styling Add-on (for chat.js Markdown rendering) === */
+.message strong {
+  font-weight: 700;
+  color: #58a6ff;
+}
+
+.message em {
+  color: #c9d1d9;
+  font-style: italic;
+}
+
+.message ul, .message ol {
+  margin-left: 20px;
+  padding-left: 10px;
+}
+
+.message pre, .message code {
+  background-color: #0d1117;
+  color: #ffa657;
+  font-family: monospace;
+  border-radius: 6px;
+}
+
+.message pre {
+  padding: 10px;
+  overflow-x: auto;
+  border: 1px solid #30363d;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
