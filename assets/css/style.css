@@ -1,8 +1,53 @@
+/* ===============================================
+   CloudAI v8.7.1 — Final Layout Fix Build
+   by SRJahir Tech.
+   =============================================== */
+
+:root {
+  --bg-dark: #000;
+  --bg-chat: #0d0d0d;
+  --bubble-ai: #141414;
+  --bubble-user: linear-gradient(90deg, #00bfff, #007bff);
+  --text-color: #eaeaea;
+  --cyan: #00ffff;
+  --gray: #999;
+}
+
+/* Global Layout */
+body {
+  margin: 0;
+  background: var(--bg-dark);
+  color: var(--text-color);
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Logo Section (Header) */
+.header {
+  position: fixed;
+  top: 14px;
+  right: 24px;
+  text-align: center;
+  z-index: 100;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .logo {
   width: 82px;
+  height: 82px;
   border-radius: 50%;
+  object-fit: cover;
   filter: drop-shadow(0 0 15px #00ffffaa);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .logo-thinking {
@@ -12,41 +57,194 @@
 @keyframes pulseLogo {
   0%, 100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 12px #00ffff66);
+    filter: drop-shadow(0 0 10px #00ffff66);
   }
   50% {
     transform: scale(1.06);
-    filter: drop-shadow(0 0 20px #00ffffcc);
+    filter: drop-shadow(0 0 22px #00ffffcc);
   }
 }
 
-/* Send button layout fix */
+.brand-text {
+  color: var(--gray);
+  font-size: 11px;
+  margin-top: 5px;
+  letter-spacing: 0.4px;
+}
+
+/* Chat Container */
+.chat-container {
+  flex: 1;
+  padding: 110px 18px 100px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cyan) #111;
+  scroll-behavior: smooth;
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(#00bfff, #00ffff);
+  border-radius: 6px;
+}
+
+/* Message Bubbles */
+.message {
+  max-width: 75%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  border: 1px solid transparent;
+  transition: all 0.3s ease-in-out;
+}
+
+.message.ai {
+  background: var(--bubble-ai);
+  align-self: flex-start;
+  border: 1px solid #00ffff33;
+  box-shadow: 0 0 10px #00ffff22;
+}
+
+.message.user {
+  background: var(--bubble-user);
+  align-self: flex-end;
+  color: #fff;
+  border: 1px solid #007bff55;
+}
+
+/* Smooth fade animation */
+.glow {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Code Block Styling */
+.code-block {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 18px;
+  font-family: "JetBrains Mono", monospace;
+  border: 1px solid #00ffff33;
+  box-shadow: 0 0 10px #00ffff22;
+  overflow-x: auto;
+  position: relative;
+  white-space: pre-wrap;
+}
+
+.code-block pre {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Copy Button inside Code Block */
+.copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #00bfff, #007bff);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.3s;
+}
+
+.copy-btn:hover {
+  opacity: 0.85;
+  box-shadow: 0 0 8px #00ffff44;
+}
+
+/* Typing Indicator (AI Loading Dots) */
+.typing-indicator {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin: 8px 20px;
+}
+
+.typing-indicator span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--cyan);
+  animation: blink 1.4s infinite both;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% {
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+/* Input Area (Bottom Chatbar) */
 .input-area {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #0a0a0a;
+  background: var(--bg-chat);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 14px 16px;
   border-top: 1px solid #111;
 }
 
 .input-area input {
   flex: 1;
-  padding: 10px;
+  padding: 11px 12px;
   background: #0d0d0d;
   border: 1px solid #222;
   border-radius: 8px;
   color: #fff;
   outline: none;
+  font-size: 15px;
+  transition: border 0.3s ease;
 }
 
+.input-area input:focus {
+  border: 1px solid #00ffff55;
+  box-shadow: 0 0 5px #00ffff33;
+}
+
+/* Send Button */
 .input-area button {
   margin-left: 16px;
-  margin-right: 10px; /* 🟢 FIX */
-  padding: 10px 26px;
+  margin-right: 12px; /* ✅ fixed space from wall */
+  padding: 11px 28px;
   border-radius: 10px;
   background: linear-gradient(90deg, #00bfff, #007bff);
   color: white;
@@ -59,4 +257,24 @@
 .input-area button:hover {
   transform: scale(1.05);
   box-shadow: 0 0 12px #00ffff66;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .logo {
+    width: 68px;
+    height: 68px;
+  }
+  .brand-text {
+    font-size: 10px;
+  }
+  .message {
+    max-width: 90%;
+  }
+  .input-area input {
+    font-size: 14px;
+  }
+  .input-area button {
+    padding: 10px 22px;
+  }
 }
