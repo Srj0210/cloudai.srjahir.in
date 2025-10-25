@@ -1,3 +1,8 @@
+/* =========================================================
+   CloudAI Frontend Theme — SRJahir Technologies
+   Version: v9.2 (Final Polished Build)
+   ========================================================= */
+
 /* ============ Global Theme ============ */
 body {
   background-color: #0d1117;
@@ -8,32 +13,56 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+}
+
+/* Custom Scrollbar (Dark + Cyan Glow) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+::-webkit-scrollbar-thumb {
+  background: #00b7ff33;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00b7ff77;
 }
 
 /* ============ Header ============ */
 .header {
   position: fixed;
-  top: 0;
-  right: 0;
-  padding: 12px 20px;
+  top: 20px;
+  right: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  text-align: center;
   z-index: 1000;
 }
 
 .logo {
-  width: 65px;
-  height: 65px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
   object-fit: contain;
-  opacity: 0.9;
+  margin-bottom: 6px; /* Spacing between logo and text */
+  opacity: 0.95;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  opacity: 1;
 }
 
 .subtext {
-  font-size: 11px;
-  color: #aaa;
-  margin-top: 4px;
+  font-size: 12px;
+  color: #9ba1a6;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 /* ============ Chat Container ============ */
@@ -42,7 +71,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: 100px;
+  margin-top: 120px;
   padding: 20px;
 }
 
@@ -53,6 +82,7 @@ body {
   flex-direction: column;
   gap: 10px;
   padding-bottom: 10px;
+  scrollbar-width: thin;
 }
 
 /* ============ Message Bubbles ============ */
@@ -60,9 +90,11 @@ body {
   max-width: 85%;
   padding: 12px 16px;
   border-radius: 12px;
-  line-height: 1.5;
+  line-height: 1.6;
   white-space: pre-wrap;
   font-size: 15px;
+  word-wrap: break-word;
+  transition: all 0.3s ease;
 }
 
 .user-message {
@@ -70,6 +102,7 @@ body {
   background: linear-gradient(135deg, #007aff, #00b7ff);
   color: white;
   border-bottom-right-radius: 0;
+  box-shadow: 0 0 6px rgba(0, 183, 255, 0.2);
 }
 
 .ai-message {
@@ -78,12 +111,13 @@ body {
   border: 1px solid #00b7ff33;
   border-left: 3px solid #00b7ff;
   border-bottom-left-radius: 0;
+  box-shadow: 0 0 6px rgba(0, 183, 255, 0.1);
 }
 
 /* ============ Code Blocks ============ */
 pre, code {
   background-color: #161b22;
-  color: #d1d5da;
+  color: #c9d1d9;
   font-family: "Fira Code", monospace;
   font-size: 14px;
   border-radius: 10px;
@@ -92,22 +126,33 @@ pre, code {
   display: block;
   position: relative;
   white-space: pre;
+  margin-top: 5px;
+  box-shadow: inset 0 0 10px rgba(0, 183, 255, 0.05);
 }
+
+/* GitHub-style syntax colors */
+code .keyword { color: #ff7b72; }
+code .string { color: #a5d6ff; }
+code .function { color: #d2a8ff; }
+code .number { color: #79c0ff; }
 
 .copy-btn {
   position: absolute;
-  top: 5px;
-  right: 8px;
+  top: 6px;
+  right: 10px;
   background-color: #00b7ff;
   border: none;
   color: white;
   font-size: 13px;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   padding: 3px 8px;
+  opacity: 0.9;
+  transition: all 0.2s ease-in-out;
 }
 .copy-btn:hover {
   background-color: #0098cc;
+  opacity: 1;
 }
 
 /* ============ Input Section ============ */
@@ -117,6 +162,7 @@ pre, code {
   background-color: #0d1117;
   border-top: 1px solid #30363d;
   padding: 10px 20px;
+  box-shadow: 0 -2px 5px rgba(0, 183, 255, 0.05);
 }
 
 textarea {
@@ -128,20 +174,31 @@ textarea {
   color: #e6edf3;
   font-size: 15px;
   height: 50px;
+  padding: 10px;
+  line-height: 1.5;
+  border-radius: 8px;
 }
 
 #send-btn {
   background: linear-gradient(135deg, #007aff, #00b7ff);
   color: white;
   border: none;
-  padding: 10px 20px;
-  margin-left: 12px;
+  padding: 10px 22px;
+  margin-left: 14px;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
+  box-shadow: 0 0 10px rgba(0, 183, 255, 0.2);
+  transition: all 0.3s ease;
 }
 #send-btn:hover {
   background: linear-gradient(135deg, #009eff, #00cfff);
+  box-shadow: 0 0 15px rgba(0, 183, 255, 0.4);
+}
+#send-btn:disabled {
+  background: #1c1f26;
+  color: #666;
+  cursor: not-allowed;
 }
 
 /* ============ Footer ============ */
@@ -151,4 +208,10 @@ textarea {
   font-size: 12px;
   padding: 8px 0;
   border-top: 1px solid #21262d;
+  background: #0d1117;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 999;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
