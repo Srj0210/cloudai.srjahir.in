@@ -1,5 +1,5 @@
-/* === CloudAI v8.3 Final Hybrid Theme === */
-/* by SRJahir Technologies ⚡ */
+/* === CloudAI v8.3.2 Refined UI === */
+/* by SRJahir Tech. ⚡ */
 
 * {
   box-sizing: border-box;
@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #0a0a0a;
+  background-color: #000;
   color: #e6edf3;
   margin: 0;
   display: flex;
@@ -21,47 +21,53 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 0;
-  background-color: #0d1117;
+  padding: 16px 0;
+  background-color: #0a0a0a;
   border-bottom: 1px solid #1e1e1e;
 }
 
 .logo img {
-  width: 70px;
-  height: 70px;
-  border-radius: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #00ffff55;
 }
 
 .tagline {
-  font-size: 0.85rem;
-  color: #9ba1a6;
-  margin-top: 6px;
+  font-size: 0.7rem;
+  color: #6e7681;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
 }
 
-/* ===== Chat Area ===== */
+/* ===== Chat Container ===== */
 .chat-container {
   flex: 1;
-  padding: 15px;
+  padding: 18px 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   scroll-behavior: smooth;
 }
 
+/* ===== Messages ===== */
 .message {
   padding: 12px 16px;
-  border-radius: 10px;
-  max-width: 85%;
-  line-height: 1.5;
+  border-radius: 12px;
+  max-width: 75%;
+  line-height: 1.55;
   word-wrap: break-word;
   animation: fadeIn 0.25s ease-in;
+  font-size: 15px;
 }
 
 .user {
   background: linear-gradient(135deg, #00ffff, #007bff);
   align-self: flex-end;
   color: #fff;
+  border-radius: 14px 14px 0 14px;
+  box-shadow: 0 0 6px #00b4d855;
 }
 
 .ai {
@@ -69,24 +75,42 @@ body {
   align-self: flex-start;
   color: #e6edf3;
   border-left: 3px solid #00ffff;
+  border-radius: 14px 14px 14px 0;
+  box-shadow: 0 0 4px #00ffff33;
 }
 
-/* ===== Code Blocks ===== */
+/* ===== Markdown Formatting ===== */
+.message strong {
+  color: #00ffff;
+  font-weight: 600;
+}
+
+.message em {
+  color: #9be7ff;
+  font-style: italic;
+}
+
+.message ul {
+  margin-left: 20px;
+}
+
+/* ===== Code Block Styling ===== */
 pre code {
   display: block;
   padding: 12px;
   background-color: #1e1e1e;
-  border-radius: 8px;
+  border-radius: 10px;
   color: #e6edf3;
   overflow-x: auto;
-  font-family: monospace;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
   position: relative;
 }
 
 .copy-btn {
   position: absolute;
   top: 6px;
-  right: 8px;
+  right: 10px;
   background: #00ffff;
   border: none;
   border-radius: 5px;
@@ -119,8 +143,8 @@ pre code {
   background-color: #1e1e1e;
   color: #e6edf3;
   border: 1px solid #30363d;
-  border-radius: 6px;
-  padding: 10px;
+  border-radius: 8px;
+  padding: 12px;
   font-size: 15px;
   resize: none;
   outline: none;
@@ -128,30 +152,29 @@ pre code {
 }
 
 #send-btn {
-  background-color: #00ffff;
-  color: #000;
+  background: linear-gradient(135deg, #00ffff, #007bff);
+  color: #fff;
   border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
+  border-radius: 8px;
+  padding: 12px 22px;
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
   transition: 0.25s;
+  height: 55px;
 }
 
 #send-btn:hover {
-  background-color: #00b4d8;
-  color: #fff;
+  opacity: 0.85;
 }
 
 /* ===== Animations ===== */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 600px) {
-  .message { max-width: 100%; }
-  #user-input { height: 50px; }
-  #send-btn { padding: 8px 14px; font-size: 14px; }
+  .message { max-width: 100%; font-size: 14px; }
+  .logo img { width: 65px; height: 65px; }
 }
