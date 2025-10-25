@@ -11,6 +11,9 @@
 
   <!-- === VS Code Syntax Highlight === -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+
+  <!-- === Favicon === -->
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/4712/4712107.png" type="image/png">
 </head>
 
 <body>
@@ -22,12 +25,15 @@
     <p class="tagline">by SRJahir Technologies</p>
   </header>
 
+  <!-- === Chat Container === -->
   <main class="chat-container" id="chat-container">
     <div class="message ai">
-      👋 Hello! I'm <strong>CloudAI</strong> — your personal assistant. How can I help you today?
+      👋 Hello! I'm <strong>CloudAI</strong> — your personal assistant.<br>
+      How can I help you today?
     </div>
   </main>
 
+  <!-- === Input Area === -->
   <footer class="input-area">
     <textarea id="user-input" placeholder="Type your message..."></textarea>
     <button id="send-btn">Send</button>
@@ -36,5 +42,14 @@
   <!-- === Scripts === -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="assets/js/chat.js"></script>
+
+  <!-- === Auto Scroll Fix === -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const chatContainer = document.getElementById("chat-container");
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
+  </script>
+
 </body>
 </html>
