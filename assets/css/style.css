@@ -1,141 +1,157 @@
-/* ===================================================
-   CloudAI v8.2 UI by SRJahir Technologies
-   =================================================== */
+/* === CloudAI v8.3 Final Hybrid Theme === */
+/* by SRJahir Technologies ⚡ */
 
-/* Base */
+* {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
 body {
-  background-color: #0e0e0e;
-  color: #f2f2f2;
-  font-family: "Inter", sans-serif;
+  background-color: #0a0a0a;
+  color: #e6edf3;
   margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
 }
 
-/* Header */
+/* ===== Header ===== */
 .header {
-  text-align: center;
-  padding: 20px 0 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  background-color: #0d1117;
   border-bottom: 1px solid #1e1e1e;
 }
 
-.logo-img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+.logo img {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
 }
 
 .tagline {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 5px;
+  font-size: 0.85rem;
+  color: #9ba1a6;
+  margin-top: 6px;
 }
 
-/* Chat Container */
+/* ===== Chat Area ===== */
 .chat-container {
   flex: 1;
-  padding: 20px;
+  padding: 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
+  scroll-behavior: smooth;
 }
 
-/* Messages */
 .message {
-  padding: 12px 15px;
-  border-radius: 12px;
-  max-width: 75%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  max-width: 85%;
   line-height: 1.5;
   word-wrap: break-word;
-  white-space: pre-wrap;
+  animation: fadeIn 0.25s ease-in;
 }
 
-.message.ai {
-  background: #1e1e1e;
-  align-self: flex-start;
-  border-left: 3px solid #00bfff;
-}
-
-.message.user {
-  background: #0078ff;
+.user {
+  background: linear-gradient(135deg, #00ffff, #007bff);
   align-self: flex-end;
   color: #fff;
 }
 
-/* Copy Button */
+.ai {
+  background-color: #1e1e1e;
+  align-self: flex-start;
+  color: #e6edf3;
+  border-left: 3px solid #00ffff;
+}
+
+/* ===== Code Blocks ===== */
+pre code {
+  display: block;
+  padding: 12px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  color: #e6edf3;
+  overflow-x: auto;
+  font-family: monospace;
+  position: relative;
+}
+
 .copy-btn {
-  background: transparent;
-  border: 1px solid #444;
-  color: #ccc;
-  font-size: 12px;
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: #00ffff;
+  border: none;
+  border-radius: 5px;
   padding: 4px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  float: right;
-  margin-top: -5px;
-}
-.copy-btn:hover {
-  background: #00bfff;
+  font-size: 12px;
   color: #000;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
-/* Typing Dots Animation */
-.typing-dots {
-  display: inline-block;
-}
-.typing-dots span {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin: 0 2px;
-  background-color: #00bfff;
-  border-radius: 50%;
-  animation: blink 1.4s infinite both;
-}
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes blink {
-  0%, 80%, 100% { opacity: 0; }
-  40% { opacity: 1; }
+.copy-btn:hover {
+  background: #00b4d8;
+  color: #fff;
 }
 
-/* Input Area */
+/* ===== Input Area ===== */
 .input-area {
   display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px;
+  background-color: #0d1117;
   border-top: 1px solid #1e1e1e;
-  padding: 10px;
-  background-color: #0e0e0e;
+  flex-shrink: 0;
 }
 
 #user-input {
   flex: 1;
+  background-color: #1e1e1e;
+  color: #e6edf3;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 15px;
   resize: none;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: #1a1a1a;
-  color: #f2f2f2;
   outline: none;
-  font-size: 14px;
-  height: 50px;
+  height: 55px;
 }
 
 #send-btn {
-  margin-left: 10px;
-  padding: 0 25px;
+  background-color: #00ffff;
+  color: #000;
   border: none;
-  border-radius: 8px;
-  background: #0078ff;
-  color: white;
+  border-radius: 6px;
+  padding: 10px 20px;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.2s;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.25s;
 }
+
 #send-btn:hover {
-  background: #0099ff;
+  background-color: #00b4d8;
+  color: #fff;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .message { max-width: 100%; }
+  #user-input { height: 50px; }
+  #send-btn { padding: 8px 14px; font-size: 14px; }
 }
