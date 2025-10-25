@@ -1,150 +1,107 @@
-// ===================================================
-// CloudAI v7 Hybrid Chat Script
-// Gemini + Tavily + VS Code theme + Copy Button
+// CloudAI Hybrid Chat (v8)
 // by SRJahir Technologies ⚡
-// ===================================================
+
+const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/"; // Cloudflare Worker endpoint
 
 const chatContainer = document.getElementById("chat-container");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
 let chatHistory = [];
-let isGenerating = false;
 
-// ⚙️ Replace with your Cloudflare Worker endpoint
-const API_URL = "https://your-worker-name.workers.dev"; 
+// --- Scroll helper ---
+function scrollToBottom() {
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
-// ---------------------------------------------------
-// ✉️ SEND MESSAGE
-// ---------------------------------------------------
+// --- Add messages to chat window ---
+function addMessage(role, text) {
+  const msg = document.createElement("div");
+  msg.className = `message ${role}`;
+
+  // Detect code blocks and highlight
+  if (text.includes("```")) {
+    const parts = text.split(/```(\w+)?\n([\s\S]*?)```/g);
+    parts.forEach((part, i) => {
+      if (i % 3 === 2) {
+        const lang = parts[i - 1] || "plaintext";
+        const pre = document.createElement("pre");
+        pre.className = "code-block";
+        pre.setAttribute("data-lang", lang);
+
+        const code = document.createElement("code");
+        code.textContent = part.trim();
+
+        // Highlight + copy button
+        hljs.highlightElement(code);
+        pre.appendChild(code);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "copy-btn";
+        copyBtn.textContent = "Copy";
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(part.trim());
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+        };
+
+        pre.appendChild(copyBtn);
+        msg.appendChild(pre);
+      } else if (part.trim()) {
+        const p = document.createElement("div");
+        p.className = "msg-text";
+        p.innerHTML = part.trim().replace(/\n/g, "<br>");
+        msg.appendChild(p);
+      }
+    });
+  } else {
+    msg.innerHTML = `<div class="msg-text">${text}</div>`;
+  }
+
+  chatContainer.appendChild(msg);
+  scrollToBottom();
+}
+
+// --- Send message ---
 async function sendMessage() {
-  if (isGenerating) return;
   const prompt = userInput.value.trim();
   if (!prompt) return;
 
-  addMessage(prompt, "user");
+  addMessage("user", prompt);
   userInput.value = "";
   scrollToBottom();
 
-  isGenerating = true;
-  sendBtn.disabled = true;
-  sendBtn.textContent = "Thinking...";
-
-  const thinkingMsg = addMessage("💭 CloudAI is thinking...", "ai");
+  addMessage("ai", "<i>Thinking...</i>");
 
   try {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt,
-        history: chatHistory,
-      }),
+      body: JSON.stringify({ prompt, history: chatHistory }),
     });
 
+    if (!response.ok) throw new Error("Failed to reach CloudAI API");
+
     const data = await response.json();
+    const aiReply = data.reply || "⚠️ No response from AI.";
 
-    if (data.error) {
-      thinkingMsg.innerHTML = `<b>⚠️ Error:</b> ${data.error}`;
-    } else {
-      const formattedReply = formatMarkdown(data.reply || "⚠️ No reply found.");
-      thinkingMsg.innerHTML = formattedReply;
+    // Replace last "Thinking..." with actual reply
+    chatContainer.lastElementChild.remove();
+    addMessage("ai", aiReply);
 
-      // 🌈 Apply VS Code style syntax highlighting
-      document.querySelectorAll("pre code").forEach(block => {
-        hljs.highlightElement(block);
-      });
-
-      // 📋 Add copy button to each code block
-      document.querySelectorAll("pre").forEach(pre => {
-        if (!pre.querySelector(".copy-btn")) {
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "copy-btn";
-          copyBtn.textContent = "Copy";
-          copyBtn.onclick = () => copyCode(pre.innerText);
-          pre.appendChild(copyBtn);
-        }
-      });
-
-      // 💾 Update chat history
-      chatHistory.push({ role: "user", text: prompt });
-      chatHistory.push({ role: "model", text: data.reply });
-    }
+    chatHistory.push({ role: "user", text: prompt });
+    chatHistory.push({ role: "model", text: aiReply });
   } catch (err) {
-    thinkingMsg.innerHTML = `<b>❌ Error:</b> ${err.message}`;
+    chatContainer.lastElementChild.remove();
+    addMessage("ai", `❌ <b>Error:</b> ${err.message}`);
   }
-
-  isGenerating = false;
-  sendBtn.disabled = false;
-  sendBtn.textContent = "Send";
-  scrollToBottom();
 }
 
-// ---------------------------------------------------
-// 💬 ADD MESSAGE TO CHAT UI
-// ---------------------------------------------------
-function addMessage(text, sender) {
-  const msg = document.createElement("div");
-  msg.classList.add("message", sender);
-
-  const msgText = document.createElement("div");
-  msgText.classList.add("msg-text");
-  msgText.innerHTML = text;
-
-  msg.appendChild(msgText);
-  chatContainer.appendChild(msg);
-  scrollToBottom();
-
-  return msgText;
-}
-
-// ---------------------------------------------------
-// 🧾 FORMAT MARKDOWN + CODE BLOCKS
-// ---------------------------------------------------
-function formatMarkdown(text) {
-  let html = text
-    // Bold **text**
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    // Inline `code`
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    // Code blocks ```language ... ```
-    .replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-      const language = lang || "plaintext";
-      const escaped = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      return `<pre><code class="language-${language}">${escaped}</code></pre>`;
-    })
-    // Newlines
-    .replace(/\n/g, "<br>");
-  return html;
-}
-
-// ---------------------------------------------------
-// 📋 COPY CODE BUTTON FUNCTION
-// ---------------------------------------------------
-function copyCode(codeText) {
-  navigator.clipboard.writeText(codeText);
-  const toast = document.createElement("div");
-  toast.className = "toast";
-  toast.textContent = "✅ Code copied!";
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2000);
-}
-
-// ---------------------------------------------------
-// ⌨️ ENTER TO SEND
-// ---------------------------------------------------
+// --- Event listeners ---
+sendBtn.addEventListener("click", sendMessage);
 userInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
   }
 });
-
-sendBtn.addEventListener("click", sendMessage);
-
-// ---------------------------------------------------
-// 🔽 SCROLL TO BOTTOM
-// ---------------------------------------------------
-function scrollToBottom() {
-  chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
-}
