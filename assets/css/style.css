@@ -177,3 +177,53 @@ pre {
     max-width: 100%;
   }
 }
+
+
+
+/* === VS Code Style Code Blocks + Copy Button === */
+pre {
+  position: relative;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 8px;
+  padding: 14px;
+  overflow-x: auto;
+  margin-top: 10px;
+  border: 1px solid #333;
+  font-family: "Fira Code", monospace;
+  font-size: 14px;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #0078d7;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 4px 8px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.2s;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+  background: #0090ff;
+}
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #238636;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.3s ease-out;
+  z-index: 9999;
+}
+
