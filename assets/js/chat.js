@@ -1,76 +1,84 @@
+// ==== CloudAI v8.5 (ChatGPT Layout + CloudAI Theme) ====
+
+const chatContainer = document.getElementById("chatContainer");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+const typingIndicator = document.getElementById("typingIndicator");
+
 const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
-const chatContainer = document.getElementById("chat-container");
-const userInput = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
 
-let history = JSON.parse(localStorage.getItem("chatHistory")) || [];
-let quota = JSON.parse(localStorage.getItem("userQuota")) || { used: 0, reset: Date.now() };
+let quota = JSON.parse(localStorage.getItem("cloudai_quota")) || { used: 0, reset: Date.now() + 24 * 60 * 60 * 1000 };
+const DAILY_LIMIT = 50;
 
-function checkQuota() {
-  const now = Date.now();
-  const day = 24 * 60 * 60 * 1000;
-  if (now - quota.reset > day) quota = { used: 0, reset: now };
-  if (quota.used >= 100) {
-    appendMessage("ai", "❌ You’ve used your 100% CloudAI quota. Try again after 24h.");
-    return false;
-  }
-  if (quota.used === 80) appendMessage("ai", "⚠️ You’ve used 80% of your CloudAI quota.");
-  return true;
+// Quota Reset Logic
+if (Date.now() > quota.reset) {
+  quota = { used: 0, reset: Date.now() + 24 * 60 * 60 * 1000 };
+  localStorage.setItem("cloudai_quota", JSON.stringify(quota));
 }
 
-function appendMessage(role, text) {
-  const msg = document.createElement("div");
-  msg.classList.add("message", role);
-  msg.innerHTML = marked.parse(text);
-  chatContainer.appendChild(msg);
+function appendMessage(content, sender = "ai") {
+  const div = document.createElement("div");
+  if (content.includes("<pre>")) {
+    div.className = "code-block";
+    div.innerHTML = content + `<button class="copy-btn">Copy</button>`;
+  } else {
+    div.className = `message ${sender}`;
+    div.innerHTML = content;
+  }
+  chatContainer.appendChild(div);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 
-  // Add copy button after code highlight renders
-  setTimeout(() => {
-    msg.querySelectorAll("pre code").forEach(block => {
-      hljs.highlightElement(block);
-      const btn = document.createElement("button");
-      btn.className = "copy-btn";
-      btn.textContent = "Copy";
-      btn.onclick = () => {
-        navigator.clipboard.writeText(block.innerText);
-        btn.textContent = "Copied!";
-        setTimeout(() => (btn.textContent = "Copy"), 1500);
-      };
-      block.parentNode.appendChild(btn);
+  const copyBtn = div.querySelector(".copy-btn");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", () => {
+      const code = div.querySelector("pre").innerText;
+      navigator.clipboard.writeText(code);
+      copyBtn.innerText = "Copied!";
+      setTimeout(() => (copyBtn.innerText = "Copy"), 1500);
     });
-  }, 50);
+  }
 }
 
 async function sendMessage() {
   const prompt = userInput.value.trim();
-  if (!prompt || !checkQuota()) return;
-  appendMessage("user", prompt);
+  if (!prompt) return;
+
+  if (quota.used >= DAILY_LIMIT) {
+    appendMessage("⚠️ You used your 100% CloudAI quota for today.");
+    return;
+  }
+
+  appendMessage(prompt, "user");
   userInput.value = "";
-  appendMessage("ai", "💭 CloudAI is thinking...");
-  quota.used++;
-  localStorage.setItem("userQuota", JSON.stringify(quota));
+
+  typingIndicator.classList.remove("hidden");
+
   try {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, history }),
+      body: JSON.stringify({ prompt }),
     });
-    if (!res.ok) throw new Error("Network error");
+
+    typingIndicator.classList.add("hidden");
+
+    if (!res.ok) {
+      appendMessage("⚠️ Connection failed. Try again.");
+      return;
+    }
+
     const data = await res.json();
-    document.querySelector(".ai:last-child").remove();
-    appendMessage("ai", data.reply || "⚠️ No response from CloudAI.");
-    history.push({ role: "user", text: prompt }, { role: "model", text: data.reply });
-    localStorage.setItem("chatHistory", JSON.stringify(history));
-  } catch {
-    document.querySelector(".ai:last-child").innerHTML = "⚠️ Connection failed. Try again.";
+    quota.used++;
+    localStorage.setItem("cloudai_quota", JSON.stringify(quota));
+
+    appendMessage(data.reply);
+  } catch (err) {
+    typingIndicator.classList.add("hidden");
+    appendMessage("⚠️ Network error. Please try again.");
   }
 }
 
 sendBtn.addEventListener("click", sendMessage);
-userInput.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+userInput.addEventListener("keypress", e => {
+  if (e.key === "Enter") sendMessage();
 });
