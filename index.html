@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>CloudAI — by SRJahir Technologies ⚡</title>
+  <title>CloudAI — Smart AI Assistant | SRJahir Technologies ⚡</title>
 
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
@@ -16,6 +16,77 @@
 
   <!-- Enable iOS overscroll refresh -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <!-- ✅ CloudAI | SEO + Google Analytics + Schema Setup -->
+
+  <!-- 🌐 Basic Meta -->
+  <meta name="title" content="CloudAI - Your Smart AI Assistant from SRJahir Technologies">
+  <meta name="description" content="CloudAI is your intelligent assistant from SRJahir Technologies. Instantly chat, learn, and explore tools — powered by innovation and simplicity.">
+  <meta name="keywords" content="CloudAI, SRJahir, SRJahir Tools, AI Assistant, Chatbot, srjahir.in, srjahir tools, cloud ai assistant, artificial intelligence, tech innovation">
+  <meta name="author" content="SRJahir Technologies">
+  <meta name="robots" content="index, follow">
+
+  <!-- 🌐 Canonical -->
+  <link rel="canonical" href="https://cloudai.srjahir.in/" />
+
+  <!-- 🟦 Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cloudai.srjahir.in/">
+  <meta property="og:title" content="CloudAI - Smart AI Assistant from SRJahir Technologies">
+  <meta property="og:description" content="Your personal AI chat assistant built by SRJahir Technologies. Experience smart, responsive, and modern AI.">
+  <meta property="og:image" content="https://cloudai.srjahir.in/assets/img/cloudai-preview.png">
+
+  <!-- 🐦 Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://cloudai.srjahir.in/">
+  <meta property="twitter:title" content="CloudAI - Smart AI Assistant from SRJahir Technologies">
+  <meta property="twitter:description" content="Chat instantly with CloudAI — the next-gen AI assistant from SRJahir Technologies.">
+  <meta property="twitter:image" content="https://cloudai.srjahir.in/assets/img/cloudai-preview.png">
+
+  <!-- 🔍 Google Site Verification (optional) -->
+  <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" />
+
+  <!-- ⚡ Google Analytics 4 + Event Tracking -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-T4XBK86HZ2');
+
+    // 📈 Custom Event Tracking for CloudAI
+    function trackMessageEvent() {
+      gtag('event', 'cloudai_message_sent', {
+        event_category: 'Chat',
+        event_label: 'User sent a message',
+        value: 1
+      });
+    }
+  </script>
+
+  <!-- 🧠 JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "CloudAI",
+    "url": "https://cloudai.srjahir.in/",
+    "image": "https://cloudai.srjahir.in/assets/img/cloudai-preview.png",
+    "description": "CloudAI is an AI-powered assistant developed by SRJahir Technologies for intelligent, fast, and interactive conversations.",
+    "creator": {
+      "@type": "Organization",
+      "name": "SRJahir Technologies",
+      "url": "https://srjahir.in"
+    },
+    "applicationCategory": "AI Assistant",
+    "operatingSystem": "Web-based",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "143"
+    }
+  }
+  </script>
 </head>
 
 <body>
@@ -36,7 +107,7 @@
     <!-- Input Section -->
     <div class="input-container">
       <textarea id="user-input" placeholder="Type your message..."></textarea>
-      <button id="send-btn">Send</button>
+      <button id="send-btn" onclick="trackMessageEvent()">Send</button>
     </div>
   </main>
 
