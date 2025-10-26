@@ -9,6 +9,13 @@ let history = [];
 let isProcessing = false;
 const clientId = "web_" + Math.random().toString(36).substring(2, 9);
 
+// Auto resize input
+userInput.addEventListener("input", () => {
+  userInput.style.height = "auto";
+  userInput.style.height = userInput.scrollHeight + "px";
+});
+
+// Send message
 sendBtn.addEventListener("click", sendMessage);
 userInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
@@ -23,14 +30,15 @@ async function sendMessage() {
 
   appendMessage(prompt, "user-message");
   userInput.value = "";
+  userInput.style.height = "auto";
   isProcessing = true;
-  logo.classList.add("blinking");
+  logo.style.animation = "reactorGlow 1s infinite ease-in-out";
 
   try {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId, prompt, history }),
+      body: JSON.stringify({ clientId, prompt, history, tools: { web: true } }),
     });
 
     const data = await res.json();
@@ -40,22 +48,17 @@ async function sendMessage() {
       history.push({ role: "user", text: prompt });
       history.push({ role: "model", text: data.reply });
 
-      // Quota Handling
-      if (data.quotaStatus === "quota_warning") {
-        appendMessage("⚠️ You’ve used 80% of your daily quota.", "ai-message");
-      }
+      if (data.quotaStatus === "quota_warning") showAlert("⚠️ 80% quota used.");
       if (data.quotaStatus === "quota_exceeded") {
-        appendMessage("🚫 You’ve reached your daily limit. Try again after 24 hours.", "ai-message");
+        showAlert("🚫 Daily quota reached. Try again after 24 hours.");
         disableInput();
       }
-    } else {
-      appendMessage("⚠️ No response from AI.", "ai-message");
-    }
+    } else appendMessage("⚠️ No response from AI.", "ai-message");
   } catch {
-    appendMessage("⚠️ Network issue. Try again.", "ai-message");
+    appendMessage("⚠️ Network issue. Try again later.", "ai-message");
   } finally {
     isProcessing = false;
-    logo.classList.remove("blinking");
+    logo.style.animation = "reactorGlow 3s infinite ease-in-out";
   }
 }
 
@@ -65,7 +68,6 @@ function appendMessage(text, className) {
   msg.innerHTML = renderMarkdown(text);
   chatBox.appendChild(msg);
 
-  // Copy button for code blocks
   msg.querySelectorAll("pre code").forEach((block) => {
     const copyBtn = document.createElement("button");
     copyBtn.className = "copy-btn";
@@ -91,8 +93,25 @@ function renderMarkdown(text) {
   return text;
 }
 
+function showAlert(msg) {
+  const alertBox = document.createElement("div");
+  alertBox.textContent = msg;
+  alertBox.style.position = "fixed";
+  alertBox.style.bottom = "80px";
+  alertBox.style.left = "50%";
+  alertBox.style.transform = "translateX(-50%)";
+  alertBox.style.background = "#00b7ff";
+  alertBox.style.color = "white";
+  alertBox.style.padding = "10px 20px";
+  alertBox.style.borderRadius = "8px";
+  alertBox.style.fontSize = "14px";
+  alertBox.style.zIndex = "1000";
+  document.body.appendChild(alertBox);
+  setTimeout(() => alertBox.remove(), 4000);
+}
+
 function disableInput() {
   userInput.disabled = true;
   sendBtn.disabled = true;
-  userInput.placeholder = "Daily quota reached. Try again tomorrow.";
+  userInput.placeholder = "Daily limit reached. Try again tomorrow.";
 }
