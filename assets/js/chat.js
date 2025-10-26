@@ -1,99 +1,13 @@
 const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
+const logo = document.getElementById("ai-logo");
 
-function appendMessage(text, sender) {
-  const msgDiv = document.createElement("div");
-  msgDiv.classList.add("message", sender === "user" ? "user-message" : "ai-message");
-
-  if (text.includes("```")) {
-    const parts = text.split("```");
-    msgDiv.innerHTML = parts
-      .map((part, i) =>
-        i % 2 === 1
-          ? `<pre><button class='copy-btn' onclick='copyCode(this)'>Copy</button><code>${part.trim()}</code></pre>`
-          : `<p>${part}</p>`
-      )
-      .join("");
-  } else {
-    msgDiv.innerHTML = text
-      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-      .replace(/\*(.*?)\*/g, "<i>$1</i>");
-  }
-
-  chatBox.appendChild(msgDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function copyCode(btn) {
-  const codeText = btn.nextElementSibling.innerText;
-  navigator.clipboard.writeText(codeText);
-  btn.textContent = "Copied!";
-  setTimeout(() => (btn.textContent = "Copy"), 2000);
-}
-
-async function sendMessage() {
-  const prompt = userInput.value.trim();
-  if (!prompt) return;
-
-  appendMessage(prompt, "user");
-  userInput.value = "";
-
-  const thinkingDiv = document.createElement("div");
-  thinkingDiv.classList.add("message", "ai-message");
-  thinkingDiv.innerHTML = "Thinking...";
-  chatBox.appendChild(thinkingDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt,
-        clientId: localStorage.getItem("cloudai_id") || crypto.randomUUID(),
-        history: [],
-        tools: { web: true },
-      }),
-    });
-
-    const data = await res.json();
-    chatBox.removeChild(thinkingDiv);
-
-    if (data.error === "quota_exceeded") {
-      appendMessage("🚫 You've used 100% of your CloudAI quota for today.", "ai");
-      userInput.disabled = true;
-      sendBtn.disabled = true;
-      return;
-    }
-
-    if (data.quotaStatus === "quota_warning") {
-      showToast("⚠️ You've used 80% of your daily CloudAI quota.");
-    }
-
-    appendMessage(data.reply || "⚠️ No response from AI.", "ai");
-  } catch (err) {
-    chatBox.removeChild(thinkingDiv);
-    appendMessage("⚠️ Network error or API not responding.", "ai");
-  }
-}
-
-function showToast(msg) {
-  const toast = document.createElement("div");
-  toast.textContent = msg;
-  toast.style.position = "fixed";
-  toast.style.top = "20px";
-  toast.style.right = "20px";
-  toast.style.background = "#00b7ff";
-  toast.style.color = "#fff";
-  toast.style.padding = "10px 16px";
-  toast.style.borderRadius = "10px";
-  toast.style.zIndex = "9999";
-  toast.style.boxShadow = "0 2px 10px rgba(0,0,0,0.3)";
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 4000);
-}
+let history = [];
+let isProcessing = false;
+const clientId = "web_user_" + Math.random().toString(36).substring(2, 10);
 
 sendBtn.addEventListener("click", sendMessage);
 userInput.addEventListener("keypress", (e) => {
@@ -102,3 +16,76 @@ userInput.addEventListener("keypress", (e) => {
     sendMessage();
   }
 });
+
+async function sendMessage() {
+  const prompt = userInput.value.trim();
+  if (!prompt || isProcessing) return;
+
+  appendMessage(prompt, "user-message");
+  userInput.value = "";
+  isProcessing = true;
+  logo.classList.add("blinking");
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clientId, prompt, history, tools: { web: true } }),
+    });
+
+    const data = await res.json();
+
+    if (data.reply) {
+      appendMessage(data.reply, "ai-message");
+      history.push({ role: "user", text: prompt });
+      history.push({ role: "model", text: data.reply });
+
+      // Quota handling
+      if (data.quotaStatus === "quota_warning") showAlert("⚠️ 80% quota used.");
+      if (data.quotaStatus === "quota_exceeded") {
+        showAlert("❌ Daily limit reached.");
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+      }
+    } else appendMessage("⚠️ No response from AI.", "ai-message");
+  } catch {
+    appendMessage("⚠️ No response from AI.", "ai-message");
+  } finally {
+    isProcessing = false;
+    logo.classList.remove("blinking");
+  }
+}
+
+function appendMessage(text, className) {
+  const msg = document.createElement("div");
+  msg.className = `message ${className}`;
+  msg.innerHTML = renderMarkdown(text);
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function renderMarkdown(text) {
+  text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+  text = text.replace(/\*(.*?)\*/g, "<i>$1</i>");
+  text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
+  text = text.replace(/```(.*?)```/gs, "<pre><code>$1</code></pre>");
+  text = text.replace(/\n/g, "<br>");
+  return text;
+}
+
+function showAlert(msg) {
+  const alertBox = document.createElement("div");
+  alertBox.textContent = msg;
+  alertBox.style.position = "fixed";
+  alertBox.style.bottom = "80px";
+  alertBox.style.left = "50%";
+  alertBox.style.transform = "translateX(-50%)";
+  alertBox.style.background = "#00b7ff";
+  alertBox.style.color = "white";
+  alertBox.style.padding = "10px 20px";
+  alertBox.style.borderRadius = "8px";
+  alertBox.style.fontSize = "14px";
+  alertBox.style.zIndex = "1000";
+  document.body.appendChild(alertBox);
+  setTimeout(() => alertBox.remove(), 4000);
+}
