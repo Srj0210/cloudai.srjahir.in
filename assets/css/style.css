@@ -32,14 +32,18 @@ body {
   height: 70px;
   border-radius: 50%;
   object-fit: contain;
-  animation: reactorGlow 3s infinite ease-in-out;
   filter: drop-shadow(0 0 10px var(--accent));
+  transition: filter 0.3s ease;
+}
+
+/* Logo thinking glow */
+.thinking {
+  animation: reactorGlow 1.5s infinite ease-in-out;
 }
 
 @keyframes reactorGlow {
-  0% { filter: drop-shadow(0 0 8px var(--accent)); transform: scale(1); }
+  0%, 100% { filter: drop-shadow(0 0 10px var(--accent)); transform: scale(1); }
   50% { filter: drop-shadow(0 0 25px var(--accent)); transform: scale(1.03); }
-  100% { filter: drop-shadow(0 0 8px var(--accent)); transform: scale(1); }
 }
 
 /* ========= Chat ========= */
@@ -88,35 +92,38 @@ body {
 }
 
 /* ========= Code Blocks ========= */
-pre, code {
+pre {
   background: #161b22;
+  color: #c9d1d9;
+  border-radius: 10px;
+  padding: 12px 16px;
   white-space: pre-wrap;
   word-break: break-word;
-  display: block;
   overflow-x: auto;
-  border-radius: 10px;
-  padding: 12px;
-  color: #c9d1d9;
-  font-family: "Fira Code", monospace;
-  line-height: 1.6;
   border-left: 3px solid #00b7ff;
+  line-height: 1.6;
   position: relative;
+}
+code {
+  background: #1c2128;
+  color: #00b7ff;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: "Fira Code", monospace;
 }
 .copy-btn {
   position: absolute;
   top: 6px;
   right: 8px;
-  background-color: var(--accent);
+  background: var(--accent);
   border: none;
   color: white;
-  font-size: 13px;
+  font-size: 12px;
   border-radius: 6px;
   cursor: pointer;
   padding: 3px 8px;
 }
-.copy-btn:hover {
-  background-color: #0098cc;
-}
+.copy-btn:hover { background-color: #0098cc; }
 
 /* ========= Input ========= */
 .input-container {
