@@ -1,4 +1,4 @@
-/* ===== Global Theme ===== */
+/* ========= Global Theme ========= */
 :root {
   --bg: #0d1117;
   --panel: #161b22;
@@ -19,7 +19,7 @@ body {
   height: 100vh;
 }
 
-/* ===== Header ===== */
+/* ========= Header ========= */
 .header {
   position: fixed;
   top: 15px;
@@ -32,13 +32,17 @@ body {
   height: 70px;
   border-radius: 50%;
   object-fit: contain;
-  transition: transform 0.2s ease-in-out;
-}
-.logo:hover {
-  transform: scale(1.05);
+  animation: reactorGlow 3s infinite ease-in-out;
+  filter: drop-shadow(0 0 10px var(--accent));
 }
 
-/* ===== Chat Container ===== */
+@keyframes reactorGlow {
+  0% { filter: drop-shadow(0 0 8px var(--accent)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 25px var(--accent)); transform: scale(1.03); }
+  100% { filter: drop-shadow(0 0 8px var(--accent)); transform: scale(1); }
+}
+
+/* ========= Chat ========= */
 .chat-container {
   flex: 1;
   display: flex;
@@ -46,6 +50,7 @@ body {
   margin-top: 100px;
   padding: 20px 22px 130px;
 }
+
 .chat-box {
   flex: 1;
   overflow-y: auto;
@@ -54,7 +59,7 @@ body {
   gap: 16px;
 }
 
-/* ===== Messages ===== */
+/* ========= Messages ========= */
 .message {
   max-width: 85%;
   padding: 14px 18px;
@@ -62,6 +67,11 @@ body {
   line-height: 1.6;
   white-space: pre-wrap;
   font-size: 15px;
+  animation: fadeIn 0.25s ease-in;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .user-message {
   align-self: flex-end;
@@ -77,22 +87,26 @@ body {
   border-bottom-left-radius: 0;
 }
 
-/* ===== Code Section ===== */
+/* ========= Code Blocks ========= */
 pre, code {
   background: #161b22;
-  color: #d1d5da;
-  font-family: "Fira Code", monospace;
-  font-size: 14px;
-  border-radius: 10px;
-  padding: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: block;
   overflow-x: auto;
+  border-radius: 10px;
+  padding: 12px;
+  color: #c9d1d9;
+  font-family: "Fira Code", monospace;
+  line-height: 1.6;
+  border-left: 3px solid #00b7ff;
   position: relative;
 }
 .copy-btn {
   position: absolute;
   top: 6px;
   right: 8px;
-  background-color: #00b7ff;
+  background-color: var(--accent);
   border: none;
   color: white;
   font-size: 13px;
@@ -104,7 +118,7 @@ pre, code {
   background-color: #0098cc;
 }
 
-/* ===== Input Section ===== */
+/* ========= Input ========= */
 .input-container {
   display: flex;
   align-items: center;
@@ -114,7 +128,7 @@ pre, code {
   bottom: 70px;
   background-color: var(--bg);
   border-top: 1px solid var(--border);
-  padding: 12px 22px;
+  padding: 10px 22px;
 }
 textarea {
   flex: 1;
@@ -124,7 +138,9 @@ textarea {
   outline: none;
   color: var(--text);
   font-size: 15px;
-  height: 50px;
+  min-height: 42px;
+  max-height: 120px;
+  overflow-y: auto;
 }
 #send-btn {
   background: linear-gradient(135deg, #007aff, #00b7ff);
@@ -135,20 +151,21 @@ textarea {
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
-  border: 1px solid #005fcc;
+  transition: 0.2s;
 }
 #send-btn:hover {
   background: linear-gradient(135deg, #009eff, #00cfff);
+  transform: scale(1.05);
 }
 
-/* ===== Footer ===== */
+/* ========= Footer ========= */
 .footer {
   text-align: center;
   color: var(--muted);
   font-size: 12px;
   padding: 5px 0 4px;
   border-top: 1px solid #21262d;
-  background-color: #0d1117;
+  background-color: var(--bg);
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -159,11 +176,3 @@ textarea {
   color: #666;
   margin: 0;
 }
-
-/* ===== Blinking Logo ===== */
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
-}
-.blinking { animation: blink 1s infinite; }
