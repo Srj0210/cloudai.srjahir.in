@@ -17,6 +17,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
 }
 
 /* ========= Header ========= */
@@ -36,23 +37,23 @@ body {
   transition: filter 0.3s ease;
 }
 
-/* Logo thinking glow */
+/* Glow while thinking */
 .thinking {
   animation: reactorGlow 1.5s infinite ease-in-out;
 }
-
 @keyframes reactorGlow {
   0%, 100% { filter: drop-shadow(0 0 10px var(--accent)); transform: scale(1); }
-  50% { filter: drop-shadow(0 0 25px var(--accent)); transform: scale(1.03); }
+  50% { filter: drop-shadow(0 0 18px var(--accent)); transform: scale(1.03); }
 }
 
-/* ========= Chat ========= */
+/* ========= Chat Section ========= */
 .chat-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   margin-top: 100px;
   padding: 20px 22px 130px;
+  overflow: hidden;
 }
 
 .chat-box {
@@ -60,50 +61,54 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
 }
 
 /* ========= Messages ========= */
 .message {
   max-width: 85%;
-  padding: 14px 18px;
+  padding: 13px 16px;
   border-radius: 14px;
   line-height: 1.6;
   white-space: pre-wrap;
   font-size: 15px;
   animation: fadeIn 0.25s ease-in;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 .user-message {
   align-self: flex-end;
   background: linear-gradient(135deg, #007aff, #00b7ff);
   color: #fff;
-  border-bottom-right-radius: 0;
+  border-bottom-right-radius: 6px;
 }
+
 .ai-message {
   align-self: flex-start;
   background: var(--panel);
-  border: 1px solid #00b7ff33;
-  border-left: 3px solid var(--accent);
-  border-bottom-left-radius: 0;
+  border: 1px solid #1f242a;
+  border-radius: 12px;
 }
 
 /* ========= Code Blocks ========= */
 pre {
-  background: #0f141b;           /* Slightly lighter for clarity */
+  background: #0f141b;
   color: #c9d1d9;
   border-radius: 10px;
   padding: 12px 14px;
-  margin: 6px 0;                 /* 👈 Reduced vertical spacing */
+  margin: 4px 0;
   white-space: pre-wrap;
   word-break: break-word;
   overflow-x: auto;
-  line-height: 1.6;
+  line-height: 1.55;
+  border: 1px solid #1f242a;
   position: relative;
-  border: 1px solid #1f242a;     /* 👈 Replaces blue accent border */
 }
 
 code {
@@ -113,6 +118,21 @@ code {
   border-radius: 6px;
   font-family: "Fira Code", monospace;
 }
+
+.copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  background: var(--accent);
+  border: none;
+  color: white;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 3px 8px;
+  box-shadow: 0 0 8px #00b7ff55;
+}
+.copy-btn:hover { background-color: #0098cc; }
 
 /* ========= Input Section ========= */
 .input-container {
@@ -124,7 +144,8 @@ code {
   bottom: 70px;
   background-color: var(--bg);
   border-top: 1px solid var(--border);
-  padding: 8px 18px; /* 👈 Slightly tighter */
+  padding: 8px 18px;
+  z-index: 100;
 }
 
 textarea {
@@ -135,46 +156,23 @@ textarea {
   outline: none;
   color: var(--text);
   font-size: 15px;
-  min-height: 32px;   /* 👈 smaller initial height */
+  min-height: 32px;
   max-height: 120px;
   overflow-y: auto;
-  transition: height 0.1s ease; /* 👈 smooth grow effect */
+  transition: height 0.1s ease;
 }
 
-/* ========= Input ========= */
-.input-container {
-  display: flex;
-  align-items: center;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 70px;
-  background-color: var(--bg);
-  border-top: 1px solid var(--border);
-  padding: 10px 22px;
-}
-textarea {
-  flex: 1;
-  resize: none;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text);
-  font-size: 15px;
-  min-height: 42px;
-  max-height: 120px;
-  overflow-y: auto;
-}
 #send-btn {
   background: linear-gradient(135deg, #007aff, #00b7ff);
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 18px;
   margin-left: 12px;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   transition: 0.2s;
+  box-shadow: 0 0 10px #00b7ff44;
 }
 #send-btn:hover {
   background: linear-gradient(135deg, #009eff, #00cfff);
@@ -189,11 +187,13 @@ textarea {
   padding: 5px 0 4px;
   border-top: 1px solid #21262d;
   background-color: var(--bg);
-  position: fixed;
+  position: sticky;
   bottom: 0;
   width: 100%;
   line-height: 1.3;
+  z-index: 10;
 }
+
 .footer .credits {
   font-size: 11px;
   color: #666;
