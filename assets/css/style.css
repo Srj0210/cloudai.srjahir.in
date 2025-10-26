@@ -17,15 +17,17 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
+  overscroll-behavior: auto; /* ✅ Allow mobile pull-refresh */
 }
 
-/* ========= Header ========= */
+/* ========= Transparent Floating Header ========= */
 .header {
   position: fixed;
   top: 15px;
   right: 20px;
-  z-index: 1000;
+  z-index: 2000;
+  background: transparent !important;
+  pointer-events: none;
 }
 
 .logo {
@@ -33,11 +35,11 @@ body {
   height: 70px;
   border-radius: 50%;
   object-fit: contain;
+  background: transparent;
   filter: drop-shadow(0 0 10px var(--accent));
   transition: filter 0.3s ease;
 }
 
-/* Glow while thinking */
 .thinking {
   animation: reactorGlow 1.5s infinite ease-in-out;
 }
@@ -53,7 +55,6 @@ body {
   flex-direction: column;
   margin-top: 100px;
   padding: 20px 22px 130px;
-  overflow: hidden;
 }
 
 .chat-box {
