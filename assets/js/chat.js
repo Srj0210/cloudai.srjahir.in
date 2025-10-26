@@ -9,19 +9,20 @@ let history = [];
 let isProcessing = false;
 const clientId = "web_" + Math.random().toString(36).substring(2, 9);
 
-// Restore last 5 messages if any
+// Restore last 5 messages
 window.addEventListener("load", () => {
   const saved = JSON.parse(localStorage.getItem("chat_history")) || [];
   history = saved.slice(-5);
   for (const msg of history) appendMessage(msg.text, msg.role === "user" ? "user-message" : "ai-message");
 });
 
-// Auto resize input height
+// Input auto expand
 userInput.addEventListener("input", () => {
   userInput.style.height = "auto";
   userInput.style.height = Math.min(userInput.scrollHeight, 120) + "px";
 });
 
+// Send events
 sendBtn.addEventListener("click", sendMessage);
 userInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
@@ -91,7 +92,7 @@ function appendMessage(text, className) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Markdown safe render (no HTML preview)
+// Markdown safe render
 function renderMarkdown(text) {
   const escapeHTML = (str) =>
     str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
