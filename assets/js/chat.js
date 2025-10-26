@@ -9,13 +9,19 @@ let history = [];
 let isProcessing = false;
 const clientId = "web_" + Math.random().toString(36).substring(2, 9);
 
-// Auto resize input
-userInput.addEventListener("input", () => {
-  userInput.style.height = "auto";
-  userInput.style.height = userInput.scrollHeight + "px";
+// Restore last 5 messages if any
+window.addEventListener("load", () => {
+  const saved = JSON.parse(localStorage.getItem("chat_history")) || [];
+  history = saved.slice(-5);
+  for (const msg of history) appendMessage(msg.text, msg.role === "user" ? "user-message" : "ai-message");
 });
 
-// Send message
+// Auto resize input height
+userInput.addEventListener("input", () => {
+  userInput.style.height = "auto";
+  userInput.style.height = Math.min(userInput.scrollHeight, 120) + "px";
+});
+
 sendBtn.addEventListener("click", sendMessage);
 userInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
@@ -32,7 +38,7 @@ async function sendMessage() {
   userInput.value = "";
   userInput.style.height = "auto";
   isProcessing = true;
-  logo.style.animation = "reactorGlow 1s infinite ease-in-out";
+  logo.classList.add("thinking");
 
   try {
     const res = await fetch(API_URL, {
@@ -42,11 +48,12 @@ async function sendMessage() {
     });
 
     const data = await res.json();
-
     if (data.reply) {
       appendMessage(data.reply, "ai-message");
+
       history.push({ role: "user", text: prompt });
       history.push({ role: "model", text: data.reply });
+      localStorage.setItem("chat_history", JSON.stringify(history.slice(-5)));
 
       if (data.quotaStatus === "quota_warning") showAlert("⚠️ 80% quota used.");
       if (data.quotaStatus === "quota_exceeded") {
@@ -58,7 +65,7 @@ async function sendMessage() {
     appendMessage("⚠️ Network issue. Try again later.", "ai-message");
   } finally {
     isProcessing = false;
-    logo.style.animation = "reactorGlow 3s infinite ease-in-out";
+    logo.classList.remove("thinking");
   }
 }
 
@@ -84,28 +91,33 @@ function appendMessage(text, className) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// Markdown safe render (no HTML preview)
 function renderMarkdown(text) {
+  const escapeHTML = (str) =>
+    str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  text = text.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${escapeHTML(code)}</code></pre>`);
+  text = text.replace(/`([^`]+)`/g, (_, code) => `<code>${escapeHTML(code)}</code>`);
   text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
   text = text.replace(/\*(.*?)\*/g, "<i>$1</i>");
-  text = text.replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
-  text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
-  text = text.replace(/\n/g, "<br>");
-  return text;
+  return text.replace(/\n/g, "<br>");
 }
 
 function showAlert(msg) {
   const alertBox = document.createElement("div");
   alertBox.textContent = msg;
-  alertBox.style.position = "fixed";
-  alertBox.style.bottom = "80px";
-  alertBox.style.left = "50%";
-  alertBox.style.transform = "translateX(-50%)";
-  alertBox.style.background = "#00b7ff";
-  alertBox.style.color = "white";
-  alertBox.style.padding = "10px 20px";
-  alertBox.style.borderRadius = "8px";
-  alertBox.style.fontSize = "14px";
-  alertBox.style.zIndex = "1000";
+  Object.assign(alertBox.style, {
+    position: "fixed",
+    bottom: "80px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    background: "#00b7ff",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    fontSize: "14px",
+    zIndex: "1000",
+  });
   document.body.appendChild(alertBox);
   setTimeout(() => alertBox.remove(), 4000);
 }
@@ -114,4 +126,5 @@ function disableInput() {
   userInput.disabled = true;
   sendBtn.disabled = true;
   userInput.placeholder = "Daily limit reached. Try again tomorrow.";
+  localStorage.removeItem("chat_history");
 }
