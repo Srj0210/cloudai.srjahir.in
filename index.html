@@ -3,37 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudAI — by SRJahir Technologies</title>
+  <title>CloudAI — by SRJahir Technologies ⚡</title>
 
   <!-- Favicon -->
-  <link rel="apple-touch-icon" sizes="180x180" href="fevicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="fevicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="fevicon/favicon-16x16.png">
-  <link rel="manifest" href="fevicon/site.webmanifest">
-  <link rel="shortcut icon" href="fevicon/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="assets/favicon/site.webmanifest">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="logo-section">
-      <img src="logo.png" alt="CloudAI Logo" class="logo" />
-      <p class="subtext">by SRJahir Tech.</p>
+
+  <!-- Logo Header -->
+  <div class="header">
+    <img src="logo.png" alt="CloudAI" class="logo" id="ai-logo" />
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box">
+      <div class="ai-message message">👋 Hello! I'm <b>CloudAI</b>, your helpful assistant from SRJahir Technologies.<br>How can I assist you today?</div>
     </div>
-  </header>
 
-  <main class="chat-container">
-    <div id="chat-box" class="chat-box"></div>
-
+    <!-- Input Section -->
     <div class="input-container">
       <textarea id="user-input" placeholder="Type your message..."></textarea>
       <button id="send-btn">Send</button>
     </div>
-  </main>
+  </div>
 
+  <!-- Footer -->
   <footer class="footer">
     <p>CloudAI can make mistakes. Check important info.</p>
+    <p class="credits">by SRJahir Tech.</p>
   </footer>
 
   <script src="assets/js/chat.js"></script>
