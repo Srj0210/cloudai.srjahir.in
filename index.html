@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CloudAI — by SRJahir Technologies ⚡</title>
 
   <!-- Favicons -->
@@ -13,16 +13,19 @@
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+
+  <!-- Enable iOS overscroll refresh -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
 </head>
 
 <body>
-  <!-- Header -->
+  <!-- Header (Transparent Floating Logo) -->
   <header class="header">
     <img src="logo.png" alt="CloudAI" class="logo" id="ai-logo" />
   </header>
 
-  <!-- Chat Section -->
-  <main class="chat-container">
+  <!-- Chat Container -->
+  <main class="chat-container" id="main-container">
     <div id="chat-box" class="chat-box">
       <div class="ai-message message">
         👋 Hello! I'm <b>CloudAI</b>, your assistant from <b>SRJahir Technologies</b>.<br>
@@ -43,6 +46,7 @@
     <p class="credits">by SRJahir Tech.</p>
   </footer>
 
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="assets/js/chat.js"></script>
 </body>
