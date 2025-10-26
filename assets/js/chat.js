@@ -9,11 +9,9 @@ let history = [];
 let isProcessing = false;
 const clientId = "web_" + Math.random().toString(36).substring(2, 9);
 
-// Restore last 5 messages
+// 🔁 Reset chat on full reload (fresh session)
 window.addEventListener("load", () => {
-  const saved = JSON.parse(localStorage.getItem("chat_history")) || [];
-  history = saved.slice(-5);
-  for (const msg of history) appendMessage(msg.text, msg.role === "user" ? "user-message" : "ai-message");
+  localStorage.removeItem("chat_history");
 });
 
 // Input auto expand
@@ -54,7 +52,6 @@ async function sendMessage() {
 
       history.push({ role: "user", text: prompt });
       history.push({ role: "model", text: data.reply });
-      localStorage.setItem("chat_history", JSON.stringify(history.slice(-5)));
 
       if (data.quotaStatus === "quota_warning") showAlert("⚠️ 80% quota used.");
       if (data.quotaStatus === "quota_exceeded") {
@@ -92,11 +89,9 @@ function appendMessage(text, className) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Markdown safe render
 function renderMarkdown(text) {
   const escapeHTML = (str) =>
     str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
   text = text.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${escapeHTML(code)}</code></pre>`);
   text = text.replace(/`([^`]+)`/g, (_, code) => `<code>${escapeHTML(code)}</code>`);
   text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
@@ -127,5 +122,4 @@ function disableInput() {
   userInput.disabled = true;
   sendBtn.disabled = true;
   userInput.placeholder = "Daily limit reached. Try again tomorrow.";
-  localStorage.removeItem("chat_history");
 }
