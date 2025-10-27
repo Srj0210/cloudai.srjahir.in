@@ -2,31 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CloudAI — Smart AI Assistant | SRJahir Technologies ⚡</title>
 
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+  <!-- ===================== 🌩️ FAVICON FIX ===================== -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
   <link rel="manifest" href="assets/favicon/site.webmanifest">
 
-  <!-- Styles -->
+  <!-- ===================== 🎨 STYLES ===================== -->
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" integrity="sha512-9mjqD5U6KbxHkD6Tqibqq5/h8tnPjfsTntG5wSR5x3Wl7i+8xHRZYbdAajmhpDJbCa6RjyrR0CVxUu3XtZ5kPA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Enable iOS overscroll refresh -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
-  <!-- ✅ CloudAI | SEO + Google Analytics + Schema Setup -->
-
-  <!-- 🌐 Basic Meta -->
+  <!-- ===================== ✅ CLOUD-AI SEO & ANALYTICS ===================== -->
   <meta name="title" content="CloudAI - Your Smart AI Assistant from SRJahir Technologies">
   <meta name="description" content="CloudAI is your intelligent assistant from SRJahir Technologies. Instantly chat, learn, and explore tools — powered by innovation and simplicity.">
   <meta name="keywords" content="CloudAI, SRJahir, SRJahir Tools, AI Assistant, Chatbot, srjahir.in, srjahir tools, cloud ai assistant, artificial intelligence, tech innovation">
-  <meta name="author" content="SRJahir Technologies">
+  <meta name="author" content="Suraj Maitra (SRJ), SRJahir Technologies">
   <meta name="robots" content="index, follow">
-
-  <!-- 🌐 Canonical -->
   <link rel="canonical" href="https://cloudai.srjahir.in/" />
 
   <!-- 🟦 Open Graph / Facebook -->
@@ -43,10 +41,10 @@
   <meta property="twitter:description" content="Chat instantly with CloudAI — the next-gen AI assistant from SRJahir Technologies.">
   <meta property="twitter:image" content="https://cloudai.srjahir.in/assets/img/cloudai-preview.png">
 
-  <!-- 🔍 Google Site Verification (optional) -->
+  <!-- 🔍 Google Site Verification -->
   <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" />
 
-  <!-- ⚡ Google Analytics 4 + Event Tracking -->
+  <!-- ===================== ⚡ GOOGLE ANALYTICS (GA4) ===================== -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -54,7 +52,7 @@
     gtag('js', new Date());
     gtag('config', 'G-T4XBK86HZ2');
 
-    // 📈 Custom Event Tracking for CloudAI
+    // 📈 Event Tracking for User Message
     function trackMessageEvent() {
       gtag('event', 'cloudai_message_sent', {
         event_category: 'Chat',
@@ -64,7 +62,7 @@
     }
   </script>
 
-  <!-- 🧠 JSON-LD Structured Data -->
+  <!-- ===================== 🧠 STRUCTURED DATA (SCHEMA) ===================== -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -87,12 +85,19 @@
     }
   }
   </script>
+
+  <!-- ===================== 🔒 SECURITY HEADERS ===================== -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; img-src 'self' data: https:; script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' data: https:;">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
 </head>
 
 <body>
   <!-- Header (Transparent Floating Logo) -->
   <header class="header">
-    <img src="logo.png" alt="CloudAI" class="logo" id="ai-logo" />
+    <img src="logo.png" alt="CloudAI Logo" class="logo" id="ai-logo" />
   </header>
 
   <!-- Chat Container -->
@@ -117,8 +122,8 @@
     <p class="credits">by SRJahir Tech.</p>
   </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- ===================== 📜 SCRIPTS ===================== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-FRv/5zJrIh9C0sD4ul8OSBtC9wrq5Eok5Lb+g7TVZtMxGJ4Bf5r7JwJvS4ibZcNUV5R9Flp9FGw6vTrwGvnhxQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="assets/js/chat.js"></script>
 </body>
 </html>
