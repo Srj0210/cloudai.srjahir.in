@@ -130,5 +130,58 @@
   <!-- ===================== 📜 SCRIPTS ===================== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-FRv/5zJrIh9C0sD4ul8OSBtC9wrq5Eok5Lb+g7TVZtMxGJ4Bf5r7JwJvS4ibZcNUV5R9Flp9FGw6vTrwGvnhxQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="assets/js/chat.js"></script>
+
+  <!-- ===================== 📱 PWA INSTALL PROMPT (CloudAI) ===================== -->
+  <script>
+    let deferredPrompt;
+    const installButton = document.createElement('button');
+    installButton.textContent = '📲 Install CloudAI';
+    installButton.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #0078ff, #00c3ff);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      cursor: pointer;
+      z-index: 9999;
+      transition: all 0.3s ease-in-out;
+    `;
+    installButton.onmouseover = () => installButton.style.transform = 'scale(1.05)';
+    installButton.onmouseout = () => installButton.style.transform = 'scale(1)';
+    installButton.style.display = 'none';
+    document.body.appendChild(installButton);
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installButton.style.display = 'block';
+    });
+
+    installButton.addEventListener('click', async () => {
+      installButton.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('✅ CloudAI installed successfully!');
+        } else {
+          console.log('❌ CloudAI install dismissed.');
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('🎉 CloudAI is installed as a PWA!');
+      installButton.remove();
+    });
+  </script>
+
 </body>
 </html>
