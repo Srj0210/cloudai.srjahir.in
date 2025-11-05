@@ -7,6 +7,7 @@ const logo = document.getElementById("ai-logo");
 
 let history = [];
 let isProcessing = false;
+let quotaExceeded = false;
 const clientId = "web_" + Math.random().toString(36).substring(2, 9);
 
 // 🔁 Reset chat on full reload (fresh session)
@@ -31,7 +32,7 @@ userInput.addEventListener("keypress", (e) => {
 
 async function sendMessage() {
   const prompt = userInput.value.trim();
-  if (!prompt || isProcessing) return;
+  if (!prompt || isProcessing || quotaExceeded) return;
 
   appendMessage(prompt, "user-message");
   userInput.value = "";
@@ -39,27 +40,20 @@ async function sendMessage() {
   isProcessing = true;
   logo.classList.add("thinking");
 
+  appendMessage("⏳ Thinking...", "ai-message");
+  const tempMsg = document.querySelector(".ai-message:last-child");
+
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId, prompt, history, tools: { web: true } }),
-    });
+    const reply = await fetchAIResponseWithRetry(prompt, 2);
 
-    const data = await res.json();
-    if (data.reply) {
-      appendMessage(data.reply, "ai-message");
+    tempMsg.remove();
+    appendMessage(reply, "ai-message");
 
-      history.push({ role: "user", text: prompt });
-      history.push({ role: "model", text: data.reply });
+    history.push({ role: "user", text: prompt });
+    history.push({ role: "model", text: reply });
 
-      if (data.quotaStatus === "quota_warning") showAlert("⚠️ 80% quota used.");
-      if (data.quotaStatus === "quota_exceeded") {
-        showAlert("🚫 Daily quota reached. Try again after 24 hours.");
-        disableInput();
-      }
-    } else appendMessage("⚠️ No response from AI.", "ai-message");
   } catch {
+    tempMsg.remove();
     appendMessage("⚠️ Network issue. Try again later.", "ai-message");
   } finally {
     isProcessing = false;
@@ -67,6 +61,77 @@ async function sendMessage() {
   }
 }
 
+// ===================== 🔁 AUTO RETRY + FULL ANSWER HANDLER =====================
+async function fetchAIResponseWithRetry(prompt, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientId,
+          prompt,
+          history,
+          tools: { web: true }
+        }),
+      });
+
+      const data = await res.json();
+
+      // ✅ QUOTA SYSTEM
+      if (data.quotaStatus === "quota_exceeded") {
+        showAlert("🚫 Daily quota reached. Try again after 24 hours.");
+        disableInput();
+        quotaExceeded = true;
+        return "🚫 Daily quota reached. Try again tomorrow.";
+      }
+
+      if (data.quotaStatus === "quota_warning")
+        showAlert("⚠️ 80% quota used.");
+
+      // ✅ VALID RESPONSE CHECK
+      if (data.reply && data.reply.trim() !== "") {
+        let output = data.reply.trim();
+
+        // 🧠 Continue logic (if answer looks incomplete)
+        if (output.endsWith("...") || output.split(" ").length < 50 && i < retries) {
+          console.log("⏩ Continuing to fetch full answer...");
+          const cont = await fetchContinuation(prompt);
+          output += "\n\n" + cont;
+        }
+        return output;
+      } else {
+        console.warn(`⚠️ Empty or invalid response — retrying (${i + 1}/${retries})...`);
+      }
+    } catch (err) {
+      console.error("❌ Fetch error:", err);
+    }
+  }
+
+  return "⚠️ No valid response received after multiple attempts. Please try again later.";
+}
+
+// 🔄 Fetch continuation if incomplete
+async function fetchContinuation(previousPrompt) {
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        clientId,
+        prompt: previousPrompt + " (continue)",
+        history,
+        tools: { web: true }
+      }),
+    });
+    const data = await res.json();
+    return data.reply ? data.reply.trim() : "";
+  } catch {
+    return "";
+  }
+}
+
+// ===================== 🧩 RENDER SYSTEM =====================
 function appendMessage(text, className) {
   const msg = document.createElement("div");
   msg.className = `message ${className}`;
