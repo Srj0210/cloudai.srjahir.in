@@ -10,7 +10,7 @@ let isProcessing = false;
 let quotaExceeded = false;
 const clientId = "web_" + Math.random().toString(36).substring(2, 9);
 
-// 🔁 Reset chat on full reload (fresh session)
+// 🔁 Reset chat on full reload
 window.addEventListener("load", () => {
   localStorage.removeItem("chat_history");
 });
@@ -51,7 +51,6 @@ async function sendMessage() {
 
     history.push({ role: "user", text: prompt });
     history.push({ role: "model", text: reply });
-
   } catch {
     tempMsg.remove();
     appendMessage("⚠️ Network issue. Try again later.", "ai-message");
@@ -61,8 +60,10 @@ async function sendMessage() {
   }
 }
 
-// ===================== 🔁 AUTO RETRY + FULL ANSWER HANDLER =====================
+// ===================== ⚙️ SMART FETCH SYSTEM =====================
 async function fetchAIResponseWithRetry(prompt, retries = 2) {
+  const smartPrompt = applyLanguageLock(prompt);
+
   for (let i = 0; i <= retries; i++) {
     try {
       const res = await fetch(API_URL, {
@@ -70,35 +71,34 @@ async function fetchAIResponseWithRetry(prompt, retries = 2) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clientId,
-          prompt,
+          prompt: smartPrompt,
           history,
-          tools: { web: true }
+          tools: { web: true },
         }),
       });
 
       const data = await res.json();
 
-      // ✅ QUOTA SYSTEM
+      // 🧾 QUOTA CONTROL
       if (data.quotaStatus === "quota_exceeded") {
         showAlert("🚫 Daily quota reached. Try again after 24 hours.");
         disableInput();
         quotaExceeded = true;
         return "🚫 Daily quota reached. Try again tomorrow.";
       }
+      if (data.quotaStatus === "quota_warning") showAlert("⚠️ 80% quota used.");
 
-      if (data.quotaStatus === "quota_warning")
-        showAlert("⚠️ 80% quota used.");
-
-      // ✅ VALID RESPONSE CHECK
+      // 🧠 VALIDATE RESPONSE
       if (data.reply && data.reply.trim() !== "") {
         let output = data.reply.trim();
 
-        // 🧠 Continue logic (if answer looks incomplete)
-        if (output.endsWith("...") || output.split(" ").length < 50 && i < retries) {
-          console.log("⏩ Continuing to fetch full answer...");
+        // 🔍 Detect incomplete or truncated response
+        if (detectTruncatedResponse(output) && i < retries) {
+          console.log("⏩ Detected incomplete answer, fetching continuation...");
           const cont = await fetchContinuation(prompt);
           output += "\n\n" + cont;
         }
+
         return output;
       } else {
         console.warn(`⚠️ Empty or invalid response — retrying (${i + 1}/${retries})...`);
@@ -119,9 +119,9 @@ async function fetchContinuation(previousPrompt) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         clientId,
-        prompt: previousPrompt + " (continue)",
+        prompt: previousPrompt + " (continue the same content, same language only)",
         history,
-        tools: { web: true }
+        tools: { web: false },
       }),
     });
     const data = await res.json();
@@ -131,7 +131,38 @@ async function fetchContinuation(previousPrompt) {
   }
 }
 
-// ===================== 🧩 RENDER SYSTEM =====================
+// ===================== 🧩 LANGUAGE LOCK SYSTEM =====================
+function applyLanguageLock(prompt) {
+  const devanagariRegex = /[\u0900-\u097F]/; // Hindi/Sanskrit script
+  const wantsTranslation = /\btranslate\b|अनुवाद|भाषांतर/i.test(prompt);
+
+  if (quotaExceeded) return prompt; // Stop everything if quota done
+
+  if (wantsTranslation) {
+    return prompt; // Allow translation only if user asks
+  } else if (devanagariRegex.test(prompt)) {
+    return (
+      "उत्तर केवल उसी भाषा (हिंदी/संस्कृत) में दो, जिसमें प्रश्न पूछा गया है। " +
+      "किसी प्रकार का अनुवाद या व्याख्या मत दो।\n\n" +
+      prompt
+    );
+  } else {
+    return (
+      "Answer strictly in the same language as the user's message. " +
+      "Do not translate or explain in other languages unless explicitly asked.\n\n" +
+      prompt
+    );
+  }
+}
+
+// ===================== 🧠 DETECT TRUNCATION =====================
+function detectTruncatedResponse(text) {
+  const incompletePatterns = /[\u0900-\u097F]+$|[a-zA-Z]+$/;
+  const lastChar = text.trim().slice(-1);
+  return ![".", "!", "?", "॥", "।"].includes(lastChar) && incompletePatterns.test(text);
+}
+
+// ===================== 🖋️ UI FUNCTIONS =====================
 function appendMessage(text, className) {
   const msg = document.createElement("div");
   msg.className = `message ${className}`;
