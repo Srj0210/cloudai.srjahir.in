@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CloudAI SEO Monitor | SRJahir Technologies ⚡</title>
+  <title>CloudAI SEO Monitor v4 | SRJahir Technologies ⚡</title>
 
-  <!-- ✅ Meta Description for SEO -->
-  <meta name="description" content="CloudAI SEO Monitor by SRJahir Technologies — Track sitemap, robots.txt, and IndexNow ping status with a live performance chart. Stay updated with automated SEO health checks every 24 hours.">
+  <!-- Meta -->
+  <meta name="description" content="CloudAI SEO Monitor by SRJahir Technologies — Track sitemap, robots, and IndexNow ping status with live performance chart.">
+  <meta name="author" content="SRJ (Suraj Maitra) — SRJahir Technologies">
+  <meta name="robots" content="index, follow">
 
   <!-- Theme -->
   <style>
@@ -36,6 +38,7 @@
       color: var(--accent);
       text-align: center;
       margin-bottom: 10px;
+      font-weight: 600;
     }
 
     .status-container {
@@ -43,7 +46,7 @@
       padding: 20px;
       border-radius: 14px;
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       box-shadow: 0 0 15px rgba(0,183,255,0.25);
       margin-bottom: 25px;
     }
@@ -71,11 +74,13 @@
       font-weight: bold;
     }
 
-    canvas {
-      margin-top: 20px;
+    .chart-container {
+      width: 100%;
+      max-width: 750px;
       background: var(--panel);
       border-radius: 14px;
       padding: 15px;
+      margin-top: 20px;
       box-shadow: 0 0 10px rgba(0,183,255,0.2);
     }
 
@@ -86,11 +91,40 @@
       text-align: center;
     }
 
+    .log-box {
+      background: #11161d;
+      border-radius: 10px;
+      padding: 15px;
+      width: 100%;
+      max-width: 650px;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
     footer {
       text-align: center;
       margin-top: 25px;
       font-size: 13px;
       color: var(--muted);
+    }
+
+    .refresh-btn {
+      background: linear-gradient(135deg, #0078ff, #00c3ff);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: 0.2s;
+    }
+
+    .refresh-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #009eff, #00d2ff);
     }
   </style>
 
@@ -99,7 +133,7 @@
 </head>
 <body>
 
-  <h1>CloudAI SEO Monitor ⚡</h1>
+  <h1>⚡ CloudAI SEO Monitor v4</h1>
 
   <div class="status-container" id="statusBox">
     <div class="status-item"><span>Sitemap:</span> <strong id="sitemap-status">⏳ Checking...</strong></div>
@@ -109,12 +143,23 @@
     <div class="score" id="seo-score">SEO Health Score: --%</div>
   </div>
 
-  <canvas id="seoChart" width="400" height="200"></canvas>
+  <button class="refresh-btn" onclick="checkSEO(true)">⚡ Refresh Now</button>
+
+  <!-- Charts -->
+  <div class="chart-container">
+    <canvas id="seoChart" height="200"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="pingChart" height="200"></canvas>
+  </div>
+
+  <!-- Logs -->
+  <div class="log-box" id="pingLog">📡 Waiting for ping data...</div>
+
   <div class="timestamp" id="lastUpdate">Last checked: --</div>
 
-  <footer>
-    © 2025 SRJahir Technologies — CloudAI SEO Monitor v3
-  </footer>
+  <footer>© 2025 SRJahir Technologies — CloudAI SEO Monitor v4 by SRJ</footer>
 
   <script>
     const endpoints = {
@@ -123,49 +168,49 @@
       indexnow: "https://api.indexnow.org/indexnow?url=https://cloudai.srjahir.in/&key=da18c5cb-26d0-4045-bd3c-8cd139ba2d1d"
     };
 
-    const statuses = {
-      sitemap: false,
-      robots: false,
-      meta: false,
-      indexnow: false
-    };
+    const statuses = { sitemap: false, robots: false, meta: false, indexnow: false };
+    const pingHistory = [];
 
-    async function checkSEO() {
+    async function checkSEO(manual = false) {
+      document.getElementById("pingLog").innerHTML += `<br>🔄 ${manual ? "Manual" : "Auto"} check started at ${new Date().toLocaleTimeString()}`;
+
       // Sitemap
       try {
         const sitemap = await fetch(endpoints.sitemap);
         statuses.sitemap = sitemap.ok;
-        document.getElementById("sitemap-status").innerHTML = sitemap.ok ? "✅ OK" : "❌ Missing";
-        document.getElementById("sitemap-status").className = sitemap.ok ? "ok" : "bad";
+        updateStatus("sitemap", sitemap.ok);
       } catch { fail("sitemap"); }
 
       // Robots.txt
       try {
         const robots = await fetch(endpoints.robots);
         statuses.robots = robots.ok;
-        document.getElementById("robots-status").innerHTML = robots.ok ? "✅ OK" : "❌ Missing";
-        document.getElementById("robots-status").className = robots.ok ? "ok" : "bad";
+        updateStatus("robots", robots.ok);
       } catch { fail("robots"); }
 
       // Meta
       const meta = document.querySelector("meta[name='description']");
       statuses.meta = !!meta;
-      document.getElementById("meta-status").innerHTML = meta ? "✅ Present" : "❌ Missing";
-      document.getElementById("meta-status").className = meta ? "ok" : "bad";
+      updateStatus("meta", !!meta);
 
       // IndexNow
       try {
         const indexRes = await fetch(endpoints.indexnow);
         statuses.indexnow = indexRes.ok;
-        document.getElementById("indexnow-status").innerHTML = indexRes.ok ? "✅ Success" : "❌ Failed";
-        document.getElementById("indexnow-status").className = indexRes.ok ? "ok" : "bad";
+        updateStatus("indexnow", indexRes.ok);
       } catch { fail("indexnow"); }
 
       updateScore();
     }
 
+    function updateStatus(key, ok) {
+      const el = document.getElementById(`${key}-status`);
+      el.innerHTML = ok ? "✅ OK" : "❌ Error";
+      el.className = ok ? "ok" : "bad";
+    }
+
     function fail(key) {
-      document.getElementById(`${key}-status`).innerHTML = "❌ Error";
+      document.getElementById(`${key}-status`).innerHTML = "❌ Failed";
       document.getElementById(`${key}-status`).className = "bad";
       statuses[key] = false;
     }
@@ -175,20 +220,29 @@
       const score = Math.round((trueCount / 4) * 100);
       document.getElementById("seo-score").textContent = `SEO Health Score: ${score}%`;
 
-      // Update chart
+      // SEO Score Chart update
       seoData.labels.push(new Date().toLocaleTimeString());
       seoData.datasets[0].data.push(score);
       seoChart.update();
 
-      // Update timestamp
+      // Ping Chart update
+      const pingData = { time: new Date().toLocaleTimeString(), success: trueCount, total: 4 };
+      pingHistory.push(pingData);
+      pingChart.data.labels.push(pingData.time);
+      pingChart.data.datasets[0].data.push(pingData.success);
+      pingChart.update();
+
+      // Log update
+      document.getElementById("pingLog").innerHTML += `<br>✅ Ping success ${trueCount}/4 (${score}%)`;
       document.getElementById("lastUpdate").textContent = `Last checked: ${new Date().toLocaleString()}`;
     }
 
-    const ctx = document.getElementById("seoChart").getContext("2d");
+    // SEO Score Line Chart
+    const seoCtx = document.getElementById("seoChart").getContext("2d");
     const seoData = {
       labels: [],
       datasets: [{
-        label: "SEO Health Score",
+        label: "SEO Health (%)",
         borderColor: "#00b7ff",
         backgroundColor: "rgba(0,183,255,0.2)",
         data: [],
@@ -196,23 +250,33 @@
         tension: 0.3
       }]
     };
-    const seoChart = new Chart(ctx, {
-      type: "line",
-      data: seoData,
+    const seoChart = new Chart(seoCtx, { type: "line", data: seoData });
+
+    // Ping Activity Bar Chart
+    const pingCtx = document.getElementById("pingChart").getContext("2d");
+    const pingChart = new Chart(pingCtx, {
+      type: "bar",
+      data: {
+        labels: [],
+        datasets: [{
+          label: "Successful Checks",
+          data: [],
+          backgroundColor: "rgba(0,255,150,0.6)",
+          borderColor: "#00ff9c",
+          borderWidth: 1
+        }]
+      },
       options: {
-        responsive: true,
         scales: {
-          y: { min: 0, max: 100, ticks: { color: "#8b949e" } },
+          y: { min: 0, max: 4, ticks: { color: "#8b949e" } },
           x: { ticks: { color: "#8b949e" } }
         },
-        plugins: {
-          legend: { labels: { color: "#00b7ff" } }
-        }
+        plugins: { legend: { labels: { color: "#00b7ff" } } }
       }
     });
 
     checkSEO();
-    setInterval(checkSEO, 86400000); // Auto-refresh every 24 hours
+    setInterval(checkSEO, 86400000); // every 24 hours
   </script>
 </body>
 </html>
