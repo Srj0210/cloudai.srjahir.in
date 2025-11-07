@@ -1,0 +1,34 @@
+name: CloudAI Auto Indexing
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # Every day at 6:00 AM UTC
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Yandex Sitemap
+        run: |
+          echo "📡 Sending sitemap ping to Yandex..."
+          curl -s "https://yandex.com/ping?sitemap=https://cloudai.srjahir.in/sitemap.xml"
+          echo "✅ Yandex sitemap ping sent successfully!"
+
+      - name: Notify IndexNow (Bing, DuckDuckGo, Brave, Qwant, Yahoo)
+        run: |
+          echo "📡 Sending IndexNow ping..."
+          curl -X POST "https://api.indexnow.org/indexnow" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "host": "cloudai.srjahir.in",
+            "key": "da18c5cb-26d0-4045-bd3c-8cd139ba2d1d",
+            "urlList": [
+              "https://cloudai.srjahir.in/",
+              "https://cloudai.srjahir.in/sitemap.xml"
+            ]
+          }'
+          echo "✅ IndexNow ping sent successfully to all partner engines!"
+
+      - name: Job Completed
+        run: echo "🎯 Daily CloudAI auto indexing completed successfully!"
