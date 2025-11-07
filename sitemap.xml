@@ -1,28 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 
+  <!-- Main Homepage -->
   <url>
     <loc>https://cloudai.srjahir.in/</loc>
     <lastmod>2025-11-07</lastmod>
     <priority>1.0</priority>
+    <changefreq>daily</changefreq>
   </url>
 
+  <!-- Chat Script -->
+  <url>
+    <loc>https://cloudai.srjahir.in/assets/js/chat.js</loc>
+    <lastmod>2025-11-07</lastmod>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Stylesheet -->
   <url>
     <loc>https://cloudai.srjahir.in/assets/css/style.css</loc>
     <lastmod>2025-11-07</lastmod>
     <priority>0.5</priority>
+    <changefreq>weekly</changefreq>
   </url>
 
+  <!-- Manifest -->
   <url>
-    <loc>https://cloudai.srjahir.in/assets/js/chat.js</loc>
-    <lastmod>2025-11-07</lastmod>
-    <priority>0.5</priority>
-  </url>
-
-  <url>
-    <loc>https://cloudai.srjahir.in/sanskrit.png</loc>
+    <loc>https://cloudai.srjahir.in/manifest.json</loc>
     <lastmod>2025-11-07</lastmod>
     <priority>0.4</priority>
+    <changefreq>monthly</changefreq>
   </url>
 
 </urlset>
