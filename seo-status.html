@@ -1,176 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudAI SEO Status | SRJahir Technologies</title>
-  <link rel="icon" href="favicon.png" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudAI SEO Monitor | SRJahir Technologies ⚡</title>
+
+  <!-- Theme -->
   <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --text: #e6edf3;
+      --accent: #00b7ff;
+      --muted: #8b949e;
+      --success: #00ff9c;
+      --error: #ff4d4d;
+    }
+
     body {
-      background: #0a0a0a;
-      color: #e0e0e0;
-      font-family: "Poppins", sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
     }
-    .card {
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 1rem;
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
-      transition: all 0.3s ease-in-out;
+
+    h1 {
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 10px;
     }
-    .card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+
+    .status-container {
+      background: var(--panel);
+      padding: 20px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 15px rgba(0,183,255,0.25);
+      margin-bottom: 25px;
     }
-    .status {
-      font-weight: 600;
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      border-bottom: 1px solid #222;
+      padding-bottom: 6px;
     }
-    .ok {
-      color: #4ade80;
+
+    .status-item span {
+      font-weight: 500;
     }
-    .fail {
-      color: #f87171;
+
+    .ok { color: var(--success); }
+    .bad { color: var(--error); }
+
+    .score {
+      text-align: center;
+      font-size: 20px;
+      margin-top: 10px;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    canvas {
+      margin-top: 20px;
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,183,255,0.2);
+    }
+
+    .timestamp {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 13px;
+      color: var(--muted);
     }
   </style>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6 space-y-6">
+<body>
 
-  <header class="text-center">
-    <img src="logo.png" alt="CloudAI Logo" class="w-20 mx-auto mb-4 rounded-full border border-cyan-400 p-1">
-    <h1 class="text-3xl font-bold text-cyan-400">CloudAI SEO Monitor</h1>
-    <p class="text-gray-400">by SRJahir Technologies ⚡</p>
-  </header>
+  <h1>CloudAI SEO Monitor ⚡</h1>
 
-  <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="card p-6">
-      <h2 class="text-xl font-semibold text-cyan-300 mb-2">🔗 Sitemap Status</h2>
-      <p>Checking <a href="https://cloudai.srjahir.in/sitemap.xml" class="text-cyan-400 underline" target="_blank">sitemap.xml</a>...</p>
-      <p id="sitemap-status" class="status mt-2">Loading...</p>
-    </div>
+  <div class="status-container" id="statusBox">
+    <div class="status-item"><span>Sitemap:</span> <strong id="sitemap-status">⏳ Checking...</strong></div>
+    <div class="status-item"><span>Robots.txt:</span> <strong id="robots-status">⏳ Checking...</strong></div>
+    <div class="status-item"><span>Meta Tags:</span> <strong id="meta-status">⏳ Checking...</strong></div>
+    <div class="status-item"><span>IndexNow Ping:</span> <strong id="indexnow-status">⏳ Checking...</strong></div>
+    <div class="score" id="seo-score">SEO Health Score: --%</div>
+  </div>
 
-    <div class="card p-6">
-      <h2 class="text-xl font-semibold text-cyan-300 mb-2">📡 IndexNow Ping</h2>
-      <p>Testing IndexNow connection...</p>
-      <p id="indexnow-status" class="status mt-2">Loading...</p>
-    </div>
+  <canvas id="seoChart" width="400" height="200"></canvas>
+  <div class="timestamp" id="lastUpdate">Last checked: --</div>
 
-    <div class="card p-6 md:col-span-2">
-      <h2 class="text-xl font-semibold text-cyan-300 mb-2">📈 Live Ping Performance</h2>
-      <canvas id="pingChart" height="120"></canvas>
-    </div>
-
-    <div class="card p-6 md:col-span-2">
-      <h2 class="text-xl font-semibold text-cyan-300 mb-2">🕒 Last Update</h2>
-      <p id="last-update" class="text-gray-300"></p>
-      <p class="text-gray-500 mt-2 text-sm">Auto-refreshes every 24 hours to monitor CloudAI search visibility.</p>
-    </div>
-  </main>
-
-  <footer class="text-gray-500 mt-6 text-sm">
-    © 2025 SRJahir Tech. All Rights Reserved.
+  <footer>
+    © 2025 SRJahir Technologies — CloudAI SEO Monitor v3
   </footer>
 
   <script>
-    async function checkSitemap() {
-      const statusEl = document.getElementById("sitemap-status");
+    const endpoints = {
+      sitemap: "https://cloudai.srjahir.in/sitemap.xml",
+      robots: "https://cloudai.srjahir.in/robots.txt",
+      indexnow: "https://api.indexnow.org/indexnow?url=https://cloudai.srjahir.in/&key=da18c5cb-26d0-4045-bd3c-8cd139ba2d1d"
+    };
+
+    const statuses = {
+      sitemap: false,
+      robots: false,
+      meta: false,
+      indexnow: false
+    };
+
+    async function checkSEO() {
+      // Sitemap
       try {
-        const res = await fetch("https://cloudai.srjahir.in/sitemap.xml", { method: "GET" });
-        if (res.ok) {
-          statusEl.textContent = "✅ Sitemap Active & Accessible";
-          statusEl.classList.add("ok");
-          return 1;
-        } else {
-          statusEl.textContent = "❌ Sitemap Not Found";
-          statusEl.classList.add("fail");
-          return 0;
-        }
-      } catch {
-        statusEl.textContent = "❌ Connection Error";
-        statusEl.classList.add("fail");
-        return 0;
-      }
+        const sitemap = await fetch(endpoints.sitemap);
+        statuses.sitemap = sitemap.ok;
+        document.getElementById("sitemap-status").innerHTML = sitemap.ok ? "✅ OK" : "❌ Missing";
+        document.getElementById("sitemap-status").className = sitemap.ok ? "ok" : "bad";
+      } catch { fail("sitemap"); }
+
+      // Robots.txt
+      try {
+        const robots = await fetch(endpoints.robots);
+        statuses.robots = robots.ok;
+        document.getElementById("robots-status").innerHTML = robots.ok ? "✅ OK" : "❌ Missing";
+        document.getElementById("robots-status").className = robots.ok ? "ok" : "bad";
+      } catch { fail("robots"); }
+
+      // Meta
+      const meta = document.querySelector("meta[name='description']");
+      statuses.meta = !!meta;
+      document.getElementById("meta-status").innerHTML = meta ? "✅ Present" : "❌ Missing";
+      document.getElementById("meta-status").className = meta ? "ok" : "bad";
+
+      // IndexNow
+      try {
+        const indexRes = await fetch(endpoints.indexnow);
+        statuses.indexnow = indexRes.ok;
+        document.getElementById("indexnow-status").innerHTML = indexRes.ok ? "✅ Success" : "❌ Failed";
+        document.getElementById("indexnow-status").className = indexRes.ok ? "ok" : "bad";
+      } catch { fail("indexnow"); }
+
+      updateScore();
     }
 
-    async function checkIndexNow() {
-      const statusEl = document.getElementById("indexnow-status");
-      const url = "https://api.indexnow.org/indexnow?url=https://cloudai.srjahir.in/&key=da18c5cb-26d0-4045-bd3c-8cd139ba2d1d";
-      try {
-        const res = await fetch(url, { method: "GET" });
-        if (res.ok) {
-          statusEl.textContent = "✅ IndexNow Ping Successful";
-          statusEl.classList.add("ok");
-          return 1;
-        } else {
-          statusEl.textContent = "❌ Ping Failed (" + res.status + ")";
-          statusEl.classList.add("fail");
-          return 0;
-        }
-      } catch {
-        statusEl.textContent = "❌ IndexNow Connection Failed";
-        statusEl.classList.add("fail");
-        return 0;
-      }
+    function fail(key) {
+      document.getElementById(`${key}-status`).innerHTML = "❌ Error";
+      document.getElementById(`${key}-status`).className = "bad";
+      statuses[key] = false;
     }
 
-    async function generateChart(data) {
-      const ctx = document.getElementById("pingChart").getContext("2d");
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: ["Sitemap", "IndexNow", "Bing", "DuckDuckGo", "Yandex"],
-          datasets: [{
-            label: "Ping Success Rate",
-            data: data,
-            fill: true,
-            borderColor: "#22d3ee",
-            backgroundColor: "rgba(34,211,238,0.15)",
-            tension: 0.4,
-            borderWidth: 2,
-            pointRadius: 5,
-            pointBackgroundColor: "#06b6d4"
-          }]
+    function updateScore() {
+      const trueCount = Object.values(statuses).filter(v => v).length;
+      const score = Math.round((trueCount / 4) * 100);
+      document.getElementById("seo-score").textContent = `SEO Health Score: ${score}%`;
+
+      // Update chart
+      seoData.labels.push(new Date().toLocaleTimeString());
+      seoData.datasets[0].data.push(score);
+      seoChart.update();
+
+      // Update timestamp
+      document.getElementById("lastUpdate").textContent = `Last checked: ${new Date().toLocaleString()}`;
+    }
+
+    const ctx = document.getElementById("seoChart").getContext("2d");
+    const seoData = {
+      labels: [],
+      datasets: [{
+        label: "SEO Health Score",
+        borderColor: "#00b7ff",
+        backgroundColor: "rgba(0,183,255,0.2)",
+        data: [],
+        fill: true,
+        tension: 0.3
+      }]
+    };
+    const seoChart = new Chart(ctx, {
+      type: "line",
+      data: seoData,
+      options: {
+        responsive: true,
+        scales: {
+          y: { min: 0, max: 100, ticks: { color: "#8b949e" } },
+          x: { ticks: { color: "#8b949e" } }
         },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 1,
-              ticks: {
-                callback: (val) => val === 1 ? "✅ Success" : "❌ Fail"
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              labels: { color: "#a3a3a3" }
-            }
-          }
+        plugins: {
+          legend: { labels: { color: "#00b7ff" } }
         }
-      });
-    }
+      }
+    });
 
-    async function initStatus() {
-      document.getElementById("last-update").textContent =
-        "Last checked: " + new Date().toLocaleString();
-
-      const sitemapResult = await checkSitemap();
-      const indexNowResult = await checkIndexNow();
-
-      const chartData = [
-        sitemapResult,
-        indexNowResult,
-        1, // Bing auto-connected via IndexNow
-        1, // DuckDuckGo
-        1  // Yandex
-      ];
-
-      generateChart(chartData);
-    }
-
-    initStatus();
-    setTimeout(() => location.reload(), 24 * 60 * 60 * 1000);
+    checkSEO();
+    setInterval(checkSEO, 86400000); // Auto-refresh every 24 hours
   </script>
 </body>
 </html>
