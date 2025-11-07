@@ -1,4 +1,26 @@
+# ================================
+# 🤖 CloudAI — robots.txt
+# Managed by SRJahir Technologies
+# ================================
+
 User-agent: *
 Allow: /
 
+# Sitemap locations for all engines
 Sitemap: https://cloudai.srjahir.in/sitemap.xml
+
+# IndexNow verification (for Bing, DuckDuckGo, Brave, Yahoo, Yandex, etc.)
+User-agent: IndexNow
+Allow: /
+
+# Crawler management
+User-agent: GPTBot
+Disallow: /private/
+Disallow: /assets/
+
+User-agent: Googlebot
+Allow: /
+
+# ================================
+# CloudAI powered by SRJahir Tech
+# ================================
