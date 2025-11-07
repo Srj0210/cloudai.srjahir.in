@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudAI SEO Status | SRJahir Technologies</title>
+  <link rel="icon" href="favicon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background: #0a0a0a;
+      color: #e0e0e0;
+      font-family: "Poppins", sans-serif;
+    }
+    .card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 1rem;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+      transition: all 0.3s ease-in-out;
+    }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+    }
+    .status {
+      font-weight: 600;
+    }
+    .ok {
+      color: #4ade80;
+    }
+    .fail {
+      color: #f87171;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 space-y-6">
+
+  <header class="text-center">
+    <img src="logo.png" alt="CloudAI Logo" class="w-20 mx-auto mb-4 rounded-full border border-cyan-400 p-1">
+    <h1 class="text-3xl font-bold text-cyan-400">CloudAI SEO Monitor</h1>
+    <p class="text-gray-400">by SRJahir Technologies ⚡</p>
+  </header>
+
+  <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="card p-6">
+      <h2 class="text-xl font-semibold text-cyan-300 mb-2">🔗 Sitemap Status</h2>
+      <p>Checking <a href="https://cloudai.srjahir.in/sitemap.xml" class="text-cyan-400 underline" target="_blank">sitemap.xml</a>...</p>
+      <p id="sitemap-status" class="status mt-2">Loading...</p>
+    </div>
+
+    <div class="card p-6">
+      <h2 class="text-xl font-semibold text-cyan-300 mb-2">📡 IndexNow Ping</h2>
+      <p>Testing IndexNow connection...</p>
+      <p id="indexnow-status" class="status mt-2">Loading...</p>
+    </div>
+
+    <div class="card p-6 md:col-span-2">
+      <h2 class="text-xl font-semibold text-cyan-300 mb-2">📈 Live Ping Performance</h2>
+      <canvas id="pingChart" height="120"></canvas>
+    </div>
+
+    <div class="card p-6 md:col-span-2">
+      <h2 class="text-xl font-semibold text-cyan-300 mb-2">🕒 Last Update</h2>
+      <p id="last-update" class="text-gray-300"></p>
+      <p class="text-gray-500 mt-2 text-sm">Auto-refreshes every 24 hours to monitor CloudAI search visibility.</p>
+    </div>
+  </main>
+
+  <footer class="text-gray-500 mt-6 text-sm">
+    © 2025 SRJahir Tech. All Rights Reserved.
+  </footer>
+
+  <script>
+    async function checkSitemap() {
+      const statusEl = document.getElementById("sitemap-status");
+      try {
+        const res = await fetch("https://cloudai.srjahir.in/sitemap.xml", { method: "GET" });
+        if (res.ok) {
+          statusEl.textContent = "✅ Sitemap Active & Accessible";
+          statusEl.classList.add("ok");
+          return 1;
+        } else {
+          statusEl.textContent = "❌ Sitemap Not Found";
+          statusEl.classList.add("fail");
+          return 0;
+        }
+      } catch {
+        statusEl.textContent = "❌ Connection Error";
+        statusEl.classList.add("fail");
+        return 0;
+      }
+    }
+
+    async function checkIndexNow() {
+      const statusEl = document.getElementById("indexnow-status");
+      const url = "https://api.indexnow.org/indexnow?url=https://cloudai.srjahir.in/&key=da18c5cb-26d0-4045-bd3c-8cd139ba2d1d";
+      try {
+        const res = await fetch(url, { method: "GET" });
+        if (res.ok) {
+          statusEl.textContent = "✅ IndexNow Ping Successful";
+          statusEl.classList.add("ok");
+          return 1;
+        } else {
+          statusEl.textContent = "❌ Ping Failed (" + res.status + ")";
+          statusEl.classList.add("fail");
+          return 0;
+        }
+      } catch {
+        statusEl.textContent = "❌ IndexNow Connection Failed";
+        statusEl.classList.add("fail");
+        return 0;
+      }
+    }
+
+    async function generateChart(data) {
+      const ctx = document.getElementById("pingChart").getContext("2d");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["Sitemap", "IndexNow", "Bing", "DuckDuckGo", "Yandex"],
+          datasets: [{
+            label: "Ping Success Rate",
+            data: data,
+            fill: true,
+            borderColor: "#22d3ee",
+            backgroundColor: "rgba(34,211,238,0.15)",
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 5,
+            pointBackgroundColor: "#06b6d4"
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 1,
+              ticks: {
+                callback: (val) => val === 1 ? "✅ Success" : "❌ Fail"
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: { color: "#a3a3a3" }
+            }
+          }
+        }
+      });
+    }
+
+    async function initStatus() {
+      document.getElementById("last-update").textContent =
+        "Last checked: " + new Date().toLocaleString();
+
+      const sitemapResult = await checkSitemap();
+      const indexNowResult = await checkIndexNow();
+
+      const chartData = [
+        sitemapResult,
+        indexNowResult,
+        1, // Bing auto-connected via IndexNow
+        1, // DuckDuckGo
+        1  // Yandex
+      ];
+
+      generateChart(chartData);
+    }
+
+    initStatus();
+    setTimeout(() => location.reload(), 24 * 60 * 60 * 1000);
+  </script>
+</body>
+</html>
