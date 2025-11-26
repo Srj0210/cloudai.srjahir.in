@@ -1,233 +1,245 @@
-/* ---------------------------------------------------------
-   CloudAI Frontend Engine — ChatGPT-Style v12 (Final)
-   Features:
-   ✔ ChatGPT bubble style (centered wide messages)
-   ✔ Glow logo while thinking
-   ✔ Auto-resize input
-   ✔ Memory: save last 15 messages (session only)
-   ✔ Smart Retry (2x)
-   ✔ Truncation detection + auto continuation
-   ✔ Quota: warning + lock
-   ✔ Code highlighting + copy button
---------------------------------------------------------- */
+// ============================================================
+// CloudAI Frontend — ChatGPT Style Engine v12
+// by SRJahir Technologies ⚡
+// ============================================================
 
 const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
 
-// DOM Elements
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
-const sendBtn   = document.getElementById("send-btn");
-const logo      = document.getElementById("ai-logo");
+const sendBtn = document.getElementById("send-btn");
+const logo = document.getElementById("ai-logo");
 
-// State
 let history = [];
 let isProcessing = false;
 let quotaExceeded = false;
 
 const clientId = "web_" + Math.random().toString(36).substring(2, 10);
 
-/* ----------------- Auto Resize Input ----------------- */
+// Load last 15 messages
+window.addEventListener("load", () => {
+  const saved = localStorage.getItem("cloudai_history");
+  if (saved) {
+    history = JSON.parse(saved);
+    history.forEach(msg => appendMessage(msg.text, msg.role === "user" ? "user-message" : "ai-message"));
+  }
+});
+
+// Auto resize textarea
 userInput.addEventListener("input", () => {
   userInput.style.height = "auto";
   userInput.style.height = Math.min(userInput.scrollHeight, 150) + "px";
 });
 
-/* -------------- Enter to Send (Shift+Enter = newline) -------------- */
-userInput.addEventListener("keydown", (e) => {
+// Enter to send (Shift+Enter = newline)
+userInput.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
   }
 });
 
+// Click to send
 sendBtn.addEventListener("click", sendMessage);
 
-/* ---------------------- Main Send Logic ---------------------- */
+// ============================================================
+// SEND MESSAGE
+// ============================================================
 async function sendMessage() {
   const prompt = userInput.value.trim();
   if (!prompt || isProcessing || quotaExceeded) return;
 
   appendMessage(prompt, "user-message");
+  saveHistory("user", prompt);
 
   userInput.value = "";
-  userInput.style.height = "40px";
-
+  userInput.style.height = "auto";
   isProcessing = true;
-  logo.classList.add("thinking");
 
-  const tempThinking = appendMessage("⏳ Thinking...", "ai-message", true);
+  logo.classList.add("thinking"); // Glow start
+
+  const thinkingBubble = appendMessage("⏳ CloudAI is thinking...", "ai-message", true);
 
   try {
     const reply = await fetchAIResponseWithRetry(prompt, 2);
 
-    if (tempThinking) tempThinking.remove();
-
+    thinkingBubble.remove();
     appendMessage(reply, "ai-message");
+    saveHistory("ai", reply);
 
-    history.push({ role: "user", text: prompt });
-    history.push({ role: "model", text: reply });
-
-    if (history.length > 30) history = history.slice(-30);
-
-  } catch {
-    if (tempThinking) tempThinking.remove();
-    appendMessage("⚠️ Network issue. Please try again.", "ai-message");
-  } finally {
-    isProcessing = false;
-    logo.classList.remove("thinking");
+  } catch (err) {
+    thinkingBubble.remove();
+    appendMessage("⚠️ Network issue. Try again.", "ai-message");
   }
+
+  isProcessing = false;
+  logo.classList.remove("thinking"); // Glow stop
 }
 
-/* ---------------- SMART RETRY SYSTEM ---------------- */
+// ============================================================
+// FETCH AI RESPONSE (RETRY + TRUNCATION FIX)
+// ============================================================
 async function fetchAIResponseWithRetry(prompt, retries = 2) {
-
-  const finalPrompt = applyLanguageLock(prompt);
+  const smartPrompt = applyLanguageLock(prompt);
 
   for (let i = 0; i <= retries; i++) {
     try {
       const res = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId, prompt: finalPrompt, history })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ clientId, prompt: smartPrompt, history })
       });
 
       const data = await res.json();
 
-      // QUOTA HANDLING
-      if (data.quotaStatus === "quota_warning") {
-        showAlert("⚠️ 80% quota used.");
-      }
+      // QUOTA CHECK
+      if (data.quotaStatus === "quota_warning") showAlert("⚠️ You've used 80% of your daily quota.");
       if (data.quotaStatus === "quota_exceeded") {
         showAlert("🚫 Daily quota reached. Try again tomorrow.");
-        disableInput();
         quotaExceeded = true;
+        disableInput();
         return "🚫 Daily quota reached. Try again tomorrow.";
       }
 
-      if (data.reply && data.reply.trim() !== "") {
-        let output = data.reply.trim();
+      let output = (data.reply || "").trim();
 
-        if (detectTruncated(output) && i < retries) {
-          const cont = await fetchContinuation(prompt);
-          if (cont) output += "\n\n" + cont;
-        }
-
-        return output;
+      if (output && detectTruncated(output) && i < retries) {
+        const cont = await fetchContinuation(prompt);
+        output = output + "\n\n" + cont;
       }
 
-    } catch {}
+      return output;
+
+    } catch (err) { console.warn("Retrying fetch..."); }
   }
 
-  return "⚠️ No valid response after multiple attempts.";
+  return "⚠️ Unable to get a complete response.";
 }
 
-/* -------------- Fetch Continuation (if needed) -------------- */
+// Continuation fetch
 async function fetchContinuation(prompt) {
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId, prompt: prompt + " (continue)", history })
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        clientId,
+        prompt: prompt + " (continue same context)",
+        history
+      })
     });
-
     const data = await res.json();
-    return data.reply?.trim() || "";
+    return data.reply ? data.reply.trim() : "";
   } catch {
     return "";
   }
 }
 
-/* ---------------- Language Lock (Hindi Safe) ---------------- */
-function applyLanguageLock(text) {
-  const devanagari = /[\u0900-\u097F]/;
-  const wantsTranslation = /\btranslate\b|अनुवाद/i.test(text);
-
-  if (wantsTranslation) return text;
-
-  if (devanagari.test(text)) {
-    return "उत्तर केवल उसी भाषा में दो जिसमें प्रश्न पूछा गया है।\n\n" + text;
-  }
-
-  return "Answer strictly in the same language as the user's message.\n\n" + text;
-}
-
-/* ---------------- Truncated Response Detection ---------------- */
-function detectTruncated(text) {
-  const last = text.trim().slice(-1);
-  return ![".", "?", "!", "।", "॥"].includes(last);
-}
-
-/* ---------------- Render + Append Message ---------------- */
-function appendMessage(text, type = "ai-message", temporary = false) {
-
-  const wrapper = document.createElement("div");
-  wrapper.className = `message ${type}`;
+// ============================================================
+// MESSAGE RENDERING
+// ============================================================
+function appendMessage(text, className = "ai-message", temporary = false) {
+  const wrap = document.createElement("div");
+  wrap.className = `message ${className}`;
 
   const content = document.createElement("div");
   content.className = "message-content";
   content.innerHTML = renderMarkdown(text);
 
-  wrapper.appendChild(content);
-  chatBox.appendChild(wrapper);
-
+  wrap.appendChild(content);
+  chatBox.appendChild(wrap);
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  wrapper.querySelectorAll("pre code").forEach(block => {
-    try { hljs.highlightElement(block); } catch {}
-
+  // Highlight + copy button
+  wrap.querySelectorAll("pre code").forEach(block => {
+    hljs.highlightElement(block);
     if (!block.parentNode.querySelector(".copy-btn")) {
       const btn = document.createElement("button");
       btn.className = "copy-btn";
       btn.textContent = "Copy";
-
       btn.onclick = () => {
         navigator.clipboard.writeText(block.innerText);
         btn.textContent = "Copied!";
-        setTimeout(() => (btn.textContent = "Copy"), 1500);
+        setTimeout(() => btn.textContent = "Copy", 1500);
       };
-
       block.parentNode.appendChild(btn);
     }
   });
 
-  return temporary ? wrapper : null;
+  return temporary ? wrap : null;
 }
 
-/* ---------------- Markdown Renderer ---------------- */
+// Markdown render
 function renderMarkdown(text) {
-  const escapeHTML = s =>
-    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const escape = s => s.replace(/[&<>]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
 
   text = text.replace(/```([\s\S]*?)```/g, (_, code) =>
-    `<pre><code>${escapeHTML(code)}</code></pre>`
+    `<pre><code>${escape(code)}</code></pre>`
   );
 
   text = text.replace(/`([^`]+)`/g, (_, code) =>
-    `<code>${escapeHTML(code)}</code>`
+    `<code>${escape(code)}</code>`
   );
 
-  text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-  text = text.replace(/\*(.*?)\*/g, "<i>$1</i>");
-
-  text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-    `<a href="$2" target="_blank" rel="noopener">$1</a>`
-  );
+  text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+             .replace(/\*(.*?)\*/g, "<i>$1</i>")
+             .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, `<a href="$2" target="_blank">$1</a>`);
 
   return text.replace(/\n/g, "<br>");
 }
 
-/* ---------------- Alert Toast ---------------- */
+// Save last 15 messages
+function saveHistory(role, text) {
+  history.push({ role, text });
+  if (history.length > 15) history = history.slice(-15);
+  localStorage.setItem("cloudai_history", JSON.stringify(history));
+}
+
+// Detect truncated response
+function detectTruncated(t) {
+  const last = t.trim().slice(-1);
+  return !".?!।॥".includes(last);
+}
+
+// Language lock
+function applyLanguageLock(prompt) {
+  const hindi = /[\u0900-\u097F]/;
+  const wantsTranslate = /translate|अनुवाद/i.test(prompt);
+
+  if (wantsTranslate) return prompt;
+  if (hindi.test(prompt))
+    return "उत्तर केवल हिंदी में दें।\n\n" + prompt;
+
+  return "Answer strictly in the same language as the user.\n\n" + prompt;
+}
+
+// Toast alert
 function showAlert(msg) {
   const el = document.createElement("div");
   el.className = "alert-toast";
   el.textContent = msg;
+
+  Object.assign(el.style, {
+    position: "fixed",
+    bottom: "100px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    background: "#00b7ff",
+    padding: "10px 20px",
+    color: "#02141f",
+    borderRadius: "10px",
+    fontWeight: "600",
+    zIndex: "9999",
+    boxShadow: "0 5px 20px rgba(0,0,0,0.4)",
+  });
+
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 3500);
 }
 
-/* ---------------- Disable Input on Quota Lock ---------------- */
+// Disable input when quota exceeded
 function disableInput() {
   userInput.disabled = true;
   sendBtn.disabled = true;
-  sendBtn.style.opacity = 0.5;
+  userInput.placeholder = "Daily limit reached.";
 }
