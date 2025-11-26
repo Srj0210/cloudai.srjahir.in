@@ -7,11 +7,13 @@
 
   <title>CloudAI | Smart AI Chat Assistant by SRJahir Tech — Free AI Chat Online</title>
   <meta name="description" content="Chat with CloudAI — a free, smart, and fast AI chat assistant by SRJahir Technologies. Experience intelligent conversation built with simplicity and innovation." />
-  <meta name="keywords" content="Free AI Chat, CloudAI, SRJahir, SRJahir Tools, AI Assistant, Chatbot, AI online, fast AI, Cloud AI" />
+  <meta name="keywords" content="Free AI Chat, CloudAI, SRJahir, AI Assistant, Chatbot, Cloud AI, GPT alternative, free AI bot" />
   <meta name="robots" content="index, follow" />
+  <meta name="author" content="SRJahir Technologies" />
   <link rel="canonical" href="https://cloudai.srjahir.in/" />
+  <link rel="sitemap" type="application/xml" href="https://cloudai.srjahir.in/sitemap.xml" />
 
-  <!-- Favicon -->
+  <!-- Favicons -->
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="manifest" href="manifest.json" />
 
@@ -19,17 +21,19 @@
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
 
-  <!-- Enable iOS Safari pull-refresh -->
+  <!-- Enable iOS pull-to-refresh -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
-  <!-- Security -->
+  <!-- Security CSP -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' https:;
     img-src 'self' data: https:;
     script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline';
-    style-src  'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
     font-src 'self' data:;
-  ">
+  " />
+
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
   <meta http-equiv="X-Frame-Options" content="DENY" />
 
   <!-- Google Analytics -->
@@ -37,7 +41,6 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
-
     gtag('js', new Date());
     gtag('config', 'G-T4XBK86HZ2');
 
@@ -52,40 +55,42 @@
 
 <body>
 
-  <!-- FLOATING LOGO -->
+  <!-- FLOATING OLD ROUNDED GLOW LOGO -->
   <header class="header">
     <img src="assets/img/logo.png" id="ai-logo" class="logo" alt="CloudAI logo" />
+    <div class="logo-sub">by SRJahir Tech.</div>
   </header>
 
-  <!-- CHAT AREA -->
+  <!-- MAIN CHAT -->
   <main class="chat-container">
+    
     <div id="chat-box" class="chat-box">
-      
-      <!-- First welcome bubble -->
+      <!-- Welcome message -->
       <div class="message ai-message">
         <div class="message-content">
           👋 <b>Hi, I'm CloudAI!</b><br>
-          Your personal assistant from <b>SRJahir Technologies</b>.<br>
-          Ask anything — I can even fetch live information when needed.
+          Your personal assistant — ask anything.<br>
+          I can use live search when required. ⚡
         </div>
       </div>
-
     </div>
 
-    <!-- INPUT AREA (ChatGPT Style) -->
+    <!-- INPUT AREA — ChatGPT style pill -->
     <div class="input-area">
       <div class="input-pill">
+
         <textarea 
           id="user-input"
           placeholder="Send a message..."
-          aria-label="Type your message"></textarea>
+          aria-label="Type a message"
+        ></textarea>
 
         <button id="send-btn" class="send-btn" onclick="trackMessageEvent()">
-          <!-- ChatGPT-like paper plane icon -->
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
             <path d="M3 11L21 3L14 21L11 14L3 11Z"></path>
           </svg>
         </button>
+
       </div>
     </div>
 
@@ -93,8 +98,9 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    CloudAI can make mistakes. Check important info. <br>
-    <span style="font-size:12px;color:#777;">by SRJahir Tech.</span>
+    CloudAI can make mistakes. Check important info.
+    <br>
+    <span class="credits">by SRJahir Tech.</span>
   </footer>
 
   <!-- Scripts -->
