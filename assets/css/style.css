@@ -1,3 +1,8 @@
+/* ============================================================
+   CloudAI — ChatGPT Style UI
+   by SRJahir Technologies ⚡
+   ============================================================ */
+
 :root {
   --bg: #0d1117;
   --panel: #161b22;
@@ -5,213 +10,238 @@
   --muted: #8b949e;
   --accent: #00b7ff;
   --border: #30363d;
-
-  --msg-width: 780px;       /* ChatGPT style max width */
-  --msg-radius: 14px;
-  --msg-padding: 16px 20px;
+  --input-max: 140px;
 }
 
-/* RESET */
+/* Global */
 * { box-sizing: border-box; }
-body, html {
+html, body { height: 100%; }
+
+body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  height: 100%;
+  font-family: Inter, system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
 }
 
-/* FLOATING LOGO */
+/* ============================================================
+   Floating ChatGPT-style LOGO (Rounded + Glow)
+   ============================================================ */
 .header {
   position: fixed;
   top: 16px;
-  right: 18px;
+  right: 20px;
   z-index: 2000;
   pointer-events: none;
   text-align: center;
 }
 
 .logo {
-  width: 70px;
-  height: 70px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  filter: drop-shadow(0 0 8px #00b7ff22);
-  transition: 0.2s ease;
+  object-fit: cover;
+  filter: drop-shadow(0 0 10px rgba(0, 183, 255, 0.3));
+  transition: filter .2s ease, transform .2s ease;
 }
 
+/* Glow only while thinking */
 .logo.thinking {
-  animation: glowPulse 1.4s infinite;
+  animation: glowAnim 1.4s infinite ease-in-out;
 }
 
-@keyframes glowPulse {
-  0%, 100% { filter: drop-shadow(0 0 10px var(--accent)); transform: scale(1); }
-  50% { filter: drop-shadow(0 0 22px var(--accent)); transform: scale(1.04); }
+@keyframes glowAnim {
+  0%,100% { filter: drop-shadow(0 0 10px var(--accent)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 22px var(--accent)); transform: scale(1.05); }
 }
 
-/* MAIN CHAT AREA */
+.logo-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ============================================================
+   Chat Layout — ChatGPT Style (centered, no bubbles)
+   ============================================================ */
+
 .chat-container {
-  flex: 1;
-  overflow-y: auto;
-  padding: 110px 18px 160px;
+  padding: 110px 20px 160px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  flex: 1;
 }
 
 .chat-box {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  width: 100%;
-  max-width: var(--msg-width);
-  margin: 0 auto;
+  gap: 18px;
+  scroll-behavior: smooth;
 }
 
-/* CHATGPT STYLE MESSAGES */
+/* ChatGPT-style messages (cards, centered) */
 .message {
   width: 100%;
-  padding: var(--msg-padding);
-  border-radius: var(--msg-radius);
-  font-size: 16px;
-  line-height: 1.65;
   background: var(--panel);
-  border: 1px solid rgba(255,255,255,0.04);
-  animation: fadeIn 0.22s ease;
-  word-wrap: break-word;
-  white-space: pre-wrap;
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 18px 20px;
+  border-radius: 14px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03),
+              0 0 20px rgba(0,0,0,0.3);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text);
+  animation: fadeIn .25s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* USER */
+/* User message (slightly bluish tint like ChatGPT) */
 .user-message {
-  background: linear-gradient(135deg,#007aff,#00b7ff);
+  background: linear-gradient(90deg, #0d66ff, #00b7ff);
   color: white;
   text-align: right;
 }
 
-/* AI */
+/* AI message card (ChatGPT style) */
 .ai-message {
-  border-left: 4px solid #00b7ff44;
-  background: linear-gradient(180deg,#161b22,#13161d);
+  background: linear-gradient(180deg, var(--panel), #12151a);
+  border-left: 4px solid rgba(0, 183, 255, 0.25);
 }
 
-/* CONTENT WRAPPER */
-.message-content {
-  font-size: 16px;
-}
+/* ============================================================
+   CODE BLOCKS (ChatGPT style)
+   ============================================================ */
 
-/* LISTS like ChatGPT */
-.message-content ul {
-  padding-left: 20px;
-  margin: 8px 0;
-}
-.message-content li {
-  margin: 4px 0;
-}
-
-/* INLINE CODE */
-code {
-  background: #1b222c;
-  padding: 3px 6px;
-  border-radius: 6px;
-  color: var(--accent);
-  font-family: "Fira Code", monospace;
-}
-
-/* CODE BLOCK */
 pre {
-  background: #0f141b;
+  background: #0e141a;
+  color: #cdd9e5;
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow-x: auto;
-  border: 1px solid #1c2229;
-  margin: 10px 0;
+  font-size: 14px;
+  border: 1px solid #1b1f24;
   position: relative;
-}
-pre code {
-  display: block;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
-/* COPY BUTTON */
+code {
+  font-family: "Fira Code", monospace;
+  color: #00b7ff;
+  background: #1b1f24;
+  padding: 3px 5px;
+  border-radius: 6px;
+}
+
+/* Copy Button */
 .copy-btn {
   position: absolute;
   top: 8px;
   right: 10px;
-  padding: 5px 10px;
   background: var(--accent);
   border: none;
   color: #fff;
+  padding: 6px 9px;
   border-radius: 6px;
-  font-size: 12px;
   cursor: pointer;
+  font-size: 12px;
+  box-shadow: 0 0 8px rgba(0,183,255,.4);
 }
+.copy-btn:hover { background: #0194cc; }
 
-/* INPUT PILL - ChatGPT style */
+/* ============================================================
+   INPUT AREA (ChatGPT pill)
+   ============================================================ */
+
 .input-area {
   position: fixed;
-  bottom: 18px;
-  left: 0;
+  bottom: 20px;
+  left: 0; 
   right: 0;
   display: flex;
   justify-content: center;
-  z-index: 2000;
+  z-index: 3000;
 }
 
 .input-pill {
   width: 100%;
-  max-width: var(--msg-width);
+  max-width: 900px;
+  background: #0f141a;
+  border-radius: 999px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
-  background: #11141a;
-  padding: 10px 14px;
-  border-radius: 14px;
-  border: 1px solid #1f242a;
-  box-shadow: 0 6px 25px rgba(0,0,0,0.45);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
 }
 
+/* Textarea */
 .input-pill textarea {
   flex: 1;
   background: transparent;
   border: none;
-  color: white;
+  color: var(--text);
   resize: none;
-  font-size: 16px;
-  line-height: 1.45;
-  max-height: 150px;
+  min-height: 38px;
+  max-height: var(--input-max);
+  font-size: 15px;
+  padding: 10px;
   outline: none;
 }
 
+/* Send Button */
 .send-btn {
-  width: 44px;
-  height: 44px;
-  background: var(--accent);
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
+  margin-left: 10px;
   border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0d66ff, #00b7ff);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  cursor: pointer;
-  margin-left: 10px;
-  transition: 0.2s;
+  transition: .15s ease;
+  box-shadow: 0 0 15px rgba(0,183,255,0.4);
 }
 
 .send-btn:hover {
   transform: translateY(-2px);
 }
 
-/* FOOTER */
+/* ============================================================
+   Footer
+   ============================================================ */
+
 .footer {
-  text-align: center;
-  font-size: 13px;
-  color: var(--muted);
   position: fixed;
   bottom: 0;
-  left: 0; right: 0;
-  padding-bottom: 4px;
+  left: 0; 
+  right: 0;
+  text-align: center;
+  padding: 6px 0 10px;
+  font-size: 12px;
+  pointer-events: none;
+  color: var(--muted);
+}
+
+.credits {
+  font-size: 11px;
+  color: #777;
+}
+
+/* Mobile */
+@media (max-width: 720px) {
+  .logo { width: 60px; height: 60px; }
+  .chat-container { padding: 90px 14px 150px; }
+  .input-pill { margin: 0 12px; }
 }
