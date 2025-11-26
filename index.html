@@ -1,69 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <title>CloudAI | Smart AI Chat Assistant by SRJahir Tech — Free AI Chat Online</title>
   <meta name="description" content="Chat with CloudAI — a free, smart, and fast AI chat assistant by SRJahir Technologies. Experience intelligent conversation built with simplicity and innovation." />
-  <meta name="keywords" content="Free AI Chat, CloudAI, SRJahir, SRJahir Tools, AI Assistant, Chatbot, srjahir.in, AI chat online, free AI bot" />
+  <meta name="keywords" content="Free AI Chat, CloudAI, SRJahir, SRJahir Tools, AI Assistant, Chatbot, srjahir.in, Free AI, Free AI Chat" />
   <meta name="author" content="Suraj Maitra (SRJ), SRJahir Technologies" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://cloudai.srjahir.in/" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="favicon.png" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="https://cloudai.srjahir.in/sitemap.xml" />
 
-  <!-- HighlightJS style for code blocks -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" integrity="sha512-9mjqD5U6KbxHkD6Tqibqq5/h8tnPjfsTntG5wSR5x3Wl7i+8xHRZYbdAajmhpDJbCa6RjyrR0CVxUu3XtZ5kPA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- ===================== 🌐 FAVICONS (Option B - full PWA pack) ===================== -->
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d1117">
 
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" integrity="" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <!-- GA (kept) -->
+  <!-- Enable iOS overscroll refresh -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <!-- ===================== ✅ CLOUD-AI SEO & ANALYTICS ===================== -->
+  <!-- Replace G-XXXXXXX with your GA4 measurement id if needed -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-T4XBK86HZ2');
-    function trackMessageEvent(){ gtag('event','cloudai_message_sent',{event_category:'Chat',event_label:'User sent a message',value:1}); }
+
+    function trackMessageEvent() {
+      gtag('event', 'cloudai_message_sent', {
+        event_category: 'Chat',
+        event_label: 'User sent a message',
+        value: 1
+      });
+    }
   </script>
 
-  <!-- Security / CSP (kept, adjust if necessary) -->
+  <!-- ===================== 🧠 STRUCTURED DATA (SCHEMA) ===================== -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"CloudAI",
+    "url":"https://cloudai.srjahir.in/",
+    "image":"https://cloudai.srjahir.in/assets/img/cloudai-preview.png",
+    "description":"CloudAI is an AI-powered assistant developed by SRJahir Technologies for intelligent, fast, and interactive conversations.",
+    "creator":{"@type":"Organization","name":"SRJahir Technologies","url":"https://srjahir.in"},
+    "applicationCategory":"AI Assistant",
+    "operatingSystem":"Web-based"
+  }
+  </script>
+
+  <!-- ===================== 🔒 SECURITY HEADERS (meta) ===================== -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; img-src 'self' data: https:; script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' data: https:;">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+
 </head>
 <body>
-  <!-- Floating logo top-right (rounded) -->
-  <header class="header" aria-hidden="true">
+  <!-- Floating transparent logo in top-right (pointer-events none) -->
+  <header class="header" role="banner" aria-hidden="true">
     <img src="assets/img/logo.png" id="ai-logo" class="logo" alt="CloudAI logo" />
+    <div class="logo-sub small">by SRJahir Tech.</div>
   </header>
 
-  <!-- Main chat area -->
-  <main class="chat-container" id="main-container">
-    <div id="chat-box" class="chat-box" aria-live="polite"></div>
+  <!-- Main chat area (ChatGPT-like layout) -->
+  <main class="chat-container" id="main-container" role="main">
+    <div id="chat-box" class="chat-box" aria-live="polite">
+      <div class="ai-message message">
+        <div class="message-content">
+          👋 <strong>Hi — I'm CloudAI</strong>. Ask me anything. (I use web results when needed.)
+        </div>
+      </div>
+    </div>
 
-    <!-- Input pill (ChatGPT-like) -->
-    <div class="input-area" aria-hidden="false">
+    <!-- Input: modern rounded pill (Enter send, Shift+Enter newline) -->
+    <div class="input-area">
       <div class="input-pill">
-        <textarea id="user-input" placeholder="Send a message..." aria-label="Type your message" rows="1"></textarea>
-        <button id="send-btn" class="send-btn" aria-label="Send">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11L21 3L14 21L11 14L3 11Z" fill="currentColor"/></svg>
+        <textarea id="user-input" aria-label="Type your message" placeholder="Type your message... (Shift+Enter for newline)"></textarea>
+        <button id="send-btn" class="send-btn" aria-label="Send message" onclick="trackMessageEvent()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 11L21 3L14 21L11 14L3 11Z" fill="currentColor"/>
+          </svg>
         </button>
       </div>
     </div>
   </main>
 
-  <footer class="footer">
-    CloudAI can make mistakes. Check important info.
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-line">CloudAI can make mistakes. Check important info.</div>
+    <div class="credits small">by SRJahir Tech.</div>
   </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-FRv/5zJrIh9C0sD4ul8OSBtC9wrq5Eok5Lb+g7TVZtMxGJ4Bf5r7JwJvS4ibZcNUV5R9Flp9FGw6vTrwGvnhxQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Chat logic (your provided worker endpoint used inside) -->
   <script src="assets/js/chat.js"></script>
 </body>
 </html>
