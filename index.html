@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -7,105 +7,63 @@
 
   <title>CloudAI | Smart AI Chat Assistant by SRJahir Tech — Free AI Chat Online</title>
   <meta name="description" content="Chat with CloudAI — a free, smart, and fast AI chat assistant by SRJahir Technologies. Experience intelligent conversation built with simplicity and innovation." />
-  <meta name="keywords" content="Free AI Chat, CloudAI, SRJahir, AI Assistant, Chatbot, Cloud AI, GPT alternative, free AI bot" />
+  <meta name="keywords" content="Free AI Chat, CloudAI, SRJahir, SRJahir Tools, AI Assistant, Chatbot, srjahir.in, AI chat online, free AI bot" />
+  <meta name="author" content="Suraj Maitra (SRJ), SRJahir Technologies" />
   <meta name="robots" content="index, follow" />
-  <meta name="author" content="SRJahir Technologies" />
   <link rel="canonical" href="https://cloudai.srjahir.in/" />
-  <link rel="sitemap" type="application/xml" href="https://cloudai.srjahir.in/sitemap.xml" />
-
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.png" />
+
+  <!-- HighlightJS style for code blocks -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" integrity="sha512-9mjqD5U6KbxHkD6Tqibqq5/h8tnPjfsTntG5wSR5x3Wl7i+8xHRZYbdAajmhpDJbCa6RjyrR0CVxUu3XtZ5kPA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
 
-  <!-- Enable iOS pull-to-refresh -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-
-  <!-- Security CSP -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' https:;
-    img-src 'self' data: https:;
-    script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline';
-    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
-    font-src 'self' data:;
-  " />
-
-  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-  <meta http-equiv="X-Frame-Options" content="DENY" />
-
-  <!-- Google Analytics -->
+  <!-- GA (kept) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
+    function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-T4XBK86HZ2');
-
-    function trackMessageEvent(){
-      gtag('event','cloudai_message_sent',{
-        event_category:'Chat',
-        event_label:'User sent a message'
-      });
-    }
+    function trackMessageEvent(){ gtag('event','cloudai_message_sent',{event_category:'Chat',event_label:'User sent a message',value:1}); }
   </script>
+
+  <!-- Security / CSP (kept, adjust if necessary) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; img-src 'self' data: https:; script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' data: https:;">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
 </head>
-
 <body>
-
-  <!-- FLOATING OLD ROUNDED GLOW LOGO -->
-  <header class="header">
+  <!-- Floating logo top-right (rounded) -->
+  <header class="header" aria-hidden="true">
     <img src="assets/img/logo.png" id="ai-logo" class="logo" alt="CloudAI logo" />
-    <div class="logo-sub">by SRJahir Tech.</div>
   </header>
 
-  <!-- MAIN CHAT -->
-  <main class="chat-container">
-    
-    <div id="chat-box" class="chat-box">
-      <!-- Welcome message -->
-      <div class="message ai-message">
-        <div class="message-content">
-          👋 <b>Hi, I'm CloudAI!</b><br>
-          Your personal assistant — ask anything.<br>
-          I can use live search when required. ⚡
-        </div>
-      </div>
-    </div>
+  <!-- Main chat area -->
+  <main class="chat-container" id="main-container">
+    <div id="chat-box" class="chat-box" aria-live="polite"></div>
 
-    <!-- INPUT AREA — ChatGPT style pill -->
-    <div class="input-area">
+    <!-- Input pill (ChatGPT-like) -->
+    <div class="input-area" aria-hidden="false">
       <div class="input-pill">
-
-        <textarea 
-          id="user-input"
-          placeholder="Send a message..."
-          aria-label="Type a message"
-        ></textarea>
-
-        <button id="send-btn" class="send-btn" onclick="trackMessageEvent()">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-            <path d="M3 11L21 3L14 21L11 14L3 11Z"></path>
-          </svg>
+        <textarea id="user-input" placeholder="Send a message..." aria-label="Type your message" rows="1"></textarea>
+        <button id="send-btn" class="send-btn" aria-label="Send">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11L21 3L14 21L11 14L3 11Z" fill="currentColor"/></svg>
         </button>
-
       </div>
     </div>
-
   </main>
 
-  <!-- FOOTER -->
   <footer class="footer">
     CloudAI can make mistakes. Check important info.
-    <br>
-    <span class="credits">by SRJahir Tech.</span>
   </footer>
 
   <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-FRv/5zJrIh9C0sD4ul8OSBtC9wrq5Eok5Lb+g7TVZtMxGJ4Bf5r7JwJvS4ibZcNUV5R9Flp9FGw6vTrwGvnhxQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="assets/js/chat.js"></script>
-
 </body>
 </html>
