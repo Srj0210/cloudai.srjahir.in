@@ -1,158 +1,134 @@
 /* RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin:0; padding:0; box-sizing:border-box; }
 
 body {
   background: #0d0d0d;
   color: #e4e4e4;
   font-family: "Inter", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  padding-bottom: 120px;
+  padding-bottom: 160px;
 }
 
-/* FLOATING LOGO */
+/* Floating Logo */
 .header {
   position: fixed;
   top: 10px;
   right: 12px;
-  z-index: 100;
+  z-index: 1000;
 }
-
 .logo {
-  width: 78px;
-  height: 78px;
+  width: 82px;
+  height: 82px;
   border-radius: 50%;
-  animation: cloudGlow 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 18px #00aaff);
+}
+.logo.thinking {
+  animation: glowLoop 1.6s infinite ease-in-out;
+}
+@keyframes glowLoop {
+  0% { filter: drop-shadow(0 0 16px #009dff); }
+  50% { filter: drop-shadow(0 0 32px #00d0ff); }
+  100% { filter: drop-shadow(0 0 16px #009dff); }
 }
 
-@keyframes cloudGlow {
-  0% { box-shadow: 0 0 20px #0af; }
-  50% { box-shadow: 0 0 45px #00c8ff; }
-  100% { box-shadow: 0 0 20px #0af; }
-}
-
-/* CHAT CONTAINER */
+/* Chat Container */
 .chat-container {
-  width: 100%;
-  max-width: 900px;
-  margin: 110px auto 0;
-  padding: 15px;
+  width:100%;
+  max-width:900px;
+  margin:120px auto 0;
+  padding:14px;
+}
+.message { width:100%; display:flex; margin-bottom:14px; }
+.user-message { justify-content:flex-end; }
+.ai-message { justify-content:flex-start; }
+
+/* Pure ChatGPT Bubbles */
+.message-content {
+  max-width:80%;
+  padding:14px 18px;
+  border-radius:14px;
+  font-size:15px;
+  line-height:1.55;
+  white-space:pre-wrap;
+}
+.ai-message .message-content {
+  background:#1e1e1e;
+  border:1px solid #2b2b2b;
+}
+.user-message .message-content {
+  background:linear-gradient(90deg,#0daeff,#1577ff);
+  color:#fff;
 }
 
-.chat-box {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-/* BUBBLES (ChatGPT style) */
-.message {
-  display: flex;
-  width: 100%;
-}
-
-.ai {
-  justify-content: flex-start;
-}
-
-.user {
-  justify-content: flex-end;
-}
-
-.bubble {
-  max-width: 85%;
-  padding: 14px 18px;
-  border-radius: 16px;
-  line-height: 1.55;
-  font-size: 15px;
-}
-
-.ai-bubble {
-  background: #1e1e1e;
-  border: 1px solid #2a2a2a;
-  box-shadow: 0 0 4px rgba(0,0,0,0.5);
-}
-
-.user-bubble {
-  background: linear-gradient(90deg, #0daeff, #1577ff);
-  color: #fff;
-  font-weight: 500;
-  align-self: flex-end;
-}
-
-/* EXACT ChatGPT — bubble auto-fit */
-.user-bubble, .ai-bubble {
-  width: fit-content;
-  max-width: 90%;
-  white-space: pre-wrap;
-}
-
-/* CODE BLOCK */
+/* Code Blocks */
 pre code {
-  display: block;
-  padding: 16px;
-  background: #111;
-  border-radius: 14px;
-  border: 1px solid #333;
-  overflow-x: auto;
-  font-size: 14px;
+  display:block;
+  background:#111;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid #333;
+  overflow-x:auto;
+  font-size:14px;
 }
 
-pre {
-  margin: 6px 0;
-}
-
-/* INPUT AREA */
+/* Input Section (ChatGPT style bottom bar) */
 .input-area {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #0d0d0d;
-  padding: 12px;
+  position:fixed;
+  left:0; bottom:0; width:100%;
+  padding:12px;
+  background:#0d0d0d;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  align-items:center;
 }
 
+/* File + Mic Buttons */
+.file-btn, .mic-btn {
+  background:#1a1a1a;
+  border:1px solid #333;
+  color:#fff;
+  font-size:18px;
+  width:44px; height:44px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Input Bar */
 .input-pill {
-  background: #1a1a1a;
-  padding: 10px 14px;
-  border-radius: 40px;
-  border: 1px solid #2c2c2c;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  flex:1;
+  display:flex;
+  background:#1a1a1a;
+  border:1px solid #2a2a2a;
+  padding:10px 14px;
+  border-radius:40px;
+  align-items:center;
 }
-
 textarea {
-  flex: 1;
-  resize: none;
-  border: none;
-  background: transparent;
-  color: #fff;
-  font-size: 15px;
-  height: 18px;
-  max-height: 120px;
-  outline: none;
+  flex:1;
+  resize:none;
+  border:none;
+  background:transparent;
+  color:#fff;
+  outline:none;
+  font-size:15px;
 }
 
 .send-btn {
-  background: #007bff;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background:#0b6bff;
+  border:none;
+  width:42px; height:42px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-/* FOOTER */
+/* Footer */
 .footer {
-  text-align: center;
-  font-size: 12px;
-  color: #757575;
-  padding: 10px;
-  margin-top: 40px;
+  text-align:center;
+  font-size:12px;
+  color:#858585;
+  margin-top:16px;
 }
