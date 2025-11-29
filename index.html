@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -9,10 +8,8 @@
   <title>CloudAI | Smart AI Chat Assistant by SRJahir Tech</title>
 
   <!-- SEO -->
-  <meta name="description"
-    content="CloudAI — A fast, powerful AI chat assistant by SRJahir Tech. Ask anything, get smart answers instantly." />
-  <meta name="keywords"
-    content="CloudAI, SRJahir Tech, AI Chatbot, Free AI Chat, Smart AI Assistant, ChatGPT alternative" />
+  <meta name="description" content="CloudAI — Powerful AI Chat Assistant by SRJahir Tech. Ask anything, use voice, upload images & files, get smart answers instantly." />
+  <meta name="keywords" content="CloudAI, SRJahir Tech, AI Chat, ChatGPT alternative, Voice AI, Image AI, File AI" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://cloudai.srjahir.in/" />
 
@@ -22,23 +19,22 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
 
   <!-- Security -->
   <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self' https:;
-      img-src 'self' data: https:;
-      script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline';
-      style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
-      font-src 'self' data:;
-    " />
+    default-src 'self' https:;
+    img-src 'self' data: https:;
+    script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+    font-src 'self' data:;
+  " />
 
   <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
+  <script async src="https://www.googletag.com/gtag/js?id=G-T4XBK86HZ2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
+    function gtag(){ dataLayer.push(arguments); }
     gtag("js", new Date());
     gtag("config", "G-T4XBK86HZ2");
   </script>
@@ -46,29 +42,36 @@
 
 <body>
 
-  <!-- FLOATING LOGO (Old CloudAI style) -->
+  <!-- FLOATING CLOUD LOGO -->
   <header class="header">
     <img src="logo.png" id="ai-logo" class="logo" alt="CloudAI logo" />
   </header>
 
   <!-- CHAT AREA -->
-  <main class="chat-container">
-    <div id="chat-box" class="chat-box">
-
-      <!-- Welcome -->
-      <div class="ai message">
-        <div class="bubble ai-bubble">
+  <main class="chat-container" id="chat-box">
+      <div class="message ai-message">
+        <div class="message-content">
           👋 <b>Hi — I'm CloudAI.</b><br>
-          Ask me anything. (I can use web results when needed)
+          Ask anything. You can use <b>voice</b>, <b>images</b>, or <b>documents</b>.
         </div>
       </div>
+  </main>
 
-    </div>
+  <!-- INPUT BAR - ChatGPT style -->
+  <div class="input-area">
 
-    <!-- INPUT BAR -->
-    <div class="input-area">
+      <!-- File Upload -->
+      <input type="file" id="file-input" hidden />
+
+      <button class="file-btn" id="file-btn" aria-label="Upload file">
+        📎
+      </button>
+
+      <!-- Voice Input -->
+      <button class="mic-btn" id="mic-btn" aria-label="Voice input">🎤</button>
+
       <div class="input-pill">
-        <textarea id="user-input" placeholder="Type your message..." aria-label="Type your message"></textarea>
+        <textarea id="user-input" placeholder="Message CloudAI..." aria-label="Type your message"></textarea>
 
         <button id="send-btn" class="send-btn">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff">
@@ -76,10 +79,10 @@
           </svg>
         </button>
       </div>
-    </div>
-  </main>
 
-  <!-- FOOTER -->
+  </div>
+
+  <!-- Footer -->
   <footer class="footer">
     SRJahir Tech © 2025
   </footer>
@@ -88,5 +91,4 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="assets/js/chat.js"></script>
 </body>
-
 </html>
