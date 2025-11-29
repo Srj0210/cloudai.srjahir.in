@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CloudAI — Live Talk</title>
+  <link rel="icon" href="favicon.png" />
+  <link rel="stylesheet" href="assets/css/live.css" />
+  <meta name="robots" content="noindex, nofollow" />
+</head>
+<body>
+  <main class="live-center">
+    <img src="logo.png" alt="CloudAI" id="live-logo" class="live-logo" />
+    <div id="live-sub" class="live-sub">Tap to Live</div>
+
+    <div class="controls">
+      <button id="start-btn" class="control-btn">Start Listening</button>
+      <button id="stop-btn" class="control-btn" disabled>Stop</button>
+    </div>
+
+    <div id="transcript" class="transcript small">Transcript will appear here...</div>
+
+    <div id="status" class="small muted">Ready</div>
+    <a href="index.html" class="back small muted">Back to Chat</a>
+  </main>
+
+  <script src="assets/js/live.js"></script>
+</body>
+</html>
