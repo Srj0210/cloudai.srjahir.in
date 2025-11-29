@@ -4,91 +4,74 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CloudAI | Smart AI Chat Assistant — SRJahir Tech</title>
 
-  <title>CloudAI | Smart AI Chat Assistant by SRJahir Tech</title>
-
-  <!-- SEO -->
-  <meta name="description" content="CloudAI — Powerful AI Chat Assistant by SRJahir Tech. Ask anything, use voice, upload images & files, get smart answers instantly." />
-  <meta name="keywords" content="CloudAI, SRJahir Tech, AI Chat, ChatGPT alternative, Voice AI, Image AI, File AI" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://cloudai.srjahir.in/" />
-
-  <!-- Favicon -->
+  <!-- Favicons -->
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- CSS -->
+  <!-- SEO / Social -->
+  <meta name="description" content="CloudAI — a smart AI assistant by SRJahir Technologies. Chat, speak, and get instant answers." />
+  <link rel="canonical" href="https://cloudai.srjahir.in/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Styles -->
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
 
-  <!-- Security -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' https:;
-    img-src 'self' data: https:;
-    script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline';
-    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
-    font-src 'self' data:;
-  " />
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletag.com/gtag/js?id=G-T4XBK86HZ2"></script>
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag("js", new Date());
-    gtag("config", "G-T4XBK86HZ2");
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-T4XBK86HZ2');
+    function trackMessageEvent(){ gtag('event','cloudai_message_sent',{event_category:'Chat',event_label:'User sent a message'}); }
   </script>
+
+  <!-- Basic security (adjust for your assets/hosts) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; img-src 'self' data: https:; script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' data:;">
 </head>
-
 <body>
-
-  <!-- FLOATING CLOUD LOGO -->
-  <header class="header">
-    <img src="logo.png" id="ai-logo" class="logo" alt="CloudAI logo" />
+  <!-- Floating transparent logo (top-right) -->
+  <header class="header" aria-hidden="true">
+    <img src="logo.png" alt="CloudAI logo" id="ai-logo" class="logo" />
+    <!-- no subtext under logo here (you asked removed) -->
   </header>
 
-  <!-- CHAT AREA -->
-  <main class="chat-container" id="chat-box">
+  <!-- Main chat area -->
+  <main class="chat-container" id="main-container">
+    <div id="chat-box" class="chat-box" aria-live="polite">
       <div class="message ai-message">
         <div class="message-content">
-          👋 <b>Hi — I'm CloudAI.</b><br>
-          Ask anything. You can use <b>voice</b>, <b>images</b>, or <b>documents</b>.
+          👋 <strong>Hi — I'm CloudAI.</strong> Ask me anything. (I can use live web results if needed.)
         </div>
       </div>
-  </main>
+    </div>
 
-  <!-- INPUT BAR - ChatGPT style -->
-  <div class="input-area">
-
-      <!-- File Upload -->
-      <input type="file" id="file-input" hidden />
-
-      <button class="file-btn" id="file-btn" aria-label="Upload file">
-        📎
-      </button>
-
-      <!-- Voice Input -->
-      <button class="mic-btn" id="mic-btn" aria-label="Voice input">🎤</button>
-
+    <!-- Input pill (ChatGPT-like) -->
+    <div class="input-area" role="region" aria-label="Message input">
       <div class="input-pill">
-        <textarea id="user-input" placeholder="Message CloudAI..." aria-label="Type your message"></textarea>
-
-        <button id="send-btn" class="send-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff">
-            <path d="M3 11L21 3L14 21L11 14L3 11Z"></path>
+        <textarea id="user-input" placeholder="Type your message... (Shift+Enter = newline)"></textarea>
+        <button id="send-btn" class="send-btn" aria-label="Send message" onclick="trackMessageEvent()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 11L21 3L14 21L11 14L3 11Z" fill="currentColor"/>
           </svg>
         </button>
       </div>
+    </div>
+  </main>
 
-  </div>
-
-  <!-- Footer -->
+  <!-- Footer (very small) -->
   <footer class="footer">
-    SRJahir Tech © 2025
+    <div class="footer-line">CloudAI can make mistakes. Check important info.</div>
+    <div class="credits small">SRJahir Tech © 2025</div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Chat logic -->
   <script src="assets/js/chat.js"></script>
 </body>
 </html>
