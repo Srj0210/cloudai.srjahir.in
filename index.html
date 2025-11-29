@@ -4,74 +4,88 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>CloudAI | Smart AI Chat Assistant — SRJahir Tech</title>
 
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="manifest" href="manifest.json" />
-
-  <!-- SEO / Social -->
-  <meta name="description" content="CloudAI — a smart AI assistant by SRJahir Technologies. Chat, speak, and get instant answers." />
+  <title>CloudAI — Smart AI Chat Assistant by SRJahir Tech</title>
+  <meta name="description" content="CloudAI — Fast, powerful AI assistant built by SRJahir Tech. Ask anything. Voice + file + live mode included." />
   <link rel="canonical" href="https://cloudai.srjahir.in/" />
-  <meta name="robots" content="index,follow" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="manifest" href="manifest.json" />
 
   <!-- Styles -->
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
 
-  <!-- GA4 -->
+  <!-- GA -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-T4XBK86HZ2');
-    function trackMessageEvent(){ gtag('event','cloudai_message_sent',{event_category:'Chat',event_label:'User sent a message'}); }
+    gtag('config','G-T4XBK86HZ2');
   </script>
-
-  <!-- Basic security (adjust for your assets/hosts) -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; img-src 'self' data: https:; script-src 'self' https://cdnjs.cloudflare.com https://www.googletagmanager.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' data:;">
 </head>
+
 <body>
-  <!-- Floating transparent logo (top-right) -->
-  <header class="header" aria-hidden="true">
-    <img src="logo.png" alt="CloudAI logo" id="ai-logo" class="logo" />
-    <!-- no subtext under logo here (you asked removed) -->
+
+  <!-- FLOATING LOGO (tap → Live Mode) -->
+  <header class="header">
+    <img src="logo.png" id="ai-logo" class="logo" alt="CloudAI" onclick="openLiveMode()" />
   </header>
 
-  <!-- Main chat area -->
-  <main class="chat-container" id="main-container">
-    <div id="chat-box" class="chat-box" aria-live="polite">
-      <div class="message ai-message">
-        <div class="message-content">
-          👋 <strong>Hi — I'm CloudAI.</strong> Ask me anything. (I can use live web results if needed.)
+  <!-- CHAT -->
+  <main class="chat-container">
+    <div id="chat-box" class="chat-box">
+
+      <div class="message ai">
+        <div class="bubble ai-bubble">
+          👋 <b>Hi, I'm CloudAI.</b><br>
+          Ask me anything. I can speak, listen, fetch live data and process files too.
         </div>
       </div>
+
     </div>
 
-    <!-- Input pill (ChatGPT-like) -->
-    <div class="input-area" role="region" aria-label="Message input">
+    <!-- SUGGESTIONS (auto appears after each AI reply) -->
+    <div id="suggestions" class="suggestions hidden"></div>
+
+    <!-- INPUT BAR -->
+    <div class="input-area">
       <div class="input-pill">
-        <textarea id="user-input" placeholder="Type your message... (Shift+Enter = newline)"></textarea>
-        <button id="send-btn" class="send-btn" aria-label="Send message" onclick="trackMessageEvent()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M3 11L21 3L14 21L11 14L3 11Z" fill="currentColor"/>
-          </svg>
+
+        <!-- FILE UPLOAD -->
+        <input type="file" id="file-input" class="file-input" />
+
+        <!-- TEXTAREA -->
+        <textarea id="user-input" placeholder="Message CloudAI…" aria-label="Your message"></textarea>
+
+        <!-- MIC -->
+        <button id="mic-btn" class="mic-btn">
+          🎤
         </button>
+
+        <!-- SEND -->
+        <button id="send-btn" class="send-btn">
+          ➤
+        </button>
+
       </div>
     </div>
   </main>
 
-  <!-- Footer (very small) -->
-  <footer class="footer">
-    <div class="footer-line">CloudAI can make mistakes. Check important info.</div>
-    <div class="credits small">SRJahir Tech © 2025</div>
-  </footer>
+  <!-- FOOTER -->
+  <footer class="footer"> © 2025 SRJahir Tech </footer>
 
-  <!-- Libraries -->
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
-  <!-- Chat logic -->
   <script src="assets/js/chat.js"></script>
+
+  <script>
+    function openLiveMode(){
+      window.location.href = "live.html";
+    }
+  </script>
+
 </body>
 </html>
