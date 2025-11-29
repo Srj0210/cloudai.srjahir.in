@@ -2,48 +2,76 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>CloudAI Live Mode</title>
+<title>CloudAI Live</title>
 <link rel="stylesheet" href="assets/css/style.css"/>
 <style>
-.live-container{
+
+body {
+  background:#000;
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   flex-direction:column;
+  color:white;
 }
-.live-logo{
-  width:200px;
-  height:200px;
+
+#live-logo {
+  width:220px;
+  height:220px;
   border-radius:50%;
-  box-shadow:0 0 25px #00bfff;
-  animation:glow 2s infinite ease-in-out;
+  background:#000;
+  padding:18px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-shadow:0 0 30px #00cfff;
+  transition:.25s;
+  position:relative;
 }
-.live-text{
-  margin-top:18px;
+
+.wave {
+  position:absolute;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  border:3px solid #00cfff55;
+  animation:wave 2s infinite ease-out;
+}
+
+@keyframes wave {
+  0% { transform:scale(1); opacity:1;}
+  100% { transform:scale(1.6); opacity:0; }
+}
+
+#status-text {
+  margin-top:20px;
   font-size:18px;
-  color:#8cdfff;
   opacity:.9;
 }
-.back-btn{
+
+.stop-btn {
   margin-top:40px;
-  color:#fff;
-  padding:10px 18px;
-  border:1px solid #444;
+  padding:10px 16px;
+  background:#ff3b30;
+  border:none;
+  color:white;
   border-radius:12px;
-  cursor:pointer;
+  font-size:16px;
 }
+
 </style>
 </head>
 <body>
 
-<div class="live-container">
-  <img src="logo.png" class="live-logo" id="liveLogo" />
-  <div class="live-text">Tap logo to talk</div>
-  <div class="back-btn" onclick="location.href='index.html'">← Back to Chat</div>
+<div id="live-logo">
+  <img src="logo.png" width="160"/>
 </div>
 
-<script src="assets/js/live.js"></script>
+<div id="status-text">Tap to start Live Talk</div>
 
+<button id="stopBtn" class="stop-btn" style="display:none;">Stop</button>
+
+<script src="assets/js/live.js"></script>
 </body>
 </html>
