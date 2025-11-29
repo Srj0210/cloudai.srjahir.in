@@ -1,29 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CloudAI — Live Talk</title>
-  <link rel="icon" href="favicon.png" />
-  <link rel="stylesheet" href="assets/css/live.css" />
-  <meta name="robots" content="noindex, nofollow" />
+<meta charset="utf-8"/>
+<title>CloudAI Live Mode</title>
+<link rel="stylesheet" href="assets/css/style.css"/>
+<style>
+.live-container{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+.live-logo{
+  width:200px;
+  height:200px;
+  border-radius:50%;
+  box-shadow:0 0 25px #00bfff;
+  animation:glow 2s infinite ease-in-out;
+}
+.live-text{
+  margin-top:18px;
+  font-size:18px;
+  color:#8cdfff;
+  opacity:.9;
+}
+.back-btn{
+  margin-top:40px;
+  color:#fff;
+  padding:10px 18px;
+  border:1px solid #444;
+  border-radius:12px;
+  cursor:pointer;
+}
+</style>
 </head>
 <body>
-  <main class="live-center">
-    <img src="logo.png" alt="CloudAI" id="live-logo" class="live-logo" />
-    <div id="live-sub" class="live-sub">Tap to Live</div>
 
-    <div class="controls">
-      <button id="start-btn" class="control-btn">Start Listening</button>
-      <button id="stop-btn" class="control-btn" disabled>Stop</button>
-    </div>
+<div class="live-container">
+  <img src="logo.png" class="live-logo" id="liveLogo" />
+  <div class="live-text">Tap logo to talk</div>
+  <div class="back-btn" onclick="location.href='index.html'">← Back to Chat</div>
+</div>
 
-    <div id="transcript" class="transcript small">Transcript will appear here...</div>
+<script src="assets/js/live.js"></script>
 
-    <div id="status" class="small muted">Ready</div>
-    <a href="index.html" class="back small muted">Back to Chat</a>
-  </main>
-
-  <script src="assets/js/live.js"></script>
 </body>
 </html>
