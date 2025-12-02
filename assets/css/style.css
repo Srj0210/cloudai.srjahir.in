@@ -5,27 +5,26 @@ body {
     font-family: system-ui, sans-serif;
 }
 
+/* LOGO TOP RIGHT */
 .top-logo {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 18px;
+    right: 18px;
     text-align: center;
     cursor: pointer;
 }
-
 #ai-logo {
     width: 80px;
     filter: drop-shadow(0 0 25px #00c8ff);
 }
-
 .tap {
     color: #9fdfff;
     font-size: 14px;
-    margin-top: 5px;
 }
 
+/* GREETING */
 .greeting {
-    padding: 120px 20px 20px;
+    padding: 120px 20px 10px;
 }
 
 .greeting h2 {
@@ -34,52 +33,53 @@ body {
 }
 
 .greeting p {
-    color: #aaa;
+    color: #bbb;
 }
 
+/* CHAT AREA */
 #chat-box {
     padding: 10px 20px;
-    margin-bottom: 140px;
+    margin-bottom: 150px;
 }
 
-/* USER BLUE BUBBLE (CHATGPT STYLE) */
+/* USER BUBBLE */
 .user-msg {
-    max-width: 70%;
+    max-width: 72%;
     margin-left: auto;
     background: #0c8eff;
-    padding: 12px 16px;
-    border-radius: 16px;
-    font-size: 16px;
-    margin-top: 12px;
+    padding: 13px 18px;
+    border-radius: 18px;
     color: #fff;
+    margin-top: 14px;
+    font-size: 16px;
 }
 
-/* AI MESSAGE (NO BUBBLE) */
+/* AI TEXT (NO BUBBLE like ChatGPT) */
 .ai-msg {
-    max-width: 80%;
-    margin-top: 12px;
-    white-space: pre-wrap;
-    line-height: 1.5;
-    font-size: 16px;
+    max-width: 82%;
+    margin-top: 14px;
     color: #fff;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    font-size: 16px;
 }
 
-/* CODE BLOCK CHATGPT STYLE */
+/* CODE BLOCK */
 pre {
     background: #1e1e1e !important;
-    padding: 14px;
-    border-radius: 10px;
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 10px;
     overflow-x: auto;
-    margin-top: 12px;
 }
 
-/* INPUT BAR (ChatGPT style) */
+/* INPUT BAR (ChatGPT Style) */
 .input-area {
     position: fixed;
     bottom: 0;
     width: 100%;
     background: #000;
-    padding: 15px 10px;
+    padding: 12px;
     display: flex;
     gap: 10px;
 }
@@ -89,31 +89,29 @@ textarea {
     background: #111;
     border-radius: 20px;
     border: 1px solid #222;
+    padding: 12px 15px;
     color: #fff;
     font-size: 16px;
-    padding: 12px 15px;
     resize: none;
-    outline: none;
 }
 
-/* BUTTONS */
-.pin-btn, .mic-btn, .send-btn {
+/* ICON BUTTONS */
+.pin-btn, .send-btn, .mic-btn {
     background: transparent;
     border: none;
     padding: 0;
-    cursor: pointer;
 }
 
 .pin-btn img,
-.mic-btn img,
-.send-btn img {
-    width: 45px;
-    height: 45px;
+.send-btn img,
+.mic-btn img {
+    width: 46px;
+    height: 46px;
 }
 
 .footer {
     text-align: center;
-    color: #777;
+    color: #666;
     margin-bottom: 90px;
     font-size: 14px;
 }
