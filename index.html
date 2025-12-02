@@ -4,221 +4,65 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>CloudAI — SRJahir Tech</title>
-
     <!-- SEO -->
-    <meta name="description" content="CloudAI by SRJahir Tech — Speak, chat, upload images, documents and enjoy live AI talking mode. Fastest India-based personal AI." />
-    <meta name="keywords" content="CloudAI, SRJahir, AI Chatbot, Voice AI, Live AI, Indian AI Assistant, Gemini, OpenAI, SRJahir Tech" />
+    <title>CloudAI — Smart AI Assistant by SRJahir Tech</title>
+    <meta name="description" content="CloudAI by SRJahir Tech — Speak, chat, upload images & files, get real-time answers with live web data. Fastest AI in India." />
+    <meta name="keywords" content="CloudAI, SRJahir, SRJahir Tech, AI Chatbot, Gemini AI, Voice AI, Indian AI, free AI, SRJ Tools" />
     <meta name="author" content="SRJahir Tech" />
 
-    <!-- Favicon (Auto Resize Same Logo) -->
-    <link rel="icon" href="assets/logo.png" type="image/png" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="CloudAI — SRJahir Tech" />
+    <meta property="og:description" content="Smartest AI assistant that listens, talks and fetches live web results." />
+    <meta property="og:image" content="logo.png" />
+    <meta property="og:type" content="website" />
+
+    <!-- Auto Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="apple-touch-icon" href="favicon.png" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
 
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-96FQY12W11"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X38TR4Z4NY"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
+        function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-96FQY12W11');
+        gtag('config', 'G-X38TR4Z4NY');
     </script>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: system-ui, sans-serif;
-            background: #0d0d0d;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* TOP LOGO */
-        .logo-box {
-            text-align: center;
-            margin-top: 22px;
-            margin-bottom: 5px;
-        }
-
-        .logo-glow {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: url("assets/logo.png") center/cover no-repeat;
-            box-shadow: 0 0 40px #00aaff;
-            margin: auto;
-            animation: glowPulse 3s infinite ease-in-out;
-        }
-
-        @keyframes glowPulse {
-            0%   { box-shadow: 0 0 18px #0095ff; }
-            50%  { box-shadow: 0 0 40px #00c8ff; }
-            100% { box-shadow: 0 0 18px #0095ff; }
-        }
-
-        .tap-live {
-            margin-top: 6px;
-            font-size: 13px;
-            opacity: 0.8;
-        }
-
-        /* WELCOME BOX (ChatGPT style) */
-        .welcome-box {
-            max-width: 85%;
-            background: #1a1a1a;
-            padding: 22px;
-            border-radius: 18px;
-            margin: 10px auto 15px auto;
-            font-size: 17px;
-            line-height: 25px;
-        }
-
-        .wave-emoji {
-            font-size: 23px;
-        }
-
-        /* CHAT CONTAINER */
-        #chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 14px;
-        }
-
-        .msg {
-            max-width: 85%;
-            margin: 10px 0;
-            padding: 14px 18px;
-            border-radius: 15px;
-            font-size: 15px;
-            line-height: 22px;
-        }
-
-        .user {
-            background: linear-gradient(135deg, #007aff, #00c3ff);
-            color: #fff;
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-        }
-
-        .ai {
-            background: #1c1c1c;
-            color: #fff;
-            border-bottom-left-radius: 4px;
-        }
-
-        /* SMART CHATGPT SUGGESTIONS */
-        .auto-suggest-box {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .auto-suggest {
-            background: #2a2a2a;
-            padding: 10px 16px;
-            border-radius: 16px;
-            font-size: 14px;
-            opacity: .9;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .auto-suggest:hover {
-            opacity: 1;
-            background: #333;
-        }
-
-        /* INPUT AREA */
-        .input-area {
-            display: flex;
-            padding: 12px;
-            background: #0f0f0f;
-            border-top: 1px solid #1a1a1a;
-        }
-
-        #msgInput {
-            flex: 1;
-            background: #1a1a1a;
-            border: none;
-            outline: none;
-            padding: 14px 16px;
-            border-radius: 18px;
-            color: #fff;
-            font-size: 16px;
-        }
-
-        .send-btn {
-            width: 46px;
-            height: 46px;
-            background: linear-gradient(135deg,#006eff,#00aaff);
-            border-radius: 50%;
-            margin-left: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .send-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* CODE BLOCK (GitHub Dark Theme) */
-        pre {
-            background: #0f1117;
-            padding: 12px;
-            border-radius: 12px;
-            overflow-x: auto;
-            font-size: 14px;
-            border: 1px solid #1a1a1a;
-            margin-top: 10px;
-            margin-bottom: 15px;
-        }
-
-        code {
-            color: #9cdcfe;
-        }
-
-        footer {
-            text-align: center;
-            padding: 12px;
-            opacity: 0.5;
-            font-size: 12px;
-        }
-    </style>
 </head>
 
 <body>
 
-    <!-- TOP LOGO -->
-    <div class="logo-box">
-        <div class="logo-glow"></div>
-        <div class="tap-live">Tap to talk</div>
+    <!-- TOP AI LOGO -->
+    <div class="logo-section" onclick="window.location.href='live.html'">
+        <img src="logo.png" class="main-logo" id="ai-logo">
+        <p class="tap-live">Tap to Talk Live</p>
     </div>
 
-    <!-- WELCOME BOX -->
-    <div class="welcome-box">
-        <span class="wave-emoji">👋</span> Hi, I'm CloudAI.<br>
-        Ask me anything. I can speak, listen, fetch live data and process files too.
+    <!-- INTRO CARD (ChatGPT style) -->
+    <div class="intro-card">
+        <h2>👋 Hi, I'm <span class="brand">CloudAI</span>.</h2>
+        <p>Ask anything. I can speak, listen, fetch live data & process files too.</p>
     </div>
 
-    <!-- CHAT -->
-    <div id="chat-container"></div>
+    <!-- CHAT BOX -->
+    <div id="chat-box" class="chat-box"></div>
 
-    <!-- INPUT -->
+    <!-- INPUT AREA -->
     <div class="input-area">
-        <input id="msgInput" placeholder="Message CloudAI..." />
-        <div class="send-btn" onclick="sendMessage()">
-            <svg fill="#fff" viewBox="0 0 24 24">
-                <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
-            </svg>
-        </div>
+        <button class="attach-btn">📎</button>
+        <input id="user-input" type="text" placeholder="Type your message... (Shift+Enter = newline)" />
+        <button id="send-btn" class="send-btn">➤</button>
     </div>
 
-    <footer>© 2025 SRJahir Tech</footer>
+    <p class="footer">© 2025 SRJahir Tech</p>
 
-<script src="chat.js"></script>
+    <!-- JS -->
+    <script src="chat.js"></script>
 </body>
 </html>
