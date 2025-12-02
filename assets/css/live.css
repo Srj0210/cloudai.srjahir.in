@@ -1,35 +1,169 @@
-:root {
-  --bg:#0d1117;
-  --accent:#00b7ff;
-  --text:#e6edf3;
+/* ---------------------------------------------------
+   CLOUDAI LIVE - PROFESSIONAL VOICE UI
+   by SRJahir Tech
+--------------------------------------------------- */
+
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-*{box-sizing:border-box}
-body{
-  margin:0; min-height:100vh;
-  display:flex; align-items:center; justify-content:center;
-  background:var(--bg); color:var(--text); font-family:Inter, sans-serif;
+
+body {
+  background: #0b0b0b;
+  font-family: "Inter", sans-serif;
+  color: #e9e9e9;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
-.live-center{
-  text-align:center;
-  padding:28px;
+
+/* MAIN LAYOUT */
+.live-container {
+  text-align: center;
+  width: 100%;
 }
-.live-logo{
-  width:160px; height:160px; border-radius:50%;
-  object-fit:contain; margin:6px auto;
-  filter:drop-shadow(0 0 8px rgba(0,183,255,0.18));
-  transition:filter .12s linear, transform .12s linear;
+
+/* -----------------------------
+   CENTER GLOWING LOGO
+----------------------------- */
+.logo-wrapper {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.live-logo.speaking{ animation:liveWave 1s infinite linear; }
-@keyframes liveWave {
-  0%{ filter:drop-shadow(0 0 8px rgba(0,183,255,0.18)); transform:scale(1) }
-  50%{ filter:drop-shadow(0 0 26px rgba(0,183,255,0.36)); transform:scale(1.05) }
-  100%{ filter:drop-shadow(0 0 8px rgba(0,183,255,0.18)); transform:scale(1) }
+
+.logo {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: 0.25s ease-in-out;
+  filter: drop-shadow(0 0 20px #009dff50);
 }
-.live-sub{ margin-top:6px; font-weight:700; color:var(--accent) }
-.controls{ margin-top:16px; display:flex; gap:12px; justify-content:center }
-.control-btn{ background:linear-gradient(135deg,#0078ff,#00c3ff); border:none; color:#fff; padding:10px 18px; border-radius:10px; cursor:pointer; font-weight:700; }
-.control-btn:disabled{ opacity:0.5; cursor:not-allowed }
-.transcript{ margin-top:18px; background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; max-width:600px; margin-left:auto; margin-right:auto; }
-.small{ font-size:13px }
-.muted{ color:#8b949e; margin-top:10px }
-.back{ display:block; margin-top:14px; color:#8b949e; text-decoration:none }
+
+/* Glow while listening */
+.logo.listening {
+  animation: listenGlow 1.2s infinite ease-in-out;
+}
+
+@keyframes listenGlow {
+  0%   { filter: drop-shadow(0 0 14px #00bfff); transform: scale(1); }
+  50%  { filter: drop-shadow(0 0 38px #00e5ff); transform: scale(1.07); }
+  100% { filter: drop-shadow(0 0 14px #00bfff); transform: scale(1); }
+}
+
+/* Glow while AI is speaking */
+.logo.speaking {
+  animation: speakPulse 1.4s infinite ease-in-out;
+}
+
+@keyframes speakPulse {
+  0%   { filter: drop-shadow(0 0 16px #00ffea); transform: scale(1); }
+  50%  { filter: drop-shadow(0 0 45px #00fff0); transform: scale(1.09); }
+  100% { filter: drop-shadow(0 0 16px #00ffea); transform: scale(1); }
+}
+
+/* Status text under logo */
+.status-text {
+  margin-top: 12px;
+  font-size: 16px;
+  color: #8abfff;
+  letter-spacing: 0.4px;
+  opacity: 0.85;
+}
+
+/* -----------------------------
+      WAVE ANIMATION
+----------------------------- */
+.wave {
+  margin: 45px auto;
+  width: 200px;
+  height: 32px;
+  background: url("../img/wave.svg") no-repeat center;
+  background-size: contain;
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+/* show wave when speaking */
+.wave.active {
+  opacity: 1;
+  filter: drop-shadow(0 0 25px #00d9ff);
+}
+
+/* -----------------------------
+      BUTTONS
+----------------------------- */
+.controls {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+/* Main speak button */
+.main-button {
+  background: linear-gradient(135deg, #007aff, #00c3ff);
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 0 22px #0097ff50;
+  transition: 0.2s ease;
+}
+
+.main-button:active {
+  transform: scale(0.95);
+}
+
+/* Stop button */
+.stop-button {
+  background: #ff4e4e;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 26px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 0 20px #ff4e4e55;
+  transition: 0.2s ease;
+}
+
+/* Back button */
+.back-btn {
+  display: inline-block;
+  margin-top: 35px;
+  color: #8abfff;
+  font-size: 15px;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.back-btn:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* -----------------------------
+   RESPONSIVE
+----------------------------- */
+@media (max-width: 600px) {
+  .logo {
+    width: 118px;
+    height: 118px;
+  }
+  .main-button {
+    padding: 14px 28px;
+    font-size: 16px;
+  }
+}
