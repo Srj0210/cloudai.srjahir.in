@@ -1,67 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CloudAI — SRJahir Tech</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudAI — Smart AI Assistant</title>
 
-<!-- Auto Favicon -->
-<link rel="icon" href="favicon.png" type="image/png">
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="./favicon.png">
 
-<!-- SEO -->
-<meta name="description" content="CloudAI — Smart AI assistant by SRJahir Tech. Fast, powerful, ChatGPT-style replies with voice, files, live search & more.">
-<meta name="keywords" content="CloudAI, SRJahir Tech, AI Chat, Voice AI, ChatGPT Alternative, Indian AI, SRJahir">
-<meta name="author" content="SRJahir Tech">
+    <!-- PRIMARY SEO -->
+    <meta name="title" content="CloudAI — Smart AI Assistant">
+    <meta name="description" content="CloudAI is an advanced AI assistant that answers questions, generates content, provides voice interaction, and supports live AI conversation.">
 
-<!-- OpenGraph -->
-<meta property="og:title" content="CloudAI — SRJahir Tech">
-<meta property="og:description" content="Your personal AI assistant with voice, files & live search.">
-<meta property="og:image" content="logo.png">
-<meta property="og:type" content="website">
+    <!-- KEYWORDS -->
+    <meta name="keywords" content="CloudAI, AI Assistant, Voice AI, Live AI, AI chat, smart assistant, SRJahir Tech, artificial intelligence tool">
 
-<!-- Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-XXXXX');
-</script>
+    <!-- ROBOTS -->
+    <meta name="robots" content="index, follow">
 
-<link rel="stylesheet" href="style.css">
+    <!-- CANONICAL -->
+    <link rel="canonical" href="https://cloudai.srjahir.in/">
+
+    <!-- OPEN GRAPH -->
+    <meta property="og:title" content="CloudAI — Smart AI Assistant">
+    <meta property="og:description" content="Your personal AI assistant with voice, text, and live interaction support.">
+    <meta property="og:image" content="https://cloudai.srjahir.in/logo.png">
+    <meta property="og:url" content="https://cloudai.srjahir.in/">
+    <meta property="og:type" content="website">
+
+    <!-- TWITTER CARD -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CloudAI — Smart AI Assistant">
+    <meta name="twitter:description" content="Experience fast, natural, and interactive AI assistance.">
+    <meta name="twitter:image" content="https://cloudai.srjahir.in/logo.png">
+
+    <!-- ANALYTICS -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-ZVLW6MTZ5Y');
+    </script>
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="assets/css/style.css?v=11">
 </head>
 
 <body>
 
-<!-- TOP LOGO -->
-<div class="logo-area" onclick="window.location.href='live.html'">
-    <img src="logo.png" class="logo-img" id="aiLogo">
-    <div class="live-text">Tap to Talk</div>
-</div>
+    <!-- AI LOGO TOP -->
+    <div class="logo-area" onclick="window.location.href='live.html'">
+        <img src="logo.png" id="ai-logo">
+        <p class="tap-talk">Tap to Talk</p>
+    </div>
 
-<!-- GREETING -->
-<div class="greeting">
-    👋 <b>Hi, I'm CloudAI.</b><br>
-    Ask me anything — I reply like ChatGPT.
-</div>
+    <!-- GREETING -->
+    <div class="greet-box">
+        <div class="greet-title">👋 Hi, I'm CloudAI.</div>
+        <div class="greet-sub">Ask me anything — I reply like ChatGPT.</div>
+    </div>
 
-<!-- CHAT BOX -->
-<div id="chat-box"></div>
+    <!-- CHAT BOX -->
+    <div id="chat-box"></div>
 
-<!-- INPUT BAR -->
-<div class="input-area">
+    <!-- INPUT AREA -->
+    <div class="input-area">
 
-    <img src="Pin.png" id="attach-btn" class="input-icon">
+        <!-- PLUS BUTTON -->
+        <button class="plus-btn">
+            <img src="Pin.png">
+        </button>
 
-    <textarea id="user-input" placeholder="Type your message..."></textarea>
+        <!-- TEXTAREA -->
+        <textarea id="user-input" placeholder="Type your message..."></textarea>
 
-    <img src="Mic.png" id="mic-btn" class="input-icon">
+        <!-- MIC BUTTON -->
+        <button class="mic-btn" id="mic-btn">
+            <img src="Mic.png">
+        </button>
 
-    <img src="Send.png" id="send-btn" class="input-icon">
+        <!-- SEND BUTTON -->
+        <button id="send-btn" class="send-btn">
+            <img src="Send.png">
+        </button>
+    </div>
 
-</div>
-
-<script src="chat.js"></script>
-
+    <!-- JS -->
+    <script src="assets/js/chat.js?v=10"></script>
 </body>
 </html>
