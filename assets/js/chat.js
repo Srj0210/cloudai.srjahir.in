@@ -1,201 +1,322 @@
-/* ELEMENTS */
+/* ===========================================================
+   CloudAI — ChatGPT-Style Frontend Engine
+   SRJahir Technologies (2025)
+   =========================================================== */
+
+const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
-const micBtn  = document.getElementById("mic-btn");
-const fileInput = document.getElementById("file-input");
-const suggestionsBox = document.getElementById("suggestions");
-const logo = document.getElementById("ai-logo");
+const LOGO = document.getElementById("ai-logo");
 
-/* WORKER API */
-const WORKER_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
-
-/* STATE */
-let isProcessing = false;
 let history = [];
 const MAX_HISTORY = 15;
-const clientId = "web_" + Math.random().toString(36).substring(2, 10);
 
-/* RESET CHAT EVERY PAGE LOAD */
+let isProcessing = false;
+
+// Reset chat every refresh
 sessionStorage.removeItem("cloudai_chat");
 
-/* LISTENERS */
-sendBtn.onclick = sendMessage;
-userInput.addEventListener("keydown", e=>{
-  if(e.key==="Enter" && !e.shiftKey){
+/* ===========================================================
+   EVENT LISTENERS
+   =========================================================== */
+
+sendBtn.onclick = () => handleSend();
+
+userInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
-    sendMessage();
+    handleSend();
   }
 });
-micBtn.onclick = startVoiceInput;
 
-/* FILE UPLOAD */
-fileInput.onchange = function(){
-  if(fileInput.files.length>0){
-    const file = fileInput.files[0];
-    addUserBubble("📁 Uploaded: " + file.name);
-  }
-};
 
-/* SEND MESSAGE */
-function sendMessage(){
+/* ===========================================================
+   SEND MESSAGE
+   =========================================================== */
+
+function handleSend() {
   const text = userInput.value.trim();
-  if(!text || isProcessing) return;
+  if (!text || isProcessing) return;
 
   addUserBubble(text);
   userInput.value = "";
 
-  askAI(text);
+  pushHistory("user", text);
+  askCloudAI(text);
 }
 
-/* ADD USER MESSAGE */
-function addUserBubble(text){
+
+/* ===========================================================
+   ADD USER BUBBLE
+   =========================================================== */
+
+function addUserBubble(text) {
   const wrap = document.createElement("div");
-  wrap.className = "message user";
+  wrap.className = "user-message message";
 
   const bubble = document.createElement("div");
-  bubble.className = "bubble user-bubble";
+  bubble.className = "message-content";
   bubble.innerText = text;
 
   wrap.appendChild(bubble);
   chatBox.appendChild(wrap);
-  scrollBottom();
+  scrollToBottom();
 }
 
-/* ADD AI MESSAGE */
-function addAiBubble(text){
+
+/* ===========================================================
+   ADD AI BUBBLE
+   =========================================================== */
+
+function addAiBubble(html) {
   const wrap = document.createElement("div");
-  wrap.className = "message ai";
+  wrap.className = "ai-message message";
 
   const bubble = document.createElement("div");
-  bubble.className = "bubble ai-bubble";
-  bubble.innerHTML = renderMarkdown(text);
+  bubble.className = "message-content";
+  bubble.innerHTML = renderMarkdown(html);
 
   wrap.appendChild(bubble);
   chatBox.appendChild(wrap);
 
-  highlightCode();
-  scrollBottom();
+  applyCodeHighlighting(wrap);
+
+  scrollToBottom();
 }
 
-/* HIGHLIGHT JS */
-function highlightCode(){
-  chatBox.querySelectorAll("pre code").forEach(block=>hljs.highlightElement(block));
+
+/* ===========================================================
+   TEMP “Thinking…” bubble
+   =========================================================== */
+
+let tempBubble = null;
+
+function addThinking() {
+  tempBubble = document.createElement("div");
+  tempBubble.className = "ai-message message";
+
+  const bubble = document.createElement("div");
+  bubble.className = "message-content";
+  bubble.innerText = "⏳ Thinking...";
+
+  tempBubble.appendChild(bubble);
+  chatBox.appendChild(tempBubble);
+
+  scrollToBottom();
 }
 
-/* SCROLL */
-function scrollBottom(){
-  setTimeout(()=>chatBox.scrollTop = chatBox.scrollHeight,50);
+function removeThinking() {
+  if (tempBubble) tempBubble.remove();
+  tempBubble = null;
 }
 
-/* GLOW CONTROL */
-function startGlow(){ logo.classList.add("thinking"); }
-function stopGlow(){ logo.classList.remove("thinking"); }
 
-/* ASK AI */
-async function askAI(prompt){
+/* ===========================================================
+   SCROLL SMOOTH
+   =========================================================== */
+function scrollToBottom() {
+  setTimeout(() => {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 50);
+}
+
+
+/* ===========================================================
+   LOGO GLOW (Old CloudAI style)
+   =========================================================== */
+
+function startGlow() {
+  LOGO.classList.add("thinking");
+}
+
+function stopGlow() {
+  LOGO.classList.remove("thinking");
+}
+
+
+/* ===========================================================
+   HISTORY LIMITER
+   =========================================================== */
+
+function pushHistory(role, text) {
+  history.push({ role, text });
+  if (history.length > MAX_HISTORY) history = history.slice(-MAX_HISTORY);
+}
+
+
+/* ===========================================================
+   MAIN AI FETCH (Smart retry + detection)
+   =========================================================== */
+
+async function askCloudAI(prompt) {
   isProcessing = true;
-  startGlow();
-
-  const payload = { clientId, prompt, history };
 
   addThinking();
+  startGlow();
 
-  try{
-    const res = await fetch(WORKER_URL,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify(payload)
-    });
+  const payload = {
+    clientId: "web_" + Math.random().toString(36).substring(2),
+    prompt,
+    history
+  };
 
-    const data = await res.json();
-
+  try {
+    const res = await smartFetch(API_URL, payload, 1);
     removeThinking();
     stopGlow();
 
-    if(data.reply){
-      addAiBubble(data.reply);
-      pushHistory("model", data.reply);
-      showSuggestions(data.reply);
-    } else {
-      addAiBubble("⚠️ No response.");
+    if (!res) {
+      addAiBubble("⚠️ No valid response received. Try again.");
+      return;
     }
 
-  } catch(e){
+    addAiBubble(res);
+    pushHistory("model", res);
+
+    // After answering, generate suggestions like ChatGPT
+    addSuggestions(res);
+
+  } catch (err) {
     removeThinking();
     stopGlow();
-    addAiBubble("⚠️ Network issue. Try again.");
+    addAiBubble("⚠️ Network error. Try again.");
   }
 
   isProcessing = false;
 }
 
-/* THINKING BUBBLE */
-let thinkingBubble=null;
-function addThinking(){
-  thinkingBubble=document.createElement("div");
-  thinkingBubble.className="message ai";
-  thinkingBubble.innerHTML=`<div class="bubble ai-bubble">⏳ Thinking…</div>`;
-  chatBox.appendChild(thinkingBubble);
-  scrollBottom();
-}
-function removeThinking(){
-  if(thinkingBubble){
-    thinkingBubble.remove();
-    thinkingBubble=null;
+
+/* ===========================================================
+   SMART FETCH with retry
+   =========================================================== */
+
+async function smartFetch(url, payload, retries = 1) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => null);
+
+      // quota handling
+      if (data?.quotaStatus === "quota_exceeded") {
+        return "🚫 Daily limit reached. Try again tomorrow.";
+      }
+
+      if (data?.reply) return data.reply;
+
+    } catch (e) {
+      if (i === retries) return false;
+    }
   }
+  return false;
 }
 
-/* HISTORY */
-function pushHistory(role,text){
-  history.push({role,text});
-  if(history.length>MAX_HISTORY){
-    history = history.slice(-MAX_HISTORY);
-  }
+
+/* ===========================================================
+   MARKDOWN RENDER
+   =========================================================== */
+function renderMarkdown(text) {
+  if (!text) return "";
+
+  const escapeHTML = (s) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  // ``` code block ```
+  text = text.replace(/```([\s\S]*?)```/g, (_, code) =>
+    `<pre><code>${escapeHTML(code)}</code></pre>`
+  );
+
+  // inline `code`
+  text = text.replace(/`([^`]+)`/g, (_, c) => `<code>${escapeHTML(c)}</code>`);
+
+  // bold + italic
+  text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+  text = text.replace(/\*(.*?)\*/g, "<i>$1</i>");
+
+  // links
+  text = text.replace(
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    `<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>`
+  );
+
+  return text.replace(/\n/g, "<br>");
 }
 
-/* MARKDOWN PARSER */
-function renderMarkdown(text){
-  return text.replace(/```([\s\S]*?)```/g, (_,code)=>`<pre><code>${code}</code></pre>`)
-             .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")
-             .replace(/\*(.*?)\*/g,"<i>$1</i>")
-             .replace(/\n/g,"<br>");
+
+/* ===========================================================
+   CODE HIGHLIGHTING + COPY BUTTONS
+   =========================================================== */
+
+function applyCodeHighlighting(wrap) {
+  wrap.querySelectorAll("pre code").forEach((block) => {
+    try {
+      hljs.highlightElement(block);
+    } catch {}
+
+    if (!block.parentElement.querySelector(".copy-btn")) {
+      const btn = document.createElement("button");
+      btn.className = "copy-btn";
+      btn.textContent = "Copy";
+
+      btn.onclick = async () => {
+        await navigator.clipboard.writeText(block.innerText);
+        btn.textContent = "Copied!";
+        setTimeout(() => (btn.textContent = "Copy"), 1200);
+      };
+
+      block.parentElement.style.position = "relative";
+      block.parentElement.appendChild(btn);
+    }
+  });
 }
 
-/* VOICE INPUT */
-function startVoiceInput(){
-  if(!window.SpeechRecognition && !window.webkitSpeechRecognition){
-    addAiBubble("🎤 Your browser doesn’t support speech input.");
-    return;
-  }
-  const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  rec.lang="en-US";
-  rec.start();
 
-  rec.onresult = e => {
-    const text = e.results[0][0].transcript;
-    addUserBubble("🎤 " + text);
-    askAI(text);
-  };
+/* ===========================================================
+   SUGGESTIONS (ChatGPT style)
+   =========================================================== */
+
+function addSuggestions(answer) {
+  const suggestions = generateSuggestions(answer);
+  if (!suggestions.length) return;
+
+  const container = document.createElement("div");
+  container.className = "ai-message message";
+
+  const wrap = document.createElement("div");
+  wrap.className = "message-content";
+  wrap.style.opacity = "0.85";
+
+  wrap.innerHTML = suggestions
+    .map((s) => `<button class="suggestion-btn">${s}</button>`)
+    .join(" ");
+
+  container.appendChild(wrap);
+  chatBox.appendChild(container);
+
+  chatBox.querySelectorAll(".suggestion-btn").forEach((btn) => {
+    btn.onclick = () => {
+      addUserBubble(btn.innerText);
+      askCloudAI(btn.innerText);
+    };
+  });
+
+  scrollToBottom();
 }
 
-/* AI SUGGESTIONS */
-function showSuggestions(reply){
-  const sug = [
+function generateSuggestions(answer) {
+  const base = [
     "Explain more",
     "Give examples",
-    "Make it shorter",
-    "Rewrite professionally",
-    "Summarize",
-    "Continue"
+    "Summarize it",
+    "Translate this",
+    "Give advanced details",
   ];
-  suggestionsBox.innerHTML="";
-  sug.forEach(s=>{
-    const btn = document.createElement("div");
-    btn.className="suggestion-btn";
-    btn.innerText=s;
-    btn.onclick=()=>{ addUserBubble(s); askAI(s); };
-    suggestionsBox.appendChild(btn);
-  });
-  suggestionsBox.classList.remove("hidden");
+
+  return base.slice(0, 3);
 }
