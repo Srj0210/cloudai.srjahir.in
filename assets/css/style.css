@@ -1,94 +1,88 @@
 body {
     margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: system-ui, sans-serif;
+    padding: 0;
+    background: #0d0d0d;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 
-/* TOP LOGO */
-#logo-box {
+/* LOGO AREA */
+.logo-area {
     position: fixed;
-    top: 20px;
     right: 20px;
+    top: 20px;
     text-align: center;
-    z-index: 999;
     cursor: pointer;
 }
-
-#main-logo {
-    width: 90px;
-    filter: drop-shadow(0 0 18px #00bfff);
-    transition: 0.3s;
+.logo-img {
+    width: 110px;
+    filter: drop-shadow(0 0 15px #00c3ff);
 }
-
-#tap-live {
+.live-text {
     margin-top: 4px;
-    font-size: 14px;
-    opacity: 0.8;
+    font-size: 15px;
+    color: #ccc;
 }
 
-/* CONTENT */
-.container {
-    padding: 140px 20px 120px;
+/* GREETING */
+.greeting {
+    margin-top: 160px;
+    padding: 20px;
+    font-size: 20px;
 }
 
-#greeting {
-    font-size: 22px;
-    line-height: 30px;
-    margin-bottom: 20px;
-}
-
-/* CHAT */
+/* CHAT BOX */
 #chat-box {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    padding: 20px;
+    padding-bottom: 120px;
 }
 
+/* USER MESSAGE BUBBLE */
 .user-msg {
-    align-self: flex-end;
-    background: #007BFF;
-    color: white;
-    padding: 10px 14px;
-    border-radius: 14px 14px 2px 14px;
-    max-width: 80%;
-}
-
-/* AI = ChatGPT style (NO bubble) */
-.ai-msg {
-    align-self: flex-start;
-    background: #1e1e1e;
-    border: 1px solid #333;
-    padding: 12px 14px;
+    background: #1f1f1f;
+    padding: 10px 15px;
     border-radius: 10px;
-    max-width: 90%;
-    white-space: pre-line;
+    width: fit-content;
+    margin-bottom: 10px;
+    margin-left: auto;
+    color: white;
 }
 
-/* INPUT BAR */
-.input-bar {
+/* AI MESSAGE (NO BUBBLE) */
+.ai-msg {
+    margin-bottom: 14px;
+    color: #e0e0e0;
+    line-height: 1.4;
+}
+
+/* INPUT BAR (ChatGPT Style) */
+.input-area {
     position: fixed;
     bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
+    width: 100%;
+    background: #0f0f0f;
     padding: 10px;
-    background: #000;
+    display: flex;
+    align-items: center;
     gap: 10px;
+    border-top: 1px solid #222;
 }
 
 textarea {
     flex: 1;
-    height: 48px;
-    resize: none;
-    border-radius: 12px;
-    padding: 10px;
-    background: #111;
-    color: #fff;
+    background: #1b1b1b;
+    color: white;
     border: 1px solid #333;
+    border-radius: 12px;
+    padding: 12px;
+    height: 46px;
+    resize: none;
 }
 
-.icon-btn img {
+/* ICONS FIX */
+.input-icon {
     width: 36px;
     height: 36px;
+    object-fit: contain;
+    opacity: .85;
 }
