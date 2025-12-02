@@ -1,91 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <title>CloudAI — Smart AI Chat Assistant by SRJahir Tech</title>
-  <meta name="description" content="CloudAI — Fast, powerful AI assistant built by SRJahir Tech. Ask anything. Voice + file + live mode included." />
-  <link rel="canonical" href="https://cloudai.srjahir.in/" />
+  <title>CloudAI — Smart AI Assistant by SRJahir Tech</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="logo.png" />
-  <link rel="manifest" href="manifest.json" />
+  <!-- ===================== SEO ===================== -->
+  <meta name="description"
+    content="CloudAI — a fast, smart AI assistant built by SRJahir Technologies. Chat, talk live, and ask anything with powerful multilingual AI.">
+  <meta name="keywords"
+    content="CloudAI, SRJahir, AI Chatbot, Live AI Voice Chat, Smart Assistant, ChatGPT alternative, Free AI Chat, Hindi AI, English AI">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://cloudai.srjahir.in/">
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="CloudAI — Smart AI Assistant by SRJahir Tech">
+  <meta property="og:description"
+    content="Experience fast, intelligent AI chat with CloudAI. Voice mode, live talk, web search & more.">
+  <meta property="og:image" content="https://cloudai.srjahir.in/assets/img/cloudai-preview.png">
+  <meta property="og:type" content="website">
 
-  <!-- GA -->
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CloudAI — Smart AI Assistant">
+  <meta name="twitter:description" content="Your personal AI assistant by SRJahir Technologies.">
+  <meta name="twitter:image" content="https://cloudai.srjahir.in/assets/img/cloudai-preview.png">
+
+  <!-- ===================== FAVICON AUTO (Your old system) ===================== -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d0d0d">
+
+  <!-- ===================== Security ===================== -->
+  <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self' https:;
+      img-src 'self' data: https:;
+      script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com;
+      style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+      font-src 'self' data:;
+  ">
+
+  <!-- ===================== Google Analytics ===================== -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config','G-T4XBK86HZ2');
+    function gtag() { dataLayer.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", "G-T4XBK86HZ2");
   </script>
+
+  <!-- ===================== Styles ===================== -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
 </head>
 
 <body>
 
-  <!-- FLOATING LOGO (tap → Live Mode) -->
+  <!-- FLOATING LOGO (ChatGPT-style + Tap to Talk Live) -->
   <header class="header">
-    <img src="logo.png" id="ai-logo" class="logo" alt="CloudAI" onclick="openLiveMode()" />
+    <img src="assets/img/logo.png" id="ai-logo" class="logo" alt="CloudAI logo">
+    <div class="tap-to-talk">Tap to Talk (Live)</div>
   </header>
 
-  <!-- CHAT -->
+  <!-- CHAT AREA -->
   <main class="chat-container">
     <div id="chat-box" class="chat-box">
 
-      <div class="message ai">
-        <div class="bubble ai-bubble">
-          👋 <b>Hi, I'm CloudAI.</b><br>
-          Ask me anything. I can speak, listen, fetch live data and process files too.
+      <!-- Welcome Message -->
+      <div class="message ai-message">
+        <div class="message-content">
+          👋 <b>Hi — I'm CloudAI.</b><br>
+          How can I help you today?<br>
+          I support <b>voice mode</b>, <b>live talk</b>, <b>web search</b>, Hindi + English, and more.
         </div>
       </div>
 
     </div>
 
-    <!-- SUGGESTIONS (auto appears after each AI reply) -->
-    <div id="suggestions" class="suggestions hidden"></div>
-
-    <!-- INPUT BAR -->
+    <!-- INPUT BAR (ChatGPT Style) -->
     <div class="input-area">
       <div class="input-pill">
+        <textarea id="user-input" placeholder="Send a message..." aria-label="Type your message"></textarea>
 
-        <!-- FILE UPLOAD -->
-        <input type="file" id="file-input" class="file-input" />
-
-        <!-- TEXTAREA -->
-        <textarea id="user-input" placeholder="Message CloudAI…" aria-label="Your message"></textarea>
-
-        <!-- MIC -->
-        <button id="mic-btn" class="mic-btn">
-          🎤
-        </button>
-
-        <!-- SEND -->
         <button id="send-btn" class="send-btn">
-          ➤
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff">
+            <path d="M3 11L21 3L14 21L11 14L3 11Z"></path>
+          </svg>
         </button>
 
       </div>
     </div>
+
   </main>
 
   <!-- FOOTER -->
-  <footer class="footer"> © 2025 SRJahir Tech </footer>
+  <footer class="footer">
+    SRJahir Tech © 2025
+  </footer>
 
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="assets/js/chat.js"></script>
-
-  <script>
-    function openLiveMode(){
-      window.location.href = "live.html";
-    }
-  </script>
 
 </body>
 </html>
