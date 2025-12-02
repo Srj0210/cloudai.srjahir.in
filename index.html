@@ -1,71 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CloudAI — Smart AI Assistant</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudAI</title>
 
     <!-- AUTO FAVICON -->
     <link rel="icon" type="image/png" href="favicon.png">
 
+    <!-- PRISMJS (CODE COLORS LIKE CHATGPT) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism-tomorrow.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"></script>
+
     <!-- SEO -->
-    <meta name="description" content="CloudAI — Your personal AI assistant with smart chat and voice features.">
-    <meta name="keywords" content="CloudAI, AI Chat, Voice AI, Smart Assistant, SRJahir Tech">
-    <meta property="og:title" content="CloudAI — Smart AI Assistant">
-    <meta property="og:description" content="Talk with CloudAI. Smart chat with voice and live mode.">
+    <meta name="description" content="CloudAI — Smart AI that helps with coding, writing, research and more.">
+    <meta name="keywords" content="AI Assistant, CloudAI, SRJahir Tech, AI Chat, Voice AI">
+    <meta name="robots" content="index,follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="CloudAI">
+    <meta property="og:description" content="Your personal AI assistant.">
     <meta property="og:image" content="logo.png">
 
     <!-- GOOGLE ANALYTICS -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
+        function gtag() { dataLayer.push(arguments); }
         gtag("js", new Date());
         gtag("config", "G-ZVLW6MTZ5Y");
     </script>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=100">
+    <!-- STYLE -->
+    <link rel="stylesheet" href="assets/css/style.css?v=12">
 </head>
 
 <body>
 
-    <!-- TOP RIGHT LOGO -->
-    <div class="logo-area" onclick="location.href='live.html'">
-        <img id="ai-logo" src="logo.png" alt="CloudAI">
-        <p class="tap-talk">Tap to Talk</p>
+    <!-- TOP LOGO (RIGHT SIDE) -->
+    <div class="top-logo" onclick="window.location.href='live.html'">
+        <img src="logo.png" id="ai-logo">
+        <p class="tap">Tap to Talk</p>
     </div>
 
-    <!-- GREETING -->
+    <!-- GREETING (LIKE CHATGPT) -->
     <div class="greeting">
-        <h2>👋 Hi, I'm CloudAI.</h2>
+        <h2>👋 Hi, I’m CloudAI.</h2>
         <p>Ask me anything.</p>
     </div>
 
-    <!-- CHAT BOX -->
+    <!-- CHAT AREA -->
     <div id="chat-box"></div>
 
-    <!-- INPUT BAR -->
-    <div class="input-bar">
+    <!-- INPUT AREA (CHATGPT STYLE) -->
+    <div class="input-area">
 
-        <button class="icon-btn">
+        <button class="pin-btn">
             <img src="Pin.png">
         </button>
 
         <textarea id="user-input" placeholder="Send a message..."></textarea>
 
-        <button class="icon-btn" id="mic-btn">
+        <button class="mic-btn" id="mic-btn">
             <img src="Mic.png">
         </button>
 
-        <button class="icon-btn" id="send-btn">
+        <button class="send-btn" id="send-btn">
             <img src="Send.png">
         </button>
     </div>
 
-    <!-- JS -->
-    <script src="assets/js/chat.js?v=100"></script>
+    <p class="footer">© 2025 SRJahir Tech</p>
 
-    <footer>© 2025 SRJahir Tech</footer>
+    <!-- JS -->
+    <script src="assets/js/chat.js?v=12"></script>
 </body>
 </html>
