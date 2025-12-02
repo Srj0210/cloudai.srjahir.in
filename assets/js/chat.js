@@ -1,76 +1,60 @@
 const chatBox = document.getElementById("chat-box");
-const userInput = document.getElementById("user-input");
+const input = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
-const micBtn = document.getElementById("mic-btn");
-const plusBtn = document.getElementById("plus-btn");
-const logoBox = document.getElementById("logo-box");
 
-/* TAP LOGO → LIVE PAGE */
-logoBox.onclick = () => {
+document.getElementById("logo-box").onclick = () => {
     window.location.href = "live.html";
 };
 
-/* SCROLL AUTO */
-function scrollBottom() {
-    setTimeout(() => {
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }, 80);
+sendBtn.onclick = sendMessage;
+
+function sendMessage() {
+    let text = input.value.trim();
+    if (!text) return;
+
+    addUserMsg(text);
+    input.value = "";
+
+    askAI(text);
 }
 
-/* SHOW USER MESSAGE */
-function addUser(msg) {
-    const div = document.createElement("div");
+function addUserMsg(t) {
+    let div = document.createElement("div");
     div.className = "user-msg";
-    div.textContent = msg;
+    div.innerText = t;
     chatBox.appendChild(div);
-    scrollBottom();
+    scroll();
 }
 
-/* SHOW AI TEXT (NO BUBBLE) */
-function addAI(msg) {
-    const div = document.createElement("div");
+function addAI(t) {
+    let div = document.createElement("div");
     div.className = "ai-msg";
-    div.textContent = msg;
+    div.innerText = t;
     chatBox.appendChild(div);
-    scrollBottom();
+    scroll();
 }
 
-/* SEND MESSAGE */
-sendBtn.onclick = () => sendMessage();
-userInput.addEventListener("keydown", e => {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
+function scroll() {
+    setTimeout(() => {
+        window.scrollTo(0, document.body.scrollHeight);
+    }, 30);
+}
 
-async function sendMessage() {
-    let msg = userInput.value.trim();
-    if (!msg) return;
-
-    addUser(msg);
-    userInput.value = "";
-
-    addAI("⏳ Thinking...");
-
+async function askAI(prompt) {
     try {
-        const res = await fetch("https://dawn-smoke-b354.sleepyspider6166.workers.dev", {
+        const res = await fetch("https://cloudai.srjahir.workers.dev", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                prompt: msg,
-                history: []
+                prompt,
+                history: [],
+                clientId: crypto.randomUUID()
             })
         });
 
         const data = await res.json();
-        document.querySelector(".ai-msg:last-child").remove();
-
-        if (data.reply) addAI(data.reply);
-        else addAI("⚠️ No response.");
-        
-    } catch (err) {
-        document.querySelector(".ai-msg:last-child").remove();
+        addAI(data.reply || "Error.");
+    } catch {
         addAI("⚠️ Network error.");
     }
 }
