@@ -1,89 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudAI – Chat</title>
 
-  <title>CloudAI — Smart AI by SRJahir Tech</title>
+    <!-- SEO -->
+    <meta name="description" content="CloudAI by SRJahir Tech — Smart AI assistant. Fast, accurate answers with voice, image and live search.">
+    <meta name="keywords" content="CloudAI, SRJahir Tech AI, AI Chatbot, Voice AI, Gemini AI, ChatGPT Alternative India">
+    <meta name="author" content="SRJahir Tech">
 
-  <!-- SEO -->
-  <meta name="description" content="CloudAI — A fast, powerful AI chat assistant by SRJahir Tech. Chat like ChatGPT with live voice, web search & smart memory." />
-  <meta name="keywords" content="CloudAI, SRJahir Tech, AI Chatbot, Free AI, ChatGPT Alternative, Smart AI Assistant" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://cloudai.srjahir.in/" />
+    <!-- Favicon Auto -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
 
-  <!-- Auto-Favicon System -->
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png" />
-  <link rel="apple-touch-icon" href="favicon.png" />
-  <link rel="manifest" href="manifest.json" />
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag("js", new Date());
-    gtag("config", "G-T4XBK86HZ2");
-  </script>
+    <!-- Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1XP7C1F8EZ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-1XP7C1F8EZ');
+    </script>
 </head>
 
 <body>
 
-  <!-- Floating Logo -->
-  <header class="header">
-    <img src="logo.png" id="ai-logo" class="logo" alt="CloudAI Logo" />
-    <div class="tap-talk" onclick="goLive()">Tap to Talk</div>
-  </header>
+    <!-- MAIN CONTAINER -->
+    <div class="container">
 
-  <!-- Chat Area -->
-  <main class="chat-container">
-    <div id="chat-box" class="chat-box">
-
-      <!-- First AI panel -->
-      <div class="message ai-panel">
-        <div class="message-content">
-          👋 <b>Hi, I'm CloudAI.</b><br>
-          Ask me anything — I reply like ChatGPT.
+        <!-- LOGO RIGHT TOP -->
+        <div id="logo-box">
+            <img src="logo.png" id="main-logo" alt="CloudAI Logo">
+            <p id="tap-live">Tap to Talk</p>
         </div>
-      </div>
+
+        <!-- GREETING -->
+        <div id="greeting">
+            <span class="wave">👋</span> <strong>Hi, I'm CloudAI.</strong><br>
+            Ask me anything — I reply like ChatGPT.
+        </div>
+
+        <!-- CHAT BOX -->
+        <div id="chat-box"></div>
+
+        <!-- ERROR -->
+        <div id="error-box"></div>
+
+        <!-- FOOTER -->
+        <footer>© 2025 SRJahir Tech</footer>
 
     </div>
 
-    <!-- Input Area -->
-    <div class="input-area">
-      <div class="input-pill">
-        <textarea id="user-input" placeholder="Type your message..." aria-label="Message"></textarea>
-
-        <button id="send-btn" class="send-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff">
-            <path d="M3 11L21 3L14 21L11 14L3 11Z"></path>
-          </svg>
+    <!-- INPUT AREA -->
+    <div class="input-bar">
+        <button id="plus-btn">
+            <img src="Pin.png" alt="Plus">
         </button>
 
-      </div>
+        <textarea id="user-input" placeholder="Type your message..."></textarea>
+
+        <button id="mic-btn">
+            <img src="Mic.png" alt="Mic">
+        </button>
+
+        <button id="send-btn">
+            <img src="Send.png" alt="Send">
+        </button>
     </div>
-  </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    © 2025 SRJahir Tech
-  </footer>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="assets/js/chat.js"></script>
-
-  <script>
-    function goLive() {
-      window.location.href = "live.html";
-    }
-  </script>
+    <script src="chat.js"></script>
 
 </body>
 </html>
