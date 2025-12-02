@@ -1,110 +1,151 @@
+/* ======================================================
+   CloudAI LIVE VOICE ENGINE — SRJahir Technologies
+   Version: v5 (Stable)
+====================================================== */
+
+const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+
 const logo = document.getElementById("live-logo");
 const statusText = document.getElementById("status-text");
-const stopBtn = document.getElementById("stopBtn");
+const wave = document.getElementById("wave");
+const btnSpeak = document.getElementById("btn-speak");
+const btnStop = document.getElementById("btn-stop");
 
-let listening = false;
-let speaking = false;
-let stopped = false;
+let recognition;
+let isListening = false;
+let isSpeaking = false;
 
-const WORKER_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+/* --------------------------------------------------------
+   1. INITIALIZE MICROPHONE LISTENER
+-------------------------------------------------------- */
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-logo.onclick = startLiveTalk;
-stopBtn.onclick = stopLive;
-
-function stopLive(){
-  stopped = true;
-  window.speechSynthesis.cancel();
-  statusText.textContent = "Live Talk Stopped";
-  stopBtn.style.display = "none";
+if (!window.SpeechRecognition) {
+  alert("Your browser does not support live voice mode.");
 }
 
-function startLiveTalk(){
-  stopped = false;
-  stopBtn.style.display = "block";
-  loopListen();
-}
+function initRecognition() {
+  recognition = new window.SpeechRecognition();
+  recognition.lang = "en-IN"; // best for Indian + English mixed
+  recognition.interimResults = false;
+  recognition.continuous = false;
 
-function loopListen(){
-  if(stopped) return;
+  recognition.onstart = () => {
+    isListening = true;
+    statusText.textContent = "Listening…";
+    logo.className = "logo listening";
+  };
 
-  animateListening();
-  statusText.textContent = "Listening…";
-
-  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!Rec){
-    statusText.textContent = "Speech recognizer not supported.";
-    return;
-  }
-
-  const rec = new Rec();
-  rec.lang = "en-US";
-  rec.start();
-
-  rec.onresult = async e => {
+  recognition.onresult = (e) => {
     const text = e.results[0][0].transcript;
-    statusText.textContent = "Thinking…";
-    animateThinking();
-
-    const reply = await askAI(text);
-    speak(reply);
+    sendToAI(text);
   };
 
-  rec.onend = () => {
-    if(!stopped) loopListen();
+  recognition.onerror = () => {
+    stopListening();
+    statusText.textContent = "Mic error – tap to try again";
   };
-}
 
-function speak(text){
-  animateSpeaking();
-  statusText.textContent = "Speaking…";
-
-  const s = new SpeechSynthesisUtterance(text);
-  s.lang="en-US";
-  s.rate=1;
-  s.pitch=1;
-
-  s.onend = ()=>{
-    if(!stopped){
-      loopListen();
+  recognition.onend = () => {
+    if (!isSpeaking) {
+      stopListening();
     }
   };
-
-  window.speechSynthesis.speak(s);
 }
 
-async function askAI(prompt){
-  const res = await fetch(WORKER_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ clientId:"live", prompt })
-  });
-  const data = await res.json();
-  return data.reply || "Sorry, I couldn't answer.";
+/* --------------------------------------------------------
+   2. START + STOP LISTENING
+-------------------------------------------------------- */
+function startListening() {
+  if (isSpeaking) return;
+  if (!recognition) initRecognition();
+  recognition.start();
 }
 
-/* Animated States */
-function animateSpeaking(){
-  logo.style.boxShadow="0 0 45px #00f0ff";
-  addWaveEffect();
+function stopListening() {
+  isListening = false;
+  if (recognition) recognition.stop();
+  logo.className = "logo";
+  statusText.textContent = "Tap to speak";
 }
 
-function animateListening(){
-  logo.style.boxShadow="0 0 30px #00cfff";
-  removeAllWaves();
+/* --------------------------------------------------------
+   3. SEND TEXT TO CLOUDAI WORKER
+-------------------------------------------------------- */
+async function sendToAI(text) {
+  stopListening();
+  statusText.textContent = "Thinking…";
+  logo.className = "logo thinking";
+  wave.classList.remove("active");
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        clientId: "voice_" + Math.random().toString(36).substring(2, 10),
+        prompt: text,
+        history: [],
+      }),
+    });
+
+    const data = await res.json();
+    const reply = data.reply || "I couldn't understand that.";
+
+    speakAI(reply);
+  } catch (e) {
+    statusText.textContent = "Network error";
+    logo.className = "logo";
+  }
 }
 
-function animateThinking(){
-  logo.style.boxShadow="0 0 20px #bbb";
-  removeAllWaves();
+/* --------------------------------------------------------
+   4. AI SPEAKING SYSTEM
+-------------------------------------------------------- */
+function speakAI(text) {
+  isSpeaking = true;
+  statusText.textContent = "Speaking…";
+  logo.className = "logo speaking";
+  wave.classList.add("active");
+
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "en-IN";
+  utter.rate = 1.03;
+  utter.pitch = 1.0;
+
+  utter.onend = () => {
+    isSpeaking = false;
+    wave.classList.remove("active");
+    statusText.textContent = "Listening…";
+    startListening(); // AUTO LOOP
+  };
+
+  speechSynthesis.speak(utter);
 }
 
-function addWaveEffect(){
-  removeAllWaves();
-  const w = document.createElement("div");
-  w.className="wave";
-  logo.appendChild(w);
+/* --------------------------------------------------------
+   5. STOP EVERYTHING
+-------------------------------------------------------- */
+function stopAll() {
+  speechSynthesis.cancel();
+  stopListening();
+  isSpeaking = false;
+  wave.classList.remove("active");
+  statusText.textContent = "Tap to speak";
 }
 
-function removeAllWaves(){
-  document.querySelectorAll(".wave").forEach(x=>x.remove());
-}
+/* --------------------------------------------------------
+   6. BUTTON EVENTS
+-------------------------------------------------------- */
+btnSpeak.onclick = () => {
+  if (!isListening && !isSpeaking) {
+    startListening();
+  }
+};
+
+btnStop.onclick = () => {
+  stopAll();
+};
+
+/* Init */
+initRecognition();
