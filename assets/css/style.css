@@ -1,129 +1,130 @@
-/* RESET */
-* { margin:0; padding:0; box-sizing:border-box; }
+/* BASIC RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
 
 body {
-  background:#0d0d0d;
-  color:#e4e4e4;
-  font-family:"Inter",sans-serif;
-  padding-bottom:120px;
+  background: #0d0d0d;
+  color: #eee;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* FLOATING LOGO */
-.header {
-  position:fixed;
-  top:14px;
-  right:14px;
-  text-align:center;
-  z-index:20;
+/* MAIN WRAPPER */
+.container {
+  flex: 1;
+  padding: 20px;
+  padding-top: 110px;
+  overflow-y: auto;
 }
 
-.logo {
-  width:86px;
-  height:86px;
-  border-radius:50%;
-  animation:glow 2s infinite ease-in-out;
+/* LOGO TOP RIGHT */
+#logo-box {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#main-logo {
+  width: 85px;
+  filter: drop-shadow(0 0 15px #00c8ff);
+  animation: glow 3s infinite ease-in-out;
 }
 
 @keyframes glow {
-  0%{ box-shadow:0 0 20px #09f; }
-  50%{ box-shadow:0 0 40px #0ff; }
-  100%{ box-shadow:0 0 20px #09f; }
+  0% { filter: drop-shadow(0 0 10px #00c8ff); }
+  50% { filter: drop-shadow(0 0 25px #00e0ff); }
+  100% { filter: drop-shadow(0 0 10px #00c8ff); }
 }
 
-.tap-talk {
-  color:#0af;
-  font-size:13px;
-  margin-top:6px;
-  cursor:pointer;
+#tap-live {
+  font-size: 14px;
+  color: #ddd;
+  margin-top: 5px;
 }
 
-/* CHAT / PANELS */
-.chat-container { padding:110px 10px 150px; max-width:900px; margin:auto; }
-
-.chat-box { display:flex; flex-direction:column; gap:14px; }
-
-/* AI Panel — EXACT ChatGPT style */
-.ai-panel {
-  width:100%;
-  background:#1a1a1a;
-  padding:18px;
-  border-radius:10px;
-  border:1px solid #282828;
+/* GREETING */
+#greeting {
+  margin-top: 20px;
+  font-size: 20px;
+  line-height: 28px;
 }
 
-.message-content { line-height:1.55; white-space:pre-wrap; }
-
-/* USER BUBBLE (RIGHT) */
-.user-bubble {
-  background:linear-gradient(90deg,#0aa6ff,#1577ff);
-  color:#fff;
-  padding:14px 18px;
-  border-radius:18px;
-  max-width:75%;
-  margin-left:auto;
-  font-weight:500;
-  white-space:pre-wrap;
+/* CHAT BOX */
+#chat-box {
+  margin-top: 25px;
+  padding-bottom: 70px;
 }
 
-/* INPUT AREA */
-.input-area {
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:#0d0d0d;
-  padding:12px;
+/* USER MESSAGE (Blue bubble like ChatGPT mobile) */
+.user-msg {
+  background: #007aff;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+  margin: 12px 0;
+  max-width: 80%;
+  width: fit-content;
+  margin-left: auto;
+  white-space: pre-wrap;
+  font-size: 16px;
 }
 
-.input-pill {
-  background:#1a1a1a;
-  border:1px solid #222;
-  border-radius:40px;
-  padding:10px 14px;
-  display:flex;
-  gap:12px;
-  align-items:center;
+/* AI MESSAGE (NO BUBBLE — ONLY TEXT LIKE CHATGPT) */
+.ai-msg {
+  margin: 12px 0;
+  font-size: 17px;
+  line-height: 24px;
+  white-space: pre-wrap;
+  color: #f1f1f1;
 }
 
-textarea {
-  flex:1;
-  background:transparent;
-  border:none;
-  color:#fff;
-  font-size:15px;
-  resize:none;
-  height:20px;
-  outline:none;
+/* ERROR BOX */
+#error-box {
+  color: #ff6464;
+  margin: 10px 0;
+  font-size: 16px;
 }
 
-.send-btn {
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background:#007bff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  border:none;
+/* INPUT BAR */
+.input-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #111;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid #222;
 }
 
-/* FOOTER */
-.footer {
-  text-align:center;
-  font-size:12px;
-  color:#777;
-  padding:8px;
+.input-bar textarea {
+  flex: 1;
+  background: #1a1a1a;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+  color: #fff;
+  resize: none;
+  height: 46px;
+  font-size: 16px;
+  outline: none;
 }
 
-/* CODE BLOCKS — GitHub style */
-pre {
-  background:#0b0b0b;
-  padding:14px;
-  border-radius:10px;
-  border:1px solid #333;
-  overflow-x:auto;
+.input-bar button {
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-code {
-  font-family:"Fira Code",monospace;
-  font-size:14px;
+
+.input-bar img {
+  width: 28px;
 }
