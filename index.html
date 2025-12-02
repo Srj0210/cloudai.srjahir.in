@@ -1,92 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CloudAI — Smart AI Assistant</title>
 
     <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="./favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png" />
 
-    <!-- PRIMARY SEO -->
-    <meta name="title" content="CloudAI — Smart AI Assistant">
-    <meta name="description" content="CloudAI is an advanced AI assistant that answers questions, generates content, provides voice interaction, and supports live AI conversation.">
+    <!-- SEO -->
+    <meta name="title" content="CloudAI — Smart AI Assistant" />
+    <meta name="description" content="CloudAI is an advanced AI assistant with chat, voice, and live conversation support." />
+    <meta name="keywords" content="CloudAI, AI Assistant, Voice AI, Live AI, SRJahir Tech, smart AI tool" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://cloudai.srjahir.in/" />
 
-    <!-- KEYWORDS -->
-    <meta name="keywords" content="CloudAI, AI Assistant, Voice AI, Live AI, AI chat, smart assistant, SRJahir Tech, artificial intelligence tool">
+    <!-- OpenGraph -->
+    <meta property="og:title" content="CloudAI — Smart AI Assistant" />
+    <meta property="og:description" content="Your personal AI assistant with voice, text and live talk." />
+    <meta property="og:image" content="https://cloudai.srjahir.in/logo.png" />
+    <meta property="og:url" content="https://cloudai.srjahir.in/" />
+    <meta property="og:type" content="website" />
 
-    <!-- ROBOTS -->
-    <meta name="robots" content="index, follow">
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CloudAI — Smart AI Assistant" />
+    <meta name="twitter:description" content="Fast, reliable AI with voice & live talk." />
+    <meta name="twitter:image" content="https://cloudai.srjahir.in/logo.png" />
 
-    <!-- CANONICAL -->
-    <link rel="canonical" href="https://cloudai.srjahir.in/">
-
-    <!-- OPEN GRAPH -->
-    <meta property="og:title" content="CloudAI — Smart AI Assistant">
-    <meta property="og:description" content="Your personal AI assistant with voice, text, and live interaction support.">
-    <meta property="og:image" content="https://cloudai.srjahir.in/logo.png">
-    <meta property="og:url" content="https://cloudai.srjahir.in/">
-    <meta property="og:type" content="website">
-
-    <!-- TWITTER CARD -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="CloudAI — Smart AI Assistant">
-    <meta name="twitter:description" content="Experience fast, natural, and interactive AI assistance.">
-    <meta name="twitter:image" content="https://cloudai.srjahir.in/logo.png">
-
-    <!-- ANALYTICS -->
+    <!-- Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-ZVLW6MTZ5Y');
+        gtag("js", new Date());
+        gtag("config", "G-ZVLW6MTZ5Y");
     </script>
 
-    <!-- MAIN CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=11">
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/style.css?v=20" />
 </head>
 
 <body>
 
-    <!-- AI LOGO TOP -->
+    <!-- LOGO -->
     <div class="logo-area" onclick="window.location.href='live.html'">
-        <img src="logo.png" id="ai-logo">
+        <img src="logo.png" id="ai-logo" />
         <p class="tap-talk">Tap to Talk</p>
     </div>
 
-    <!-- GREETING -->
+    <!-- GREET -->
     <div class="greet-box">
         <div class="greet-title">👋 Hi, I'm CloudAI.</div>
-        <div class="greet-sub">Ask me anything — I reply like ChatGPT.</div>
+        <div class="greet-sub">Ask me anything — I’m here to help.</div>
     </div>
 
-    <!-- CHAT BOX -->
+    <!-- CHAT -->
     <div id="chat-box"></div>
 
-    <!-- INPUT AREA -->
+    <!-- INPUT BAR -->
     <div class="input-area">
 
-        <!-- PLUS BUTTON -->
         <button class="plus-btn">
-            <img src="Pin.png">
+            <img src="Pin.png" />
         </button>
 
-        <!-- TEXTAREA -->
         <textarea id="user-input" placeholder="Type your message..."></textarea>
 
-        <!-- MIC BUTTON -->
         <button class="mic-btn" id="mic-btn">
-            <img src="Mic.png">
+            <img src="Mic.png" />
         </button>
 
-        <!-- SEND BUTTON -->
         <button id="send-btn" class="send-btn">
-            <img src="Send.png">
+            <img src="Send.png" />
         </button>
     </div>
 
     <!-- JS -->
-    <script src="assets/js/chat.js?v=10"></script>
+    <script src="assets/js/chat.js?v=20"></script>
 </body>
 </html>
