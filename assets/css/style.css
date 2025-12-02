@@ -1,143 +1,118 @@
-/* RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  background: #0d0d0d;
-  color: #e9e9e9;
-  font-family: "Inter", sans-serif;
-  padding-bottom: 120px;
+    margin: 0;
+    background: #0d0d0d;
+    font-family: Arial, sans-serif;
+    color: white;
 }
 
-/* LOGO AREA */
+/* LOGO TOP RIGHT */
 .logo-area {
-  text-align: center;
-  margin-top: 18px;
-  cursor: pointer;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    text-align: center;
+    cursor: pointer;
 }
-.logo-area img {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  animation: glow 1.8s infinite ease-in-out;
+
+#ai-logo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    animation: glow 2s infinite alternate;
 }
+
 @keyframes glow {
-  0% { filter: drop-shadow(0 0 8px #00c8ff); }
-  50% { filter: drop-shadow(0 0 22px #00d8ff); }
-  100% { filter: drop-shadow(0 0 8px #00c8ff); }
+    from { box-shadow: 0 0 10px #00c8ff; }
+    to   { box-shadow: 0 0 25px #00c8ff; }
 }
+
 .tap-talk {
-  font-size: 13px;
-  color: #7ea9ff;
-  margin-top: 8px;
+    color: #7cd9ff;
+    margin-top: 4px;
+    font-size: 14px;
 }
 
-/* WELCOME BOX */
-.welcome {
-  text-align: center;
-  margin-top: 10px;
-}
-.welcome .title {
-  font-size: 20px;
-  font-weight: 700;
-}
-.welcome .sub {
-  font-size: 14px;
-  color: #9a9a9a;
-  margin-top: 4px;
+/***** GREETING *****/
+.greeting {
+    margin-top: 150px;
+    text-align: left;
+    padding-left: 20px;
 }
 
-/* CHAT BOX */
-.chat-box {
-  width: 100%;
-  max-width: 900px;
-  margin: 12px auto;
-  padding: 0 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.greeting h2 {
+    margin: 0;
+    font-size: 26px;
 }
 
-/* USER BUBBLE — ChatGPT style */
-.user-message {
-  align-self: flex-end;
-}
-.user-bubble {
-  background: #007bff;
-  color: white;
-  padding: 12px 16px;
-  border-radius: 16px;
-  max-width: 75%;
-  white-space: pre-wrap;
-  font-size: 15px;
+.greeting p {
+    margin: 5px 0 20px;
+    color: #cccccc;
 }
 
-/* AI BUBBLE — ChatGPT panel */
-.ai-message {
-  align-self: flex-start;
-}
-.ai-bubble {
-  background: #1c1c1c;
-  border: 1px solid #2d2d2d;
-  padding: 14px 18px;
-  border-radius: 14px;
-  max-width: 90%;
-  white-space: pre-wrap;
-  font-size: 15px;
+/****** CHAT AREA ******/
+#chat-box {
+    padding: 20px;
+    padding-bottom: 120px;
 }
 
-/* CODE BLOCK (GitHub Style) */
-pre code {
-  display: block;
-  padding: 14px;
-  background: #111;
-  border-radius: 14px;
-  border: 1px solid #333;
-  color: #c8e2ff;
-  font-family: "Fira Code", monospace;
-  font-size: 14px;
-  overflow-x: auto;
+/****** USER BUBBLE (ChatGPT Style) ******/
+.user-msg {
+    max-width: 80%;
+    background: #007aff;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 18px;
+    color: white;
+    float: right;
+    clear: both;
 }
 
-/* INPUT AREA */
-.input-area {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #0d0d0d;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/****** AI PANEL (NO BUBBLE) ******/
+.ai-msg {
+    max-width: 85%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 14px;
+    float: left;
+    clear: both;
+    text-align: left;
+}
+
+/****** INPUT BAR BOTTOM FIXED ******/
+.input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #0f0f0f;
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+textarea {
+    flex-grow: 1;
+    background: #1a1a1a;
+    border: none;
+    border-radius: 20px;
+    padding: 12px;
+    color: white;
+    resize: none;
+    height: 40px;
+    font-size: 15px;
 }
 
 .icon-btn img {
-  width: 28px;
-}
-.icon-btn {
-  background: transparent;
-  border: none;
-  padding: 6px;
-  cursor: pointer;
+    width: 40px;
+    height: 40px;
 }
 
-.hidden {
-  display: none;
-}
-
-/* TEXTAREA */
-#user-input {
-  flex: 1;
-  background: #1a1a1a;
-  border: 1px solid #2c2c2c;
-  color: white;
-  padding: 12px 14px;
-  border-radius: 14px;
-  resize: none;
-  height: 22px;
-  max-height: 130px;
-  font-size: 15px;
+footer {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    padding: 20px;
 }
