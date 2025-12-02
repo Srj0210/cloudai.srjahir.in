@@ -3,65 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CloudAI – SRJahir Tech</title>
+<title>CloudAI — SRJahir Tech</title>
 
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="stylesheet" href="style.css">
+<!-- Auto Favicon -->
+<link rel="icon" href="favicon.png" type="image/png">
 
 <!-- SEO -->
-<meta name="description" content="CloudAI by SRJahir Tech – The fastest AI assistant with live search, voice input, documents, and real-time responses.">
-<meta name="keywords" content="CloudAI, SRJahir, AI Chatbot, Voice AI, Live AI, ChatGPT alternative, India AI, SRJahir Tech">
+<meta name="description" content="CloudAI — Smart AI assistant by SRJahir Tech. Fast, powerful, ChatGPT-style replies with voice, files, live search & more.">
+<meta name="keywords" content="CloudAI, SRJahir Tech, AI Chat, Voice AI, ChatGPT Alternative, Indian AI, SRJahir">
 <meta name="author" content="SRJahir Tech">
 
+<!-- OpenGraph -->
+<meta property="og:title" content="CloudAI — SRJahir Tech">
+<meta property="og:description" content="Your personal AI assistant with voice, files & live search.">
+<meta property="og:image" content="logo.png">
+<meta property="og:type" content="website">
+
 <!-- Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXX"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-XXXXXXX');
+gtag('config', 'G-XXXXX');
 </script>
 
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<!-- LOGO -->
-<div id="logo-box">
-    <img src="logo.png" id="main-logo">
-    <div id="tap-live">Tap to Talk</div>
+<!-- TOP LOGO -->
+<div class="logo-area" onclick="window.location.href='live.html'">
+    <img src="logo.png" class="logo-img" id="aiLogo">
+    <div class="live-text">Tap to Talk</div>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="container">
-    <div id="greeting">
-        👋 Hi, I'm CloudAI.<br>
-        Ask me anything — I reply like ChatGPT.
-    </div>
-
-    <!-- Chat Messages -->
-    <div id="chat-box"></div>
+<!-- GREETING -->
+<div class="greeting">
+    👋 <b>Hi, I'm CloudAI.</b><br>
+    Ask me anything — I reply like ChatGPT.
 </div>
 
-<!-- INPUT BAR (ChatGPT style) -->
-<div class="input-bar">
+<!-- CHAT BOX -->
+<div id="chat-box"></div>
 
-    <!-- PLUS -->
-    <button class="icon-btn" id="plus-btn">
-        <img src="Pin.png">
-    </button>
+<!-- INPUT BAR -->
+<div class="input-area">
 
-    <!-- TEXT FIELD -->
+    <img src="Pin.png" id="attach-btn" class="input-icon">
+
     <textarea id="user-input" placeholder="Type your message..."></textarea>
 
-    <!-- MIC -->
-    <button class="icon-btn" id="mic-btn">
-        <img src="Mic.png">
-    </button>
+    <img src="Mic.png" id="mic-btn" class="input-icon">
 
-    <!-- SEND -->
-    <button class="icon-btn" id="send-btn">
-        <img src="Send.png">
-    </button>
+    <img src="Send.png" id="send-btn" class="input-icon">
 
 </div>
 
