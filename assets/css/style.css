@@ -1,88 +1,143 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    padding: 0;
-    background: #0d0d0d;
-    color: white;
-    font-family: Arial, sans-serif;
+  background: #0d0d0d;
+  color: #e9e9e9;
+  font-family: "Inter", sans-serif;
+  padding-bottom: 120px;
 }
 
 /* LOGO AREA */
 .logo-area {
-    position: fixed;
-    right: 20px;
-    top: 20px;
-    text-align: center;
-    cursor: pointer;
+  text-align: center;
+  margin-top: 18px;
+  cursor: pointer;
 }
-.logo-img {
-    width: 110px;
-    filter: drop-shadow(0 0 15px #00c3ff);
+.logo-area img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  animation: glow 1.8s infinite ease-in-out;
 }
-.live-text {
-    margin-top: 4px;
-    font-size: 15px;
-    color: #ccc;
+@keyframes glow {
+  0% { filter: drop-shadow(0 0 8px #00c8ff); }
+  50% { filter: drop-shadow(0 0 22px #00d8ff); }
+  100% { filter: drop-shadow(0 0 8px #00c8ff); }
+}
+.tap-talk {
+  font-size: 13px;
+  color: #7ea9ff;
+  margin-top: 8px;
 }
 
-/* GREETING */
-.greeting {
-    margin-top: 160px;
-    padding: 20px;
-    font-size: 20px;
+/* WELCOME BOX */
+.welcome {
+  text-align: center;
+  margin-top: 10px;
+}
+.welcome .title {
+  font-size: 20px;
+  font-weight: 700;
+}
+.welcome .sub {
+  font-size: 14px;
+  color: #9a9a9a;
+  margin-top: 4px;
 }
 
 /* CHAT BOX */
-#chat-box {
-    padding: 20px;
-    padding-bottom: 120px;
+.chat-box {
+  width: 100%;
+  max-width: 900px;
+  margin: 12px auto;
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/* USER MESSAGE BUBBLE */
-.user-msg {
-    background: #1f1f1f;
-    padding: 10px 15px;
-    border-radius: 10px;
-    width: fit-content;
-    margin-bottom: 10px;
-    margin-left: auto;
-    color: white;
+/* USER BUBBLE — ChatGPT style */
+.user-message {
+  align-self: flex-end;
+}
+.user-bubble {
+  background: #007bff;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 16px;
+  max-width: 75%;
+  white-space: pre-wrap;
+  font-size: 15px;
 }
 
-/* AI MESSAGE (NO BUBBLE) */
-.ai-msg {
-    margin-bottom: 14px;
-    color: #e0e0e0;
-    line-height: 1.4;
+/* AI BUBBLE — ChatGPT panel */
+.ai-message {
+  align-self: flex-start;
+}
+.ai-bubble {
+  background: #1c1c1c;
+  border: 1px solid #2d2d2d;
+  padding: 14px 18px;
+  border-radius: 14px;
+  max-width: 90%;
+  white-space: pre-wrap;
+  font-size: 15px;
 }
 
-/* INPUT BAR (ChatGPT Style) */
+/* CODE BLOCK (GitHub Style) */
+pre code {
+  display: block;
+  padding: 14px;
+  background: #111;
+  border-radius: 14px;
+  border: 1px solid #333;
+  color: #c8e2ff;
+  font-family: "Fira Code", monospace;
+  font-size: 14px;
+  overflow-x: auto;
+}
+
+/* INPUT AREA */
 .input-area {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #0f0f0f;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-top: 1px solid #222;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #0d0d0d;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-textarea {
-    flex: 1;
-    background: #1b1b1b;
-    color: white;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 12px;
-    height: 46px;
-    resize: none;
+.icon-btn img {
+  width: 28px;
+}
+.icon-btn {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
 }
 
-/* ICONS FIX */
-.input-icon {
-    width: 36px;
-    height: 36px;
-    object-fit: contain;
-    opacity: .85;
+.hidden {
+  display: none;
+}
+
+/* TEXTAREA */
+#user-input {
+  flex: 1;
+  background: #1a1a1a;
+  border: 1px solid #2c2c2c;
+  color: white;
+  padding: 12px 14px;
+  border-radius: 14px;
+  resize: none;
+  height: 22px;
+  max-height: 130px;
+  font-size: 15px;
 }
