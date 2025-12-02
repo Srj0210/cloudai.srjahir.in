@@ -1,107 +1,76 @@
-const API_URL = "https://cloudai.srjahir.workers.dev/";
-
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
-const LOGO = document.getElementById("ai-logo");
+const micBtn = document.getElementById("mic-btn");
+const plusBtn = document.getElementById("plus-btn");
+const logoBox = document.getElementById("logo-box");
 
-let history = [];
-const MAX_HISTORY = 15;
-let processing = false;
+/* TAP LOGO → LIVE PAGE */
+logoBox.onclick = () => {
+    window.location.href = "live.html";
+};
 
-/* SEND HANDLERS */
-sendBtn.onclick = sendMessage;
+/* SCROLL AUTO */
+function scrollBottom() {
+    setTimeout(() => {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 80);
+}
+
+/* SHOW USER MESSAGE */
+function addUser(msg) {
+    const div = document.createElement("div");
+    div.className = "user-msg";
+    div.textContent = msg;
+    chatBox.appendChild(div);
+    scrollBottom();
+}
+
+/* SHOW AI TEXT (NO BUBBLE) */
+function addAI(msg) {
+    const div = document.createElement("div");
+    div.className = "ai-msg";
+    div.textContent = msg;
+    chatBox.appendChild(div);
+    scrollBottom();
+}
+
+/* SEND MESSAGE */
+sendBtn.onclick = () => sendMessage();
 userInput.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
 });
 
-/* SEND FUNCTION */
-function sendMessage() {
-  let text = userInput.value.trim();
-  if (!text || processing) return;
+async function sendMessage() {
+    let msg = userInput.value.trim();
+    if (!msg) return;
 
-  addUserBubble(text);
-  userInput.value = "";
+    addUser(msg);
+    userInput.value = "";
 
-  talkToAI(text);
-}
+    addAI("⏳ Thinking...");
 
-/* USER BUBBLE */
-function addUserBubble(text) {
-  const d = document.createElement("div");
-  d.className = "user-bubble";
-  d.innerText = text;
-  chatBox.appendChild(d);
-  scrollDown();
-}
+    try {
+        const res = await fetch("https://dawn-smoke-b354.sleepyspider6166.workers.dev", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                prompt: msg,
+                history: []
+            })
+        });
 
-/* AI PANEL */
-function addAiPanel(html) {
-  const wrap = document.createElement("div");
-  wrap.className = "ai-panel";
+        const data = await res.json();
+        document.querySelector(".ai-msg:last-child").remove();
 
-  const content = document.createElement("div");
-  content.className = "message-content";
-  content.innerHTML = html;
-
-  wrap.appendChild(content);
-  chatBox.appendChild(wrap);
-
-  hljs.highlightAll();
-  scrollDown();
-}
-
-/* SCROLL */
-function scrollDown() {
-  setTimeout(() => {
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }, 50);
-}
-
-/* TALK TO WORKER */
-async function talkToAI(prompt) {
-  processing = true;
-  LOGO.style.animation = "glow 1s infinite";
-
-  const thinking = addThinking();
-
-  try {
-    const res = await fetch(API_URL, {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ clientId:"web", prompt, history })
-    });
-
-    const data = await res.json();
-    
-    thinking.remove();
-    LOGO.style.animation = "glow 2s infinite";
-
-    let out = data.reply || "⚠ No reply from server";
-
-    addAiPanel(out);
-
-    history.push({ role:"user", text:prompt });
-    history.push({ role:"model", text:out });
-    history = history.slice(-MAX_HISTORY);
-
-  } catch (e) {
-    thinking.remove();
-    addAiPanel("⚠ Network error.");
-  }
-
-  processing = false;
-}
-
-/* Thinking panel */
-function addThinking() {
-  const box = document.createElement("div");
-  box.className = "ai-panel";
-  box.innerHTML = "<div class='message-content'>⏳ Thinking...</div>";
-  chatBox.appendChild(box);
-  scrollDown();
-  return box;
+        if (data.reply) addAI(data.reply);
+        else addAI("⚠️ No response.");
+        
+    } catch (err) {
+        document.querySelector(".ai-msg:last-child").remove();
+        addAI("⚠️ Network error.");
+    }
 }
