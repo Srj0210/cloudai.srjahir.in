@@ -1,60 +1,60 @@
-const chatBox = document.getElementById("chat-box");
-const input = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
+const API_URL = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
 
-document.getElementById("logo-box").onclick = () => {
-    window.location.href = "live.html";
-};
+const sendBtn = document.getElementById("send-btn");
+const userInput = document.getElementById("user-input");
+const chatBox = document.getElementById("chat-box");
 
 sendBtn.onclick = sendMessage;
+userInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
 
-function sendMessage() {
-    let text = input.value.trim();
+function appendUser(msg) {
+    const div = document.createElement("div");
+    div.className = "user-msg";
+    div.innerText = msg;
+    chatBox.appendChild(div);
+}
+
+function appendAI(msg) {
+    const div = document.createElement("div");
+    div.className = "ai-msg";
+    div.innerHTML = msg.replace(/\n/g, "<br>");
+    chatBox.appendChild(div);
+}
+
+async function sendMessage() {
+    const text = userInput.value.trim();
     if (!text) return;
 
-    addUserMsg(text);
-    input.value = "";
+    appendUser(text);
+    userInput.value = "";
 
-    askAI(text);
-}
-
-function addUserMsg(t) {
-    let div = document.createElement("div");
-    div.className = "user-msg";
-    div.innerText = t;
-    chatBox.appendChild(div);
-    scroll();
-}
-
-function addAI(t) {
-    let div = document.createElement("div");
-    div.className = "ai-msg";
-    div.innerText = t;
-    chatBox.appendChild(div);
-    scroll();
-}
-
-function scroll() {
-    setTimeout(() => {
-        window.scrollTo(0, document.body.scrollHeight);
-    }, 30);
-}
-
-async function askAI(prompt) {
     try {
-        const res = await fetch("https://cloudai.srjahir.workers.dev", {
+        const res = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                prompt,
-                history: [],
-                clientId: crypto.randomUUID()
+                prompt: text,
+                clientId: "SRJ-" + navigator.userAgent
             })
         });
 
         const data = await res.json();
-        addAI(data.reply || "Error.");
-    } catch {
-        addAI("⚠️ Network error.");
+
+        if (data.error === "quota_exceeded") {
+            appendAI("⚠ Your daily quota is finished.");
+            return;
+        }
+
+        appendAI(data.reply);
+    } 
+    catch (err) {
+        appendAI("⚠ Network error. Try again.");
     }
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
