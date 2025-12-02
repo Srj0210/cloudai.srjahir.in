@@ -1,80 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CloudAI — Smart AI Assistant</title>
 
-  <title>CloudAI — Smart AI Assistant by SRJahir Tech</title>
+    <!-- AUTO FAVICON -->
+    <link rel="icon" type="image/png" href="favicon.png">
 
-  <!-- SEO -->
-  <meta name="description" content="CloudAI — A fast and intelligent AI assistant by SRJahir Technologies. Ask anything, get answers instantly with clean UI." />
-  <meta name="keywords" content="CloudAI, SRJahir, AI Chat, Smart Assistant, AI Tools, Voice AI, Cloud AI" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://cloudai.srjahir.in/" />
+    <!-- SEO -->
+    <meta name="description" content="CloudAI — Your personal AI assistant with smart chat and voice features.">
+    <meta name="keywords" content="CloudAI, AI Chat, Voice AI, Smart Assistant, SRJahir Tech">
+    <meta property="og:title" content="CloudAI — Smart AI Assistant">
+    <meta property="og:description" content="Talk with CloudAI. Smart chat with voice and live mode.">
+    <meta property="og:image" content="logo.png">
 
-  <!-- FAVICON (Auto-size using same logo) -->
-  <link rel="icon" type="image/png" href="logo.png" />
+    <!-- GOOGLE ANALYTICS -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag("js", new Date());
+        gtag("config", "G-ZVLW6MTZ5Y");
+    </script>
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
-  <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-T4XBK86HZ2');
-  </script>
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="assets/css/style.css?v=25" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/style.css?v=100">
 </head>
 
 <body>
 
-  <!-- FLOATING LOGO -->
-  <div class="logo-area" onclick="window.location.href='live.html'">
-    <img src="logo.png" id="ai-logo" />
-    <p class="tap-talk">Tap to Talk</p>
-  </div>
+    <!-- TOP RIGHT LOGO -->
+    <div class="logo-area" onclick="location.href='live.html'">
+        <img id="ai-logo" src="logo.png" alt="CloudAI">
+        <p class="tap-talk">Tap to Talk</p>
+    </div>
 
-  <!-- WELCOME -->
-  <div class="welcome">
-    <div class="title">👋 Hi, I’m CloudAI</div>
-    <div class="sub">Ask me anything.</div>
-  </div>
+    <!-- GREETING -->
+    <div class="greeting">
+        <h2>👋 Hi, I'm CloudAI.</h2>
+        <p>Ask me anything.</p>
+    </div>
 
-  <!-- CHAT BOX -->
-  <div id="chat-box" class="chat-box"></div>
+    <!-- CHAT BOX -->
+    <div id="chat-box"></div>
 
-  <!-- INPUT AREA (ChatGPT style) -->
-  <div class="input-area">
+    <!-- INPUT BAR -->
+    <div class="input-bar">
 
-    <!-- PLUS BUTTON -->
-    <button id="plus-btn" class="icon-btn">
-      <img src="Pin.png" />
-    </button>
+        <button class="icon-btn">
+            <img src="Pin.png">
+        </button>
 
-    <!-- TEXTAREA -->
-    <textarea id="user-input" placeholder="Send a message..."></textarea>
+        <textarea id="user-input" placeholder="Send a message..."></textarea>
 
-    <!-- MIC BUTTON -->
-    <button id="mic-btn" class="icon-btn">
-      <img src="Mic.png" />
-    </button>
+        <button class="icon-btn" id="mic-btn">
+            <img src="Mic.png">
+        </button>
 
-    <!-- STOP BUTTON (HIDDEN BY DEFAULT) -->
-    <button id="stop-btn" class="icon-btn hidden">
-      <img src="Stop.png" />
-    </button>
+        <button class="icon-btn" id="send-btn">
+            <img src="Send.png">
+        </button>
+    </div>
 
-    <!-- SEND BUTTON -->
-    <button id="send-btn" class="icon-btn">
-      <img src="Send.png" />
-    </button>
+    <!-- JS -->
+    <script src="assets/js/chat.js?v=100"></script>
 
-  </div>
-
-  <!-- JS -->
-  <script src="assets/js/chat.js?v=25"></script>
-
+    <footer>© 2025 SRJahir Tech</footer>
 </body>
 </html>
