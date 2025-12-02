@@ -1,130 +1,94 @@
-/* BASIC RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: system-ui, sans-serif;
-}
-
 body {
-  background: #0d0d0d;
-  color: #eee;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: system-ui, sans-serif;
 }
 
-/* MAIN WRAPPER */
-.container {
-  flex: 1;
-  padding: 20px;
-  padding-top: 110px;
-  overflow-y: auto;
-}
-
-/* LOGO TOP RIGHT */
+/* TOP LOGO */
 #logo-box {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  text-align: center;
-  cursor: pointer;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    text-align: center;
+    z-index: 999;
+    cursor: pointer;
 }
 
 #main-logo {
-  width: 85px;
-  filter: drop-shadow(0 0 15px #00c8ff);
-  animation: glow 3s infinite ease-in-out;
-}
-
-@keyframes glow {
-  0% { filter: drop-shadow(0 0 10px #00c8ff); }
-  50% { filter: drop-shadow(0 0 25px #00e0ff); }
-  100% { filter: drop-shadow(0 0 10px #00c8ff); }
+    width: 90px;
+    filter: drop-shadow(0 0 18px #00bfff);
+    transition: 0.3s;
 }
 
 #tap-live {
-  font-size: 14px;
-  color: #ddd;
-  margin-top: 5px;
+    margin-top: 4px;
+    font-size: 14px;
+    opacity: 0.8;
 }
 
-/* GREETING */
+/* CONTENT */
+.container {
+    padding: 140px 20px 120px;
+}
+
 #greeting {
-  margin-top: 20px;
-  font-size: 20px;
-  line-height: 28px;
+    font-size: 22px;
+    line-height: 30px;
+    margin-bottom: 20px;
 }
 
-/* CHAT BOX */
+/* CHAT */
 #chat-box {
-  margin-top: 25px;
-  padding-bottom: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-/* USER MESSAGE (Blue bubble like ChatGPT mobile) */
 .user-msg {
-  background: #007aff;
-  color: white;
-  padding: 12px 16px;
-  border-radius: 16px;
-  border-bottom-right-radius: 4px;
-  margin: 12px 0;
-  max-width: 80%;
-  width: fit-content;
-  margin-left: auto;
-  white-space: pre-wrap;
-  font-size: 16px;
+    align-self: flex-end;
+    background: #007BFF;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 14px 14px 2px 14px;
+    max-width: 80%;
 }
 
-/* AI MESSAGE (NO BUBBLE — ONLY TEXT LIKE CHATGPT) */
+/* AI = ChatGPT style (NO bubble) */
 .ai-msg {
-  margin: 12px 0;
-  font-size: 17px;
-  line-height: 24px;
-  white-space: pre-wrap;
-  color: #f1f1f1;
-}
-
-/* ERROR BOX */
-#error-box {
-  color: #ff6464;
-  margin: 10px 0;
-  font-size: 16px;
+    align-self: flex-start;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    padding: 12px 14px;
+    border-radius: 10px;
+    max-width: 90%;
+    white-space: pre-line;
 }
 
 /* INPUT BAR */
 .input-bar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #111;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-top: 1px solid #222;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    padding: 10px;
+    background: #000;
+    gap: 10px;
 }
 
-.input-bar textarea {
-  flex: 1;
-  background: #1a1a1a;
-  padding: 12px;
-  border-radius: 14px;
-  border: none;
-  color: #fff;
-  resize: none;
-  height: 46px;
-  font-size: 16px;
-  outline: none;
+textarea {
+    flex: 1;
+    height: 48px;
+    resize: none;
+    border-radius: 12px;
+    padding: 10px;
+    background: #111;
+    color: #fff;
+    border: 1px solid #333;
 }
 
-.input-bar button {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.input-bar img {
-  width: 28px;
+.icon-btn img {
+    width: 36px;
+    height: 36px;
 }
