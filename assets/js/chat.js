@@ -1,71 +1,74 @@
-const chatBox = document.getElementById("chat-box");
-const userInput = document.getElementById("user-input");
+const API = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+
+const box = document.getElementById("chat-box");
 const sendBtn = document.getElementById("send-btn");
+const micBtn = document.getElementById("mic-btn");
+const input = document.getElementById("user-input");
 
-const clientId = crypto.randomUUID().slice(0, 12);
-
-sendBtn.onclick = () => sendMsg();
-
-userInput.addEventListener("keydown", e => {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMsg();
-    }
-});
-
+/* ADD USER MESSAGE */
 function addUser(text) {
     const div = document.createElement("div");
     div.className = "user-msg";
     div.textContent = text;
-    chatBox.appendChild(div);
-    scrollDown();
+    box.appendChild(div);
 }
 
+/* ADD AI MESSAGE (BLOCK LIKE CHATGPT) */
 function addAI(text) {
     const div = document.createElement("div");
     div.className = "ai-msg";
-
-    text = text.replace(/```(\w*)\n([\s\S]*?)```/g,
-        (m, lang, code) =>
-            `<pre><code class="language-${lang || 'javascript'}">${code.replace(/</g, "&lt;")}</code></pre>`
-    );
-
     div.innerHTML = text;
-    chatBox.appendChild(div);
+    box.appendChild(div);
 
     Prism.highlightAll();
-    scrollDown();
 }
 
-function scrollDown() {
-    setTimeout(() => {
-        window.scrollTo(0, document.body.scrollHeight);
-    }, 50);
-}
+/* SEND MESSAGE TO WORKER */
+async function sendMessage() {
+    const msg = input.value.trim();
+    if (!msg) return;
 
-async function sendMsg() {
-    let text = userInput.value.trim();
-    if (!text) return;
-
-    addUser(text);
-    userInput.value = "";
+    addUser(msg);
+    input.value = "";
 
     try {
-        const response = await fetch("https://cloudai.srjahir.workers.dev", {
+        const res = await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                prompt: text,
-                clientId: clientId
-            })
+            body: JSON.stringify({ message: msg })
         });
 
-        const data = await response.json();
+        const data = await res.json();
 
-        if (data.reply) addAI(data.reply);
-        else addAI("⚠ No response");
+        if (!data.response) {
+            addAI(`⚠️ No response`);
+            return;
+        }
 
-    } catch (e) {
-        addAI("⚠ Network error");
+        addAI(data.response);
+
+    } catch {
+        addAI("⚠️ Network error");
     }
+
+    box.scrollTop = box.scrollHeight;
+}
+
+sendBtn.onclick = sendMessage;
+
+/* VOICE INPUT */
+let recognition;
+if ("webkitSpeechRecognition" in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = "en-IN";
+    recognition.continuous = false;
+
+    micBtn.onclick = () => {
+        recognition.start();
+    };
+
+    recognition.onresult = (e) => {
+        input.value = e.results[0][0].transcript;
+        sendMessage();
+    };
 }
