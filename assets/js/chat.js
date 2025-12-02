@@ -2,78 +2,70 @@ const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
-const clientId = crypto.randomUUID().slice(0, 20);
+const clientId = crypto.randomUUID().slice(0, 12);
 
-/* Send on click */
-sendBtn.onclick = () => sendMessage();
+sendBtn.onclick = () => sendMsg();
 
-/* Send on Enter */
 userInput.addEventListener("keydown", e => {
     if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        sendMessage();
+        sendMsg();
     }
 });
 
-/* Add user message */
-function addUserMessage(text) {
+function addUser(text) {
     const div = document.createElement("div");
     div.className = "user-msg";
     div.textContent = text;
     chatBox.appendChild(div);
-    scrollBottom();
+    scrollDown();
 }
 
-/* Add AI message (no bubble) */
-function addAiMessage(text) {
+function addAI(text) {
     const div = document.createElement("div");
     div.className = "ai-msg";
 
-    // Convert code fences to PrismJS blocks
-    if (text.includes("```")) {
-        text = text.replace(/```(\w*)\n([\s\S]*?)```/g,
-            (match, lang, code) => `
-<pre><code class="language-${lang || 'javascript'}">${code.replace(/</g, "&lt;")}</code></pre>`
-        );
-    }
+    text = text.replace(/```(\w*)\n([\s\S]*?)```/g,
+        (m, lang, code) =>
+            `<pre><code class="language-${lang || 'javascript'}">${code.replace(/</g, "&lt;")}</code></pre>`
+    );
 
     div.innerHTML = text;
     chatBox.appendChild(div);
+
     Prism.highlightAll();
-    scrollBottom();
+    scrollDown();
 }
 
-function scrollBottom() {
+function scrollDown() {
     setTimeout(() => {
         window.scrollTo(0, document.body.scrollHeight);
     }, 50);
 }
 
-/* SEND MESSAGE */
-async function sendMessage() {
+async function sendMsg() {
     let text = userInput.value.trim();
     if (!text) return;
 
-    addUserMessage(text);
+    addUser(text);
     userInput.value = "";
 
     try {
-        const res = await fetch("https://cloudai.srjahir.workers.dev", {
+        const response = await fetch("https://cloudai.srjahir.workers.dev", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 prompt: text,
-                clientId: clientId,
-                history: []
+                clientId: clientId
             })
         });
 
-        const data = await res.json();
+        const data = await response.json();
 
-        if (data.reply) addAiMessage(data.reply);
-        else addAiMessage("⚠ No response");
+        if (data.reply) addAI(data.reply);
+        else addAI("⚠ No response");
 
-    } catch {
-        addAiMessage("⚠ Network error");
+    } catch (e) {
+        addAI("⚠ Network error");
     }
 }
