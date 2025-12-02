@@ -2,6 +2,23 @@ const chatBox = document.getElementById("chat-box");
 const input = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
+/* -------------------------------
+   UNIQUE CLIENT ID GENERATOR
+--------------------------------*/
+function getClientId() {
+    let id = localStorage.getItem("cloudai_clientId");
+    if (!id) {
+        id = "client-" + Math.random().toString(36).substring(2, 12);
+        localStorage.setItem("cloudai_clientId", id);
+    }
+    return id;
+}
+
+const clientId = getClientId();
+
+/* -------------------------------
+   ADD USER + AI MESSAGES
+--------------------------------*/
 function addUserMessage(text) {
     let div = document.createElement("div");
     div.className = "user-msg";
@@ -18,6 +35,9 @@ function addAIMessage(text) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+/* -------------------------------
+   SEND MESSAGE TO WORKER
+--------------------------------*/
 async function sendMessage() {
     let msg = input.value.trim();
     if (!msg) return;
@@ -31,18 +51,31 @@ async function sendMessage() {
         let res = await fetch("https://dawn-smoke-b354.sleepyspider6166.workers.dev/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: msg })
+            body: JSON.stringify({
+                prompt: msg,
+                clientId: clientId,   // 🔥 FIXED → REQUIRED FOR QUOTA SYSTEM
+                history: []           // optional but keeping for safety
+            })
         });
 
-        let data = await res.text();
+        let data = await res.json();
 
-        document.querySelector(".ai-msg:last-child").innerText = data;
+        if (data.reply) {
+            document.querySelector(".ai-msg:last-child").innerText = data.reply;
+        } else if (data.error) {
+            document.querySelector(".ai-msg:last-child").innerText = "⚠️ " + data.error;
+        } else {
+            document.querySelector(".ai-msg:last-child").innerText = "⚠️ Unexpected response";
+        }
 
-    } catch {
-        document.querySelector(".ai-msg:last-child").innerText = "⚠️ No response";
+    } catch (e) {
+        document.querySelector(".ai-msg:last-child").innerText = "⚠️ Network error";
     }
 }
 
+/* -------------------------------
+   BUTTON + ENTER KEY EVENTS
+--------------------------------*/
 sendBtn.onclick = sendMessage;
 
 input.addEventListener("keydown", e => {
