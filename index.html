@@ -1,82 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CloudAI — Smart AI Assistant</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="favicon.png" />
+  <title>CloudAI — Smart AI Assistant by SRJahir Tech</title>
 
-    <!-- SEO -->
-    <meta name="title" content="CloudAI — Smart AI Assistant" />
-    <meta name="description" content="CloudAI is an advanced AI assistant with chat, voice, and live conversation support." />
-    <meta name="keywords" content="CloudAI, AI Assistant, Voice AI, Live AI, SRJahir Tech, smart AI tool" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://cloudai.srjahir.in/" />
+  <!-- SEO -->
+  <meta name="description" content="CloudAI — A fast and intelligent AI assistant by SRJahir Technologies. Ask anything, get answers instantly with clean UI." />
+  <meta name="keywords" content="CloudAI, SRJahir, AI Chat, Smart Assistant, AI Tools, Voice AI, Cloud AI" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cloudai.srjahir.in/" />
 
-    <!-- OpenGraph -->
-    <meta property="og:title" content="CloudAI — Smart AI Assistant" />
-    <meta property="og:description" content="Your personal AI assistant with voice, text and live talk." />
-    <meta property="og:image" content="https://cloudai.srjahir.in/logo.png" />
-    <meta property="og:url" content="https://cloudai.srjahir.in/" />
-    <meta property="og:type" content="website" />
+  <!-- FAVICON (Auto-size using same logo) -->
+  <link rel="icon" type="image/png" href="logo.png" />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="CloudAI — Smart AI Assistant" />
-    <meta name="twitter:description" content="Fast, reliable AI with voice & live talk." />
-    <meta name="twitter:image" content="https://cloudai.srjahir.in/logo.png" />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-T4XBK86HZ2');
+  </script>
 
-    <!-- Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag("js", new Date());
-        gtag("config", "G-ZVLW6MTZ5Y");
-    </script>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/style.css?v=25" />
 </head>
 
 <body>
 
-    <!-- LOGO -->
-    <div class="logo-area" onclick="window.location.href='live.html'">
-        <img src="logo.png" id="ai-logo" />
-        <p class="tap-talk">Tap to Talk</p>
-    </div>
+  <!-- FLOATING LOGO -->
+  <div class="logo-area" onclick="window.location.href='live.html'">
+    <img src="logo.png" id="ai-logo" />
+    <p class="tap-talk">Tap to Talk</p>
+  </div>
 
-    <!-- GREET -->
-    <div class="greet-box">
-        <div class="greet-title">👋 Hi, I'm CloudAI.</div>
-        <div class="greet-sub">Ask me anything — I’m here to help.</div>
-    </div>
+  <!-- WELCOME -->
+  <div class="welcome">
+    <div class="title">👋 Hi, I’m CloudAI</div>
+    <div class="sub">Ask me anything.</div>
+  </div>
 
-    <!-- CHAT -->
-    <div id="chat-box"></div>
+  <!-- CHAT BOX -->
+  <div id="chat-box" class="chat-box"></div>
 
-    <!-- INPUT BAR -->
-    <div class="input-area">
+  <!-- INPUT AREA (ChatGPT style) -->
+  <div class="input-area">
 
-        <button class="plus-btn">
-            <img src="Pin.png" />
-        </button>
+    <!-- PLUS BUTTON -->
+    <button id="plus-btn" class="icon-btn">
+      <img src="Pin.png" />
+    </button>
 
-        <textarea id="user-input" placeholder="Type your message..."></textarea>
+    <!-- TEXTAREA -->
+    <textarea id="user-input" placeholder="Send a message..."></textarea>
 
-        <button class="mic-btn" id="mic-btn">
-            <img src="Mic.png" />
-        </button>
+    <!-- MIC BUTTON -->
+    <button id="mic-btn" class="icon-btn">
+      <img src="Mic.png" />
+    </button>
 
-        <button id="send-btn" class="send-btn">
-            <img src="Send.png" />
-        </button>
-    </div>
+    <!-- STOP BUTTON (HIDDEN BY DEFAULT) -->
+    <button id="stop-btn" class="icon-btn hidden">
+      <img src="Stop.png" />
+    </button>
 
-    <!-- JS -->
-    <script src="assets/js/chat.js?v=20"></script>
+    <!-- SEND BUTTON -->
+    <button id="send-btn" class="icon-btn">
+      <img src="Send.png" />
+    </button>
+
+  </div>
+
+  <!-- JS -->
+  <script src="assets/js/chat.js?v=25"></script>
+
 </body>
 </html>
