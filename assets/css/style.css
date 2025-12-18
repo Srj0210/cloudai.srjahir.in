@@ -56,7 +56,7 @@ body {
    =============================== */
 #chat-box {
     margin-top: 10px;
-    padding-bottom: 96px; /* input bar safe space */
+    padding-bottom: 100px; /* input bar safe space */
 }
 
 /* ===============================
@@ -99,7 +99,7 @@ body {
 }
 
 /* ===============================
-   INPUT BAR (FINAL POLISHED)
+   INPUT BAR (WIDE + TIGHT ICONS)
    =============================== */
 .input-area {
     position: fixed;
@@ -110,7 +110,7 @@ body {
     display: flex;
     align-items: center;
 
-    padding: 10px 14px;
+    padding: 8px 10px;              /* ⬅️ bar thoda slim */
     background: #0b0f14;
     border-top: 1px solid rgba(255,255,255,0.08);
 
@@ -118,7 +118,7 @@ body {
 }
 
 /* ===============================
-   ICON BUTTONS
+   ICON BUTTONS (spacing reduced)
    =============================== */
 .icon-btn {
     width: 52px;
@@ -135,19 +135,19 @@ body {
     flex-shrink: 0;
 }
 
-/* LEFT ICON (Pin) */
+/* LEFT ICON (Pin) — textarea ke paas */
 .input-area .icon-btn:first-child {
-    margin-right: 12px; /* balanced gap to textarea */
+    margin-right: 6px;   /* ⬅️ pehle 12px tha */
 }
 
-/* RIGHT ICONS */
+/* RIGHT ICONS — tight & clean */
 #mic-btn {
-    margin-left: 12px;   /* textarea → mic */
-    margin-right: 6px;   /* mic → send */
+    margin-left: 6px;    /* textarea → mic */
+    margin-right: 4px;
 }
 
 #send-btn {
-    margin-left: 6px;
+    margin-left: 4px;
 }
 
 /* ICON IMAGE */
@@ -158,14 +158,14 @@ body {
 }
 
 /* ===============================
-   TEXTAREA
+   TEXTAREA (VISUALLY WIDER)
    =============================== */
 textarea {
     flex: 1;
     min-height: 36px;
     max-height: 72px;
 
-    padding: 8px 12px;
+    padding: 8px 16px;        /* ⬅️ input aur wide feel */
     background: #111827;
 
     border: 1px solid rgba(255,255,255,0.08);
