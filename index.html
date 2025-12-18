@@ -1,65 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CloudAI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudAI — Smart AI Assistant</title>
 
-    <!-- AUTO FAVICON -->
-    <link rel="icon" type="image/png" href="favicon.png">
+  <!-- FAVICON -->
+  <link rel="icon" type="image/png" href="favicon.png">
 
-    <!-- SEO -->
-    <meta name="description" content="CloudAI — Fast, Smart, Voice-enabled AI Assistant that understands everything. Ask anything." />
-    <meta name="keywords" content="CloudAI, AI assistant, smart chatbot, voice AI, SRJahir Tech" />
-    <meta name="robots" content="index, follow" />
+  <!-- SEO -->
+  <meta name="description" content="CloudAI — Fast, Smart, Voice-enabled AI Assistant by SRJahir Tech." />
+  <meta name="keywords" content="CloudAI, AI Chat, AI Assistant, SRJahir Tech, Free AI" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cloudai.srjahir.in/" />
 
-    <!-- ANALYTICS -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag("js", new Date());
-        gtag("config", "G-ZVLW6MTZ5Y");
-    </script>
+  <!-- ANALYTICS -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-ZVLW6MTZ5Y");
+  </script>
 
-    <!-- PRISMJS FOR CODE COLOR -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <!-- PRISMJS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 
-    <!-- MAIN CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=100">
+  <!-- MAIN CSS -->
+  <link rel="stylesheet" href="assets/css/style.css?v=101">
 </head>
 
 <body>
 
-    <!-- TOP RIGHT LOGO -->
-    <div class="logo-box" onclick="location.href='live.html'">
-        <img src="logo.png" class="logo-img" />
-        <div class="tap-talk">Tap to Talk</div>
-    </div>
+  <!-- LOGO -->
+  <div class="logo-box" onclick="location.href='live.html'">
+    <img src="logo.png" class="logo-img" />
+    <div class="tap-talk">Tap to Talk</div>
+  </div>
 
-    <!-- GREET -->
-    <div class="greet-area">
-        <h2>👋 Hi, I’m CloudAI.</h2>
-        <p>Ask me anything.</p>
-    </div>
+  <!-- GREETING -->
+  <div class="greet-area">
+    <h2>👋 Hi, I’m CloudAI.</h2>
+    <p>Ask me anything.</p>
+  </div>
 
-    <!-- CHAT AREA -->
-    <div id="chat-box"></div>
+  <!-- CHAT -->
+  <div id="chat-box"></div>
 
-    <!-- INPUT AREA -->
-    <div class="input-area">
-        <button class="icon-btn"><img src="Pin.png" /></button>
+  <!-- INPUT BAR -->
+  <div class="input-area">
+    <button class="icon-btn" id="pin-btn">
+      <img src="Pin.png" />
+    </button>
 
-        <textarea id="user-input" placeholder="Send a message..."></textarea>
+    <textarea id="user-input" placeholder="Send a message..."></textarea>
 
-        <button class="icon-btn" id="mic-btn"><img src="Mic.png" /></button>
+    <button class="icon-btn" id="mic-btn">
+      <img src="Mic.png" />
+    </button>
 
-        <button class="icon-btn" id="send-btn"><img src="Send.png" /></button>
-    </div>
+    <button class="icon-btn" id="send-btn">
+      <img src="Send.png" />
+    </button>
+  </div>
 
-    <script src="assets/js/chat.js?v=100"></script>
+  <!-- ATTACH MENU (ChatGPT style) -->
+  <div class="attach-menu" id="attachMenu">
+    <button data-type="camera">📷 Camera</button>
+    <button data-type="image">🖼️ Photo</button>
+    <button data-type="file">📄 File</button>
+  </div>
 
+  <!-- HIDDEN INPUTS -->
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+  <input type="file" id="imageInput" accept="image/*" hidden>
+  <input type="file" id="fileInput" hidden>
+
+  <!-- JS -->
+  <script src="assets/js/chat.js?v=101"></script>
 </body>
 </html>
