@@ -4,16 +4,28 @@ const box = document.getElementById("chat-box");
 const sendBtn = document.getElementById("send-btn");
 const micBtn = document.getElementById("mic-btn");
 const input = document.getElementById("user-input");
-
 const pinBtn = document.getElementById("pin-btn");
-const attachMenu = document.getElementById("attachMenu");
 
+const attachMenu = document.getElementById("attachMenu");
 const cameraInput = document.getElementById("cameraInput");
 const imageInput  = document.getElementById("imageInput");
 const fileInput   = document.getElementById("fileInput");
 
 /* ===============================
-   MESSAGE UI
+   SESSION / HISTORY (REQUIRED)
+   =============================== */
+const clientId =
+  localStorage.getItem("cloudai_client") ||
+  (() => {
+    const id = crypto.randomUUID();
+    localStorage.setItem("cloudai_client", id);
+    return id;
+  })();
+
+let history = [];
+
+/* ===============================
+   UI HELPERS
    =============================== */
 function addUser(text) {
   const div = document.createElement("div");
@@ -31,7 +43,7 @@ function addAI(text) {
 }
 
 /* ===============================
-   SEND MESSAGE
+   SEND MESSAGE (🔥 MAIN FIX)
    =============================== */
 async function sendMessage() {
   const msg = input.value.trim();
@@ -40,11 +52,17 @@ async function sendMessage() {
   addUser(msg);
   input.value = "";
 
+  history.push({ role: "user", content: msg });
+
   try {
     const res = await fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: msg }) // 🔥 FIXED
+      body: JSON.stringify({
+        prompt: msg,
+        history: history,
+        clientId: clientId
+      })
     });
 
     const data = await res.json();
@@ -54,10 +72,11 @@ async function sendMessage() {
       return;
     }
 
+    history.push({ role: "assistant", content: data.response });
     addAI(data.response);
 
-  } catch {
-    addAI("⚠️ Network error");
+  } catch (err) {
+    addAI("⚠️ Network / Worker error");
   }
 
   box.scrollTop = box.scrollHeight;
@@ -74,7 +93,7 @@ input.addEventListener("keydown", e => {
 });
 
 /* ===============================
-   PIN / ATTACH MENU
+   📌 ATTACH MENU
    =============================== */
 pinBtn.onclick = () => {
   attachMenu.style.display =
@@ -84,7 +103,6 @@ pinBtn.onclick = () => {
 attachMenu.onclick = e => {
   const type = e.target.dataset.type;
   if (!type) return;
-
   attachMenu.style.display = "none";
 
   if (type === "camera") cameraInput.click();
@@ -102,7 +120,7 @@ imageInput.onchange  = () => handleFile(imageInput.files[0]);
 fileInput.onchange   = () => handleFile(fileInput.files[0]);
 
 /* ===============================
-   VOICE INPUT (unchanged)
+   🎙️ VOICE INPUT (UNCHANGED)
    =============================== */
 let recognition;
 if ("webkitSpeechRecognition" in window) {
