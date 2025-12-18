@@ -1,116 +1,185 @@
+/* ===============================
+   GLOBAL
+   =============================== */
 body {
     margin: 0;
     background: #000;
     color: #fff;
     font-family: Arial, sans-serif;
+    overflow-x: hidden;
 }
 
-/* LOGO TOP RIGHT */
+/* ===============================
+   LOGO TOP RIGHT
+   =============================== */
 .logo-box {
     position: fixed;
-    right: 20px;
-    top: 20px;
+    right: 16px;
+    top: 16px;
     text-align: center;
     cursor: pointer;
+    z-index: 1000;
 }
 
 .logo-img {
-    width: 85px;
-    height: 85px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
-    box-shadow: 0 0 25px #00c8ff;
+    box-shadow: 0 0 20px #00c8ff;
 }
 
 .tap-talk {
-    font-size: 14px;
-    margin-top: 5px;
-    opacity: 0.9;
+    font-size: 13px;
+    margin-top: 4px;
+    opacity: 0.85;
 }
 
-/* GREET TEXT */
+/* ===============================
+   GREETING AREA
+   =============================== */
 .greet-area {
-    margin: 140px 20px 20px 20px;
+    margin: 120px 16px 16px 16px;
 }
 
 .greet-area h2 {
     margin: 0;
-    font-size: 28px;
+    font-size: 26px;
 }
 
 .greet-area p {
     opacity: 0.7;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
-/* CHAT BOX */
+/* ===============================
+   CHAT BOX
+   =============================== */
 #chat-box {
     margin-top: 10px;
-    padding-bottom: 120px;
+    padding-bottom: 90px; /* important for input bar */
 }
 
-/* USER MESSAGE */
+/* ===============================
+   USER MESSAGE
+   =============================== */
 .user-msg {
     background: #007aff;
     color: #fff;
-    padding: 12px 18px;
-    border-radius: 18px;
+    padding: 10px 14px;
+    border-radius: 16px;
     max-width: 70%;
-    margin: 10px 15px;
+    margin: 8px 12px;
     float: right;
     clear: both;
+    font-size: 14px;
 }
 
-/* AI MESSAGE (ChatGPT style block) */
+/* ===============================
+   AI MESSAGE
+   =============================== */
 .ai-msg {
     background: #1c1c1e;
     border: 1px solid #2f2f31;
-    padding: 18px;
+    padding: 14px;
     border-radius: 12px;
     max-width: 85%;
-    margin: 10px 15px;
+    margin: 8px 12px;
     float: left;
     clear: both;
     white-space: pre-wrap;
     line-height: 1.5;
+    font-size: 14px;
 }
 
-/* PRISMJS CODE BLOCK */
+/* Code blocks */
 .ai-msg pre {
     background: #0d0d0d !important;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 12px;
+    border-radius: 8px;
     overflow-x: auto;
 }
 
-/* INPUT BAR */
+/* ===============================
+   INPUT BAR (CHATGPT STYLE)
+   =============================== */
 .input-area {
     position: fixed;
-    bottom: 10px;
-    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: env(safe-area-inset-bottom);
+
     display: flex;
-    gap: 10px;
-    justify-content: center;
     align-items: center;
+    gap: 8px;
+
+    padding: 8px 10px;
+    background: #0b0f14;
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+    z-index: 999;
 }
 
+/* TEXTAREA */
 textarea {
-    width: 55%;
-    padding: 12px;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 18px;
+    flex: 1;
+    min-height: 36px;
+    max-height: 72px;
+
+    padding: 8px 12px;
+    background: #111827;
+
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+
     resize: none;
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 18px;
     color: #fff;
+
+    overflow-y: auto;
 }
 
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* ICON BUTTONS */
 .icon-btn {
-    background: none;
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #111827;
     border: none;
+    border-radius: 50%;
+
+    flex-shrink: 0;
 }
 
+/* ICON IMAGE */
 .icon-btn img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+}
+
+/* SEND BUTTON (highlight) */
+.icon-btn.send {
+    background: #2563eb;
+}
+
+/* ===============================
+   MOBILE OPTIMIZATION
+   =============================== */
+@media (max-width: 600px) {
+    .greet-area h2 {
+        font-size: 24px;
+    }
+
+    textarea {
+        font-size: 13px;
+    }
 }
