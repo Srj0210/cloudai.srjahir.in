@@ -144,31 +144,33 @@ textarea:focus {
     border-color: #2563eb;
 }
 
-/* ICON BUTTONS */
+/* ICON BUTTONS — CLEAN & PROFESSIONAL */
 .icon-btn {
-    width: 36px;
-    height: 36px;
+    width: 44px;          /* bigger touch area */
+    height: 44px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: #111827;
+    background: transparent;   /* ❌ remove black ring */
     border: none;
     border-radius: 50%;
 
     flex-shrink: 0;
+    padding: 0;
 }
 
-/* ICON IMAGE */
+/* ICON IMAGE SIZE */
 .icon-btn img {
-    width: 18px;
-    height: 18px;
+    width: 22px;          /* bigger icon only */
+    height: 22px;
+    border-radius: 0;     /* no circle on image */
 }
 
-/* SEND BUTTON (highlight) */
+/* SEND BUTTON — icon only, no ring */
 .icon-btn.send {
-    background: #2563eb;
+    background: transparent;
 }
 
 /* ===============================
