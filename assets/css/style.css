@@ -146,8 +146,8 @@ textarea:focus {
 
 /* ICON BUTTONS — CLEAN & PROFESSIONAL */
 .icon-btn {
-    width: 48px;          /* bigger touch area */
-    height: 50px;
+    width: 52px;          /* bigger touch area */
+    height: 44px;
 
     display: flex;
     align-items: center;
@@ -163,8 +163,8 @@ textarea:focus {
 
 /* ICON IMAGE SIZE */
 .icon-btn img {
-    width: 26px;          /* bigger icon only */
-    height: 28px;
+    width: 30px;          /* bigger icon only */
+    height: 22px;
     border-radius: 0;     /* no circle on image */
 }
 
