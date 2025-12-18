@@ -56,7 +56,7 @@ body {
    =============================== */
 #chat-box {
     margin-top: 10px;
-    padding-bottom: 100px; /* input bar safe space */
+    padding-bottom: 104px; /* input bar safe space */
 }
 
 /* ===============================
@@ -99,7 +99,7 @@ body {
 }
 
 /* ===============================
-   INPUT BAR (WIDE + TIGHT ICONS)
+   INPUT BAR (FINAL LOCKED)
    =============================== */
 .input-area {
     position: fixed;
@@ -110,7 +110,7 @@ body {
     display: flex;
     align-items: center;
 
-    padding: 8px 10px;              /* ⬅️ bar thoda slim */
+    padding: 6px 8px;          /* ⬅️ slimmer bar = more width */
     background: #0b0f14;
     border-top: 1px solid rgba(255,255,255,0.08);
 
@@ -118,7 +118,7 @@ body {
 }
 
 /* ===============================
-   ICON BUTTONS (spacing reduced)
+   ICON BUTTONS (SIZE UNCHANGED)
    =============================== */
 .icon-btn {
     width: 52px;
@@ -135,22 +135,22 @@ body {
     flex-shrink: 0;
 }
 
-/* LEFT ICON (Pin) — textarea ke paas */
+/* LEFT ICON (Pin) → input ke paas */
 .input-area .icon-btn:first-child {
-    margin-right: 6px;   /* ⬅️ pehle 12px tha */
+    margin-right: 2px;
 }
 
-/* RIGHT ICONS — tight & clean */
+/* RIGHT ICONS → tight spacing */
 #mic-btn {
-    margin-left: 6px;    /* textarea → mic */
-    margin-right: 4px;
+    margin-left: 2px;
+    margin-right: 1px;
 }
 
 #send-btn {
-    margin-left: 4px;
+    margin-left: 1px;
 }
 
-/* ICON IMAGE */
+/* ICON IMAGE (LOCKED SIZE) */
 .icon-btn img {
     width: 30px;
     height: 30px;
@@ -158,14 +158,17 @@ body {
 }
 
 /* ===============================
-   TEXTAREA (VISUALLY WIDER)
+   TEXTAREA (TAKES ALL FREE SPACE)
    =============================== */
 textarea {
-    flex: 1;
+    flex: 1 1 auto;      /* 🔥 grow allowed */
+    width: 100%;
+    min-width: 0;        /* 🔥 critical for flex */
+
     min-height: 36px;
     max-height: 72px;
 
-    padding: 8px 16px;        /* ⬅️ input aur wide feel */
+    padding: 8px 18px;   /* ⬅️ visually wider feel */
     background: #111827;
 
     border: 1px solid rgba(255,255,255,0.08);
