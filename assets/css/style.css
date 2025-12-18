@@ -56,7 +56,7 @@ body {
    =============================== */
 #chat-box {
     margin-top: 10px;
-    padding-bottom: 90px; /* important for input bar */
+    padding-bottom: 96px; /* input bar safe space */
 }
 
 /* ===============================
@@ -91,7 +91,6 @@ body {
     font-size: 14px;
 }
 
-/* Code blocks */
 .ai-msg pre {
     background: #0d0d0d !important;
     padding: 12px;
@@ -100,7 +99,7 @@ body {
 }
 
 /* ===============================
-   INPUT BAR (CHATGPT STYLE)
+   INPUT BAR (FINAL POLISHED)
    =============================== */
 .input-area {
     position: fixed;
@@ -110,16 +109,57 @@ body {
 
     display: flex;
     align-items: center;
-    gap: 8px;
 
-    padding: 8px 10px;
+    padding: 10px 14px;
     background: #0b0f14;
-
     border-top: 1px solid rgba(255,255,255,0.08);
+
     z-index: 999;
 }
 
-/* TEXTAREA */
+/* ===============================
+   ICON BUTTONS
+   =============================== */
+.icon-btn {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+/* LEFT ICON (Pin) */
+.input-area .icon-btn:first-child {
+    margin-right: 12px; /* balanced gap to textarea */
+}
+
+/* RIGHT ICONS */
+#mic-btn {
+    margin-left: 12px;   /* textarea → mic */
+    margin-right: 6px;   /* mic → send */
+}
+
+#send-btn {
+    margin-left: 6px;
+}
+
+/* ICON IMAGE */
+.icon-btn img {
+    width: 30px;
+    height: 30px;
+    border-radius: 0;
+}
+
+/* ===============================
+   TEXTAREA
+   =============================== */
 textarea {
     flex: 1;
     min-height: 36px;
@@ -142,35 +182,6 @@ textarea {
 textarea:focus {
     outline: none;
     border-color: #2563eb;
-}
-
-/* ICON BUTTONS — CLEAN & PROFESSIONAL */
-.icon-btn {
-    width: 52px;          /* bigger touch area */
-    height: 52px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: transparent;   /* ❌ remove black ring */
-    border: none;
-    border-radius: 50%;
-
-    flex-shrink: 0;
-    padding: 0;
-}
-
-/* ICON IMAGE SIZE */
-.icon-btn img {
-    width: 30px;          /* bigger icon only */
-    height: 30px;
-    border-radius: 0;     /* no circle on image */
-}
-
-/* SEND BUTTON — icon only, no ring */
-.icon-btn.send {
-    background: transparent;
 }
 
 /* ===============================
