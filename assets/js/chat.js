@@ -12,17 +12,18 @@ const imageInput  = document.getElementById("imageInput");
 const fileInput   = document.getElementById("fileInput");
 
 /* ===============================
-   SESSION / HISTORY (REQUIRED)
+   SESSION / HISTORY
    =============================== */
 const clientId =
   localStorage.getItem("cloudai_client") ||
   (() => {
-    const id = crypto.randomUUID();
+    const id = "web_" + Math.random().toString(36).substring(2, 9);
     localStorage.setItem("cloudai_client", id);
     return id;
   })();
 
 let history = [];
+let isProcessing = false;
 
 /* ===============================
    UI HELPERS
@@ -42,49 +43,87 @@ function addAI(text) {
   Prism.highlightAll();
 }
 
+function showAlert(msg) {
+  const alertBox = document.createElement("div");
+  alertBox.textContent = msg;
+  Object.assign(alertBox.style, {
+    position: "fixed",
+    bottom: "90px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    background: "#0078ff",
+    color: "#fff",
+    padding: "10px 16px",
+    borderRadius: "10px",
+    fontSize: "14px",
+    zIndex: "10000"
+  });
+  document.body.appendChild(alertBox);
+  setTimeout(() => alertBox.remove(), 4000);
+}
+
+function disableInput() {
+  input.disabled = true;
+  sendBtn.disabled = true;
+  input.placeholder = "Daily limit reached. Try again tomorrow.";
+}
+
 /* ===============================
-   SEND MESSAGE (🔥 MAIN FIX)
+   SEND MESSAGE (FINAL FIX)
    =============================== */
 async function sendMessage() {
   const msg = input.value.trim();
-  if (!msg) return;
+  if (!msg || isProcessing) return;
 
+  isProcessing = true;
   addUser(msg);
   input.value = "";
 
-  history.push({ role: "user", content: msg });
+  history.push({ role: "user", text: msg });
 
   try {
     const res = await fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        clientId,
         prompt: msg,
-        history: history,
-        clientId: clientId
+        history,
+        tools: { web: true }
       })
     });
 
     const data = await res.json();
 
-    if (!data || !data.response) {
-      addAI("⚠️ AI response not available");
+    const reply = data.reply || data.response;
+
+    if (!reply) {
+      addAI("⚠️ No response from AI.");
       return;
     }
 
-    history.push({ role: "assistant", content: data.response });
-    addAI(data.response);
+    addAI(reply);
+    history.push({ role: "model", text: reply });
 
-  } catch (err) {
-    addAI("⚠️ Network / Worker error");
+    if (data.quotaStatus === "quota_warning") {
+      showAlert("⚠️ 80% of daily quota used.");
+    }
+
+    if (data.quotaStatus === "quota_exceeded") {
+      showAlert("🚫 Daily quota reached.");
+      disableInput();
+    }
+
+  } catch (e) {
+    addAI("⚠️ Network / Worker error.");
+  } finally {
+    isProcessing = false;
+    box.scrollTop = box.scrollHeight;
   }
-
-  box.scrollTop = box.scrollHeight;
 }
 
 sendBtn.onclick = sendMessage;
 
-/* ENTER KEY */
 input.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
@@ -120,7 +159,7 @@ imageInput.onchange  = () => handleFile(imageInput.files[0]);
 fileInput.onchange   = () => handleFile(fileInput.files[0]);
 
 /* ===============================
-   🎙️ VOICE INPUT (UNCHANGED)
+   🎙️ VOICE INPUT
    =============================== */
 let recognition;
 if ("webkitSpeechRecognition" in window) {
