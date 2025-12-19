@@ -90,10 +90,9 @@ async function sendMessage() {
 
     const data = await res.json();
 
-    if (!data.reply) {
-      addAI("⚠️ AI response not available.");
-      return;
-    }
+addAI(data.reply || "⚠️ Empty AI response.");
+history.push({ role: "model", text: data.reply || "" });
+
 
     addAI(data.reply);
     history.push({ role: "model", text: data.reply });
