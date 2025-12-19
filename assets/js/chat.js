@@ -35,11 +35,13 @@ function addUser(text) {
   box.appendChild(div);
 }
 
-function addAI(text) {
+function addAI(html) {
   const div = document.createElement("div");
   div.className = "ai-msg";
-  div.innerHTML = text;
+  div.innerHTML = html;
   box.appendChild(div);
+
+  // 🔥 Prism highlight after render
   Prism.highlightAll();
 }
 
@@ -69,7 +71,36 @@ function disableInput() {
 }
 
 /* ===============================
-   SEND MESSAGE
+   MARKDOWN RENDERER
+   =============================== */
+function renderMarkdown(text) {
+  if (!text) return "";
+
+  return text
+    // code block ```lang
+    .replace(/```(\w+)?([\s\S]*?)```/g, (_, lang, code) => {
+      const language = lang || "javascript";
+      return `<pre class="language-${language}"><code class="language-${language}">${escapeHtml(code)}</code></pre>`;
+    })
+    // inline code
+    .replace(/`([^`]+)`/g, `<code class="inline-code">$1</code>`)
+    // bold
+    .replace(/\*\*(.*?)\*\*/g, `<strong>$1</strong>`)
+    // italic
+    .replace(/\*(.*?)\*/g, `<em>$1</em>`)
+    // new lines
+    .replace(/\n/g, "<br>");
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/* ===============================
+   SEND MESSAGE (FIXED)
    =============================== */
 async function sendMessage() {
   const msg = input.value.trim();
@@ -81,6 +112,9 @@ async function sendMessage() {
 
   history.push({ role: "user", text: msg });
 
+  // 🔥 AI THINKING START (logo glow)
+  document.body.classList.add("ai-thinking");
+
   try {
     const res = await fetch(API, {
       method: "POST",
@@ -89,13 +123,11 @@ async function sendMessage() {
     });
 
     const data = await res.json();
+    const reply = data.reply || "⚠️ AI response not available.";
 
-addAI(data.reply || "⚠️ Empty AI response.");
-history.push({ role: "model", text: data.reply || "" });
-
-
-    addAI(data.reply);
-    history.push({ role: "model", text: data.reply });
+    // ✅ SINGLE RESPONSE ONLY (BUG FIX)
+    addAI(renderMarkdown(reply));
+    history.push({ role: "model", text: reply });
 
     if (data.quotaStatus === "quota_warning")
       showAlert("⚠️ 80% of daily quota used.");
@@ -109,10 +141,14 @@ history.push({ role: "model", text: data.reply || "" });
     addAI("⚠️ Network / Worker error.");
   } finally {
     isProcessing = false;
+    document.body.classList.remove("ai-thinking"); // 🔥 stop glow
     box.scrollTop = box.scrollHeight;
   }
 }
 
+/* ===============================
+   EVENTS
+   =============================== */
 sendBtn.onclick = sendMessage;
 
 input.addEventListener("keydown", e => {
@@ -123,7 +159,7 @@ input.addEventListener("keydown", e => {
 });
 
 /* ===============================
-   📌 ATTACH MENU (UI ONLY)
+   📌 ATTACH MENU
    =============================== */
 pinBtn.onclick = () => {
   attachMenu.style.display =
