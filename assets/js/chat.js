@@ -12,12 +12,12 @@ const imageInput  = document.getElementById("imageInput");
 const fileInput   = document.getElementById("fileInput");
 
 /* ===============================
-   SESSION / HISTORY
+   SESSION
    =============================== */
 const clientId =
   localStorage.getItem("cloudai_client") ||
   (() => {
-    const id = "web_" + Math.random().toString(36).substring(2, 9);
+    const id = "web_" + Math.random().toString(36).slice(2, 9);
     localStorage.setItem("cloudai_client", id);
     return id;
   })();
@@ -44,9 +44,9 @@ function addAI(text) {
 }
 
 function showAlert(msg) {
-  const alertBox = document.createElement("div");
-  alertBox.textContent = msg;
-  Object.assign(alertBox.style, {
+  const a = document.createElement("div");
+  a.textContent = msg;
+  Object.assign(a.style, {
     position: "fixed",
     bottom: "90px",
     left: "50%",
@@ -56,10 +56,10 @@ function showAlert(msg) {
     padding: "10px 16px",
     borderRadius: "10px",
     fontSize: "14px",
-    zIndex: "10000"
+    zIndex: 9999
   });
-  document.body.appendChild(alertBox);
-  setTimeout(() => alertBox.remove(), 4000);
+  document.body.appendChild(a);
+  setTimeout(() => a.remove(), 4000);
 }
 
 function disableInput() {
@@ -69,7 +69,7 @@ function disableInput() {
 }
 
 /* ===============================
-   SEND MESSAGE (FINAL FIX)
+   SEND MESSAGE
    =============================== */
 async function sendMessage() {
   const msg = input.value.trim();
@@ -85,36 +85,28 @@ async function sendMessage() {
     const res = await fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        clientId,
-        prompt: msg,
-        history,
-        tools: { web: true }
-      })
+      body: JSON.stringify({ prompt: msg, history, clientId })
     });
 
     const data = await res.json();
 
-    const reply = data.reply || data.response;
-
-    if (!reply) {
-      addAI("⚠️ No response from AI.");
+    if (!data.reply) {
+      addAI("⚠️ AI response not available.");
       return;
     }
 
-    addAI(reply);
-    history.push({ role: "model", text: reply });
+    addAI(data.reply);
+    history.push({ role: "model", text: data.reply });
 
-    if (data.quotaStatus === "quota_warning") {
+    if (data.quotaStatus === "quota_warning")
       showAlert("⚠️ 80% of daily quota used.");
-    }
 
     if (data.quotaStatus === "quota_exceeded") {
       showAlert("🚫 Daily quota reached.");
       disableInput();
     }
 
-  } catch (e) {
+  } catch {
     addAI("⚠️ Network / Worker error.");
   } finally {
     isProcessing = false;
@@ -132,7 +124,7 @@ input.addEventListener("keydown", e => {
 });
 
 /* ===============================
-   📌 ATTACH MENU
+   📌 ATTACH MENU (UI ONLY)
    =============================== */
 pinBtn.onclick = () => {
   attachMenu.style.display =
@@ -161,14 +153,11 @@ fileInput.onchange   = () => handleFile(fileInput.files[0]);
 /* ===============================
    🎙️ VOICE INPUT
    =============================== */
-let recognition;
 if ("webkitSpeechRecognition" in window) {
-  recognition = new webkitSpeechRecognition();
+  const recognition = new webkitSpeechRecognition();
   recognition.lang = "en-IN";
-  recognition.continuous = false;
 
   micBtn.onclick = () => recognition.start();
-
   recognition.onresult = e => {
     input.value = e.results[0][0].transcript;
     sendMessage();
