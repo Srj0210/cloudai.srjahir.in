@@ -1,53 +1,60 @@
+const API = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
+
 const chatBox = document.getElementById("chat-box");
 const input = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
-function addUserMessage(text) {
-    let div = document.createElement("div");
-    div.className = "user-msg";
-    div.innerText = text;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
+function addUser(text) {
+  const d = document.createElement("div");
+  d.className = "user-msg";
+  d.textContent = text;
+  chatBox.appendChild(d);
 }
 
-function addAIMessage(text) {
-    let div = document.createElement("div");
-    div.className = "ai-msg";
-    div.innerText = text;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
+function addAI(text) {
+  const d = document.createElement("div");
+  d.className = "ai-msg";
+  d.textContent = text;
+  chatBox.appendChild(d);
 }
 
 async function sendMessage() {
-    let msg = input.value.trim();
-    if (!msg) return;
+  const msg = input.value.trim();
+  if (!msg) return;
 
-    addUserMessage(msg);
-    input.value = "";
+  addUser(msg);
+  input.value = "";
 
-    addAIMessage("Thinking...");
+  const thinking = document.createElement("div");
+  thinking.className = "ai-msg";
+  thinking.textContent = "Thinking...";
+  chatBox.appendChild(thinking);
 
-    try {
-        let res = await fetch("https://dawn-smoke-b354.sleepyspider6166.workers.dev/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: msg })
-        });
+  try {
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: msg,
+        clientId: "live_" + Date.now()
+      })
+    });
 
-        let data = await res.text();
+    const data = await res.json();
+    thinking.textContent = data.reply || "⚠️ No response";
 
-        document.querySelector(".ai-msg:last-child").innerText = data;
+  } catch {
+    thinking.textContent = "⚠️ Network error";
+  }
 
-    } catch {
-        document.querySelector(".ai-msg:last-child").innerText = "⚠️ No response";
-    }
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 sendBtn.onclick = sendMessage;
 
 input.addEventListener("keydown", e => {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
 });
