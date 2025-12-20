@@ -41,46 +41,24 @@ function addAI(html) {
   div.innerHTML = html;
   box.appendChild(div);
 
-  // 🔥 Prism highlight after render
+  enhanceAIBlock(div); // 🔥 IMPORTANT
   Prism.highlightAll();
 }
 
-function showAlert(msg) {
-  const a = document.createElement("div");
-  a.textContent = msg;
-  Object.assign(a.style, {
-    position: "fixed",
-    bottom: "90px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    background: "#0078ff",
-    color: "#fff",
-    padding: "10px 16px",
-    borderRadius: "10px",
-    fontSize: "14px",
-    zIndex: 9999
-  });
-  document.body.appendChild(a);
-  setTimeout(() => a.remove(), 4000);
-}
-
-function disableInput() {
-  input.disabled = true;
-  sendBtn.disabled = true;
-  input.placeholder = "Daily limit reached. Try again tomorrow.";
-}
-
 /* ===============================
-   MARKDOWN RENDERER
+   MARKDOWN + LINKS
    =============================== */
 function renderMarkdown(text) {
   if (!text) return "";
 
-  return text
-    // code block ```lang
+  let html = text
+    // ```code blocks```
     .replace(/```(\w+)?([\s\S]*?)```/g, (_, lang, code) => {
       const language = lang || "javascript";
-      return `<pre class="language-${language}"><code class="language-${language}">${escapeHtml(code)}</code></pre>`;
+      return `
+<pre class="language-${language}">
+<code class="language-${language}">${escapeHtml(code.trim())}</code>
+</pre>`;
     })
     // inline code
     .replace(/`([^`]+)`/g, `<code class="inline-code">$1</code>`)
@@ -88,8 +66,15 @@ function renderMarkdown(text) {
     .replace(/\*\*(.*?)\*\*/g, `<strong>$1</strong>`)
     // italic
     .replace(/\*(.*?)\*/g, `<em>$1</em>`)
+    // auto links
+    .replace(
+      /(https?:\/\/[^\s<]+)/g,
+      `<a href="$1" target="_blank" rel="noopener">$1</a>`
+    )
     // new lines
     .replace(/\n/g, "<br>");
+
+  return html;
 }
 
 function escapeHtml(str) {
@@ -100,7 +85,44 @@ function escapeHtml(str) {
 }
 
 /* ===============================
-   SEND MESSAGE (FIXED)
+   🔥 ENHANCE AI BLOCK
+   =============================== */
+function enhanceAIBlock(container) {
+
+  // 1️⃣ ADD COPY BUTTON TO CODE BLOCKS
+  container.querySelectorAll("pre").forEach(pre => {
+    if (pre.querySelector(".copy-btn")) return;
+
+    const btn = document.createElement("button");
+    btn.className = "copy-btn";
+    btn.textContent = "Copy";
+
+    btn.onclick = () => {
+      const code = pre.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = "Copied ✓";
+        setTimeout(() => (btn.textContent = "Copy"), 1500);
+      });
+    };
+
+    pre.style.position = "relative";
+    btn.style.position = "absolute";
+    btn.style.top = "8px";
+    btn.style.right = "8px";
+    btn.style.background = "#238636";
+    btn.style.border = "none";
+    btn.style.color = "#fff";
+    btn.style.padding = "4px 8px";
+    btn.style.fontSize = "12px";
+    btn.style.borderRadius = "6px";
+    btn.style.cursor = "pointer";
+
+    pre.appendChild(btn);
+  });
+}
+
+/* ===============================
+   SEND MESSAGE
    =============================== */
 async function sendMessage() {
   const msg = input.value.trim();
@@ -111,8 +133,6 @@ async function sendMessage() {
   input.value = "";
 
   history.push({ role: "user", text: msg });
-
-  // 🔥 AI THINKING START (logo glow)
   document.body.classList.add("ai-thinking");
 
   try {
@@ -125,23 +145,14 @@ async function sendMessage() {
     const data = await res.json();
     const reply = data.reply || "⚠️ AI response not available.";
 
-    // ✅ SINGLE RESPONSE ONLY (BUG FIX)
     addAI(renderMarkdown(reply));
     history.push({ role: "model", text: reply });
-
-    if (data.quotaStatus === "quota_warning")
-      showAlert("⚠️ 80% of daily quota used.");
-
-    if (data.quotaStatus === "quota_exceeded") {
-      showAlert("🚫 Daily quota reached.");
-      disableInput();
-    }
 
   } catch {
     addAI("⚠️ Network / Worker error.");
   } finally {
     isProcessing = false;
-    document.body.classList.remove("ai-thinking"); // 🔥 stop glow
+    document.body.classList.remove("ai-thinking");
     box.scrollTop = box.scrollHeight;
   }
 }
