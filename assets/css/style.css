@@ -41,12 +41,22 @@ body {
     margin: 120px 16px 16px 16px;
 }
 
+.greet-area h2 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.greet-area p {
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
 /* ===============================
    CHAT BOX
    =============================== */
 #chat-box {
     margin-top: 10px;
-    padding-bottom: 96px;
+    padding-bottom: 72px; /* 🔥 reduced because input bar is smaller */
 }
 
 /* ===============================
@@ -65,19 +75,19 @@ body {
 }
 
 /* ===============================
-   AI MESSAGE (CHATGPT STYLE)
+   AI MESSAGE (BUBBLE STAYS)
    =============================== */
 .ai-msg {
-    background: transparent;
-    border: none;
-    padding: 8px 16px;
-    max-width: 100%;
-    width: 100%;
-    margin: 12px 0;
-    float: none;
+    background: #1c1c1e;
+    border: 1px solid #2f2f31;
+    padding: 14px;
+    border-radius: 12px;
+    max-width: 85%;
+    margin: 8px 12px;
+    float: left;
     clear: both;
     line-height: 1.6;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 /* ===============================
@@ -85,18 +95,24 @@ body {
    =============================== */
 .ai-msg strong {
     font-weight: 700;
+    color: #fff;
 }
 
 .ai-msg em {
     font-style: italic;
+    opacity: 0.9;
 }
 
 /* ===============================
    LINKS
    =============================== */
 .ai-msg a {
-    color: #4ea1ff;
+    color: #4fc3f7;
     text-decoration: underline;
+}
+
+.ai-msg a:hover {
+    color: #81d4fa;
 }
 
 /* ===============================
@@ -115,28 +131,31 @@ body {
    =============================== */
 .ai-msg pre {
     position: relative;
-    background: #0d1117;
+    background: #0d1117 !important;
     border: 1px solid #30363d;
-    border-radius: 8px;
     padding: 14px;
-    margin: 12px 0;
+    border-radius: 8px;
     overflow-x: auto;
+    white-space: pre; /* 🔥 FIX NEW LINES */
+    margin-top: 10px;
 }
 
 .ai-msg code {
     font-family: "JetBrains Mono", monospace;
     font-size: 13px;
-    white-space: pre;
+    color: #c9d1d9;
 }
 
-/* COPY BUTTON */
+/* ===============================
+   COPY BUTTON (CODE)
+   =============================== */
 .copy-btn {
     position: absolute;
     top: 8px;
     right: 8px;
     background: #238636;
-    border: none;
     color: #fff;
+    border: none;
     padding: 4px 8px;
     font-size: 12px;
     border-radius: 6px;
@@ -148,32 +167,110 @@ body {
 }
 
 /* ===============================
-   INPUT BAR (LOW HEIGHT)
+   INPUT BAR (HEIGHT REDUCED 🔥)
    =============================== */
 .input-area {
     position: fixed;
     left: 0;
     right: 0;
     bottom: env(safe-area-inset-bottom);
+
     display: flex;
     align-items: center;
-    padding: 4px 8px;
+
+    padding: 4px 6px; /* 🔥 half height */
     background: #0b0f14;
     border-top: 1px solid rgba(255,255,255,0.08);
+
     z-index: 999;
 }
 
+/* ===============================
+   ICON BUTTONS (SLIGHTLY SMALLER)
+   =============================== */
+.icon-btn {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.icon-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* ===============================
+   TEXTAREA (SLIM)
+   =============================== */
 textarea {
     flex: 1;
-    min-height: 34px;
-    max-height: 68px;
+    width: 100%;
+    min-width: 0;
+
+    min-height: 32px;
+    max-height: 56px;
+
     padding: 6px 14px;
     background: #111827;
+
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
+    border-radius: 12px;
+
     resize: none;
     font-size: 14px;
+    line-height: 18px;
     color: #fff;
+
+    overflow-y: auto;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* ===============================
+   ATTACH MENU
+   =============================== */
+.attach-menu {
+    position: fixed;
+    bottom: 72px;
+    left: 12px;
+
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    z-index: 1001;
+}
+
+.attach-menu button {
+    background: transparent;
+    border: none;
+    color: #fff;
+
+    padding: 12px 16px;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.attach-menu button:hover {
+    background: rgba(255,255,255,0.06);
 }
 
 /* ===============================
@@ -187,4 +284,17 @@ body.ai-thinking .logo-img {
     0% { box-shadow: 0 0 10px #00c8ff; }
     50% { box-shadow: 0 0 35px #00e5ff; }
     100% { box-shadow: 0 0 10px #00c8ff; }
+}
+
+/* ===============================
+   MOBILE
+   =============================== */
+@media (max-width: 600px) {
+    .greet-area h2 {
+        font-size: 24px;
+    }
+
+    textarea {
+        font-size: 13px;
+    }
 }
