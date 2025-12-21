@@ -5,12 +5,17 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+}
+
 body {
     margin: 0;
     background: #000;
     color: #fff;
     font-family: Arial, sans-serif;
     overflow-x: hidden;
+    overscroll-behavior: none;
 }
 
 /* ===============================
@@ -56,11 +61,12 @@ body {
 }
 
 /* ===============================
-   CHAT BOX (MOBILE CUT FIXED)
+   CHAT BOX (FINAL SAFE SPACE FIX)
    =============================== */
 #chat-box {
     margin-top: 10px;
-    padding-bottom: 140px; /* 🔥 IMPORTANT: mobile last line fix */
+    padding-bottom: 180px; /* 🔥 EXTRA SAFE FOR ALL MOBILES */
+    scroll-behavior: smooth;
 }
 
 /* ===============================
@@ -83,8 +89,8 @@ body {
    AI MESSAGE (CHATGPT FLAT STYLE)
    =============================== */
 .ai-msg {
-    background: #000;       /* body same */
-    border: 1px solid #000; /* bubble invisible */
+    background: #000;
+    border: 1px solid #000;
     padding: 16px 18px;
     max-width: 90%;
     margin: 8px 12px;
@@ -96,7 +102,7 @@ body {
 }
 
 /* ===============================
-   HEADINGS (FIXED VISIBILITY)
+   HEADINGS (VISIBLE & SAFE)
    =============================== */
 .ai-msg h1 {
     font-size: 26px;
@@ -135,13 +141,17 @@ body {
 }
 
 /* ===============================
-   LINKS
+   LINKS (CLICKABLE FIX 🔥)
    =============================== */
 .ai-msg a {
     color: #4fc3f7;
     text-decoration: underline;
+    cursor: pointer;
+    pointer-events: auto;
+    word-break: break-all;
 }
 
+.ai-msg a:active,
 .ai-msg a:hover {
     color: #81d4fa;
 }
@@ -158,7 +168,7 @@ body {
 }
 
 /* ===============================
-   CODE BLOCK (SAFE – NO HTML RUN)
+   CODE BLOCK (NO HTML RUN)
    =============================== */
 .ai-msg pre {
     position: relative;
@@ -169,6 +179,7 @@ body {
     overflow-x: auto;
     white-space: pre;
     margin: 16px 0;
+    -webkit-overflow-scrolling: touch;
 }
 
 .ai-msg code {
@@ -191,6 +202,7 @@ body {
     font-size: 12px;
     border-radius: 6px;
     cursor: pointer;
+    z-index: 5;
 }
 
 .copy-btn:hover {
@@ -257,7 +269,7 @@ textarea:focus {
    =============================== */
 .attach-menu {
     position: fixed;
-    bottom: 140px; /* match chat safe space */
+    bottom: 180px; /* 🔥 matches chat-box padding */
     left: 12px;
     background: #111827;
     border: 1px solid rgba(255,255,255,0.1);
