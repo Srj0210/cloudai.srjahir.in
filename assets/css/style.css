@@ -1,7 +1,9 @@
 /* ===============================
    GLOBAL
    =============================== */
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 html, body {
     height: 100%;
@@ -16,8 +18,18 @@ body {
     overscroll-behavior: none;
 }
 
+/* 🔥 RESET FOR MARKDOWN LIST / TITLE BUG */
+ul, ol {
+    margin: 0;
+    padding-left: 18px;
+}
+
+li {
+    list-style-position: inside;
+}
+
 /* ===============================
-   LOGO
+   LOGO TOP RIGHT
    =============================== */
 .logo-box {
     position: fixed;
@@ -38,40 +50,63 @@ body {
 .tap-talk {
     font-size: 13px;
     margin-top: 4px;
-    opacity: .85;
+    opacity: 0.85;
 }
 
 /* ===============================
-   GREETING
+   GREETING AREA
    =============================== */
 .greet-area {
     margin: 120px 16px 16px;
 }
 
-/* ===============================
-   CHAT BOX (FINAL FIX)
-   =============================== */
-#chat-box {
-    margin-top: 10px;
-    padding-bottom: calc(220px + env(safe-area-inset-bottom));
-    scroll-behavior: smooth;
+.greet-area h2 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.greet-area p {
+    opacity: 0.7;
+    margin-top: 4px;
 }
 
 /* ===============================
-   USER MSG
+   CHAT BOX (🔥 REAL FIX)
+   =============================== */
+#chat-box {
+    margin-top: 10px;
+    padding-bottom: 200px;
+    scroll-behavior: smooth;
+
+    /* 🔥 THIS IS THE REAL FIX */
+    display: flow-root;
+}
+
+/* 🔥 FLOAT CLEAR SAFETY */
+#chat-box::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+/* ===============================
+   USER MESSAGE
    =============================== */
 .user-msg {
     background: #007aff;
+    color: #fff;
     padding: 10px 14px;
     border-radius: 16px;
     max-width: 70%;
     margin: 8px 12px;
     float: right;
     clear: both;
+    font-size: 14px;
+    word-wrap: break-word;
 }
 
 /* ===============================
-   AI MSG (FLAT)
+   AI MESSAGE
    =============================== */
 .ai-msg {
     background: #000;
@@ -82,15 +117,57 @@ body {
     float: left;
     clear: both;
     line-height: 1.7;
+    font-size: 14px;
+    word-wrap: break-word;
 }
 
 /* ===============================
-   HEADINGS FIX
+   HEADINGS (FINAL FIX)
    =============================== */
-.ai-msg h1 { font-size: 26px; margin: 18px 0 10px; }
-.ai-msg h2 { font-size: 22px; margin: 16px 0 8px; }
-.ai-msg h3 { font-size: 18px; margin: 14px 0 6px; }
-.ai-msg h4 { font-size: 16px; margin: 12px 0 6px; }
+.ai-msg h1,
+.ai-msg h2,
+.ai-msg h3,
+.ai-msg h4 {
+    display: block;
+    width: 100%;
+    clear: both;
+}
+
+.ai-msg h1 {
+    font-size: 26px;
+    margin: 18px 0 10px;
+    font-weight: 700;
+}
+
+.ai-msg h2 {
+    font-size: 22px;
+    margin: 16px 0 8px;
+    font-weight: 700;
+}
+
+.ai-msg h3 {
+    font-size: 18px;
+    margin: 14px 0 6px;
+    font-weight: 600;
+}
+
+.ai-msg h4 {
+    font-size: 16px;
+    margin: 12px 0 6px;
+    font-weight: 600;
+}
+
+/* ===============================
+   MARKDOWN TEXT
+   =============================== */
+.ai-msg strong {
+    font-weight: 700;
+}
+
+.ai-msg em {
+    font-style: italic;
+    opacity: 0.9;
+}
 
 /* ===============================
    LINKS
@@ -98,8 +175,13 @@ body {
 .ai-msg a {
     color: #4fc3f7;
     text-decoration: underline;
+    cursor: pointer;
     pointer-events: auto;
     word-break: break-all;
+}
+
+.ai-msg a:hover {
+    color: #81d4fa;
 }
 
 /* ===============================
@@ -114,9 +196,10 @@ body {
 }
 
 /* ===============================
-   CODE BLOCK
+   CODE BLOCK (🔥 SCROLL JUMP FIX)
    =============================== */
 .ai-msg pre {
+    position: relative;
     background: #0d1117;
     border: 1px solid #30363d;
     padding: 16px;
@@ -124,16 +207,19 @@ body {
     overflow-x: auto;
     white-space: pre;
     margin: 16px 0;
-    position: relative;
+
+    contain: paint;
+    overscroll-behavior: contain;
 }
 
 .ai-msg code {
     font-family: "JetBrains Mono", monospace;
     font-size: 13px;
+    color: #c9d1d9;
 }
 
 /* ===============================
-   COPY BTN
+   COPY BUTTON
    =============================== */
 .copy-btn {
     position: absolute;
@@ -146,6 +232,7 @@ body {
     font-size: 12px;
     border-radius: 6px;
     cursor: pointer;
+    z-index: 5;
 }
 
 /* ===============================
@@ -157,9 +244,10 @@ body {
     right: 0;
     bottom: env(safe-area-inset-bottom);
     display: flex;
-    padding: 4px 6px;
+    align-items: center;
+    padding: 6px;
     background: #0b0f14;
-    border-top: 1px solid rgba(255,255,255,.08);
+    border-top: 1px solid rgba(255,255,255,0.08);
     z-index: 999;
 }
 
@@ -175,6 +263,7 @@ textarea {
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,.08);
     color: #fff;
+    resize: none;
 }
 
 /* ===============================
@@ -182,23 +271,18 @@ textarea {
    =============================== */
 .attach-menu {
     position: fixed;
-    bottom: calc(220px + env(safe-area-inset-bottom));
+    bottom: 200px;
     left: 12px;
     background: #111827;
     border-radius: 14px;
     display: none;
+    flex-direction: column;
     z-index: 1001;
 }
 
 /* ===============================
-   AI GLOW
+   MOBILE
    =============================== */
-body.ai-thinking .logo-img {
-    animation: pulseGlow 1.5s infinite;
-}
-
-@keyframes pulseGlow {
-    0% { box-shadow: 0 0 10px #00c8ff; }
-    50% { box-shadow: 0 0 35px #00e5ff; }
-    100% { box-shadow: 0 0 10px #00c8ff; }
+@media (max-width: 600px) {
+    textarea { font-size: 13px; }
 }
