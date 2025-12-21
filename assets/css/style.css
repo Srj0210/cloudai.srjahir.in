@@ -286,3 +286,16 @@ textarea {
 @media (max-width: 600px) {
     textarea { font-size: 13px; }
 }
+/* ===== HARD FIX FOR LOGO OVERFLOW ===== */
+.logo-box {
+    max-width: 80px;
+    max-height: 80px;
+}
+
+.logo-img {
+    width: 72px !important;
+    height: 72px !important;
+    max-width: 72px !important;
+    max-height: 72px !important;
+    object-fit: contain;
+}
