@@ -26,125 +26,94 @@ let history = [];
 let isProcessing = false;
 
 /* ===============================
-   QUOTA UI HELPERS
-   =============================== */
-function showAlert(msg) {
-  const a = document.createElement("div");
-  a.textContent = msg;
-  Object.assign(a.style, {
-    position: "fixed",
-    bottom: "90px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    background: "#0078ff",
-    color: "#fff",
-    padding: "10px 16px",
-    borderRadius: "10px",
-    fontSize: "14px",
-    zIndex: 9999
-  });
-  document.body.appendChild(a);
-  setTimeout(() => a.remove(), 4000);
-}
-
-function disableInput() {
-  input.disabled = true;
-  sendBtn.disabled = true;
-  input.placeholder = "Daily limit reached. Try again tomorrow.";
-}
-
-/* ===============================
-   USER MESSAGE
+   USER
    =============================== */
 function addUser(text) {
-  const div = document.createElement("div");
-  div.className = "user-msg";
-  div.textContent = text;
-  box.appendChild(div);
+  const d = document.createElement("div");
+  d.className = "user-msg";
+  d.textContent = text;
+  box.appendChild(d);
   scrollBottom();
 }
 
 /* ===============================
-   AI MESSAGE (TYPING SUPPORT)
+   AI
    =============================== */
 function addAI(html) {
-  const div = document.createElement("div");
-  div.className = "ai-msg";
-  box.appendChild(div);
+  const d = document.createElement("div");
+  d.className = "ai-msg";
+  box.appendChild(d);
 
-  if (typeof typeHTML === "function") {
-    typeHTML(div, html, () => afterAI(div));
+  if (window.typeHTML) {
+    typeHTML(d, html, () => afterAI(d));
   } else {
-    div.innerHTML = html;
-    afterAI(div);
+    d.innerHTML = html;
+    afterAI(d);
   }
 }
 
-function afterAI(div) {
-  enhanceCodeBlocks(div);
+function afterAI(d) {
+  enhanceCodeBlocks(d);
   if (window.Prism) Prism.highlightAll();
-  scrollBottom();
+  scrollBottom(true);
 }
 
 /* ===============================
-   MARKDOWN RENDER (SAFE)
+   MARKDOWN (FIXED ORDER)
    =============================== */
 function renderMarkdown(text) {
   if (!text) return "";
 
   const blocks = [];
-  let idx = 0;
+  let i = 0;
 
-  text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
-    const key = `__CODE_${idx}__`;
+  text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, l, c) => {
+    const k = `__CODE_${i}__`;
     blocks.push(`
-<pre class="language-${lang || "javascript"}">
+<pre class="language-${l || "javascript"}">
 <button class="copy-btn">Copy</button>
-<code class="language-${lang || "javascript"}">${escapeHtml(code)}</code>
+<code class="language-${l || "javascript"}">${escapeHtml(c)}</code>
 </pre>`);
-    idx++;
-    return key;
+    i++;
+    return k;
   });
 
   text = text
+    .replace(/^### (.*)$/gm, "<h3>$1</h3>")
+    .replace(/^## (.*)$/gm, "<h2>$1</h2>")
+    .replace(/^# (.*)$/gm, "<h1>$1</h1>")
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
     .replace(/`([^`]+)`/g, `<code class="inline-code">$1</code>`)
-    .replace(
-      /(https?:\/\/[^\s<]+)/g,
-      `<a href="$1" target="_blank" rel="noopener">$1</a>`
-    )
+    .replace(/(https?:\/\/[^\s<]+)/g, `<a href="$1" target="_blank">$1</a>`)
     .replace(/\n/g, "<br>");
 
-  blocks.forEach((b, i) => {
-    text = text.replace(`__CODE_${i}__`, b);
+  blocks.forEach((b, j) => {
+    text = text.replace(`__CODE_${j}__`, b);
   });
 
   return text;
 }
 
-function escapeHtml(str) {
-  return str.replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
+function escapeHtml(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
 /* ===============================
-   COPY BUTTON
+   COPY
    =============================== */
-function enhanceCodeBlocks(container) {
-  container.querySelectorAll(".copy-btn").forEach(btn => {
-    btn.onclick = () => {
-      const code = btn.nextElementSibling.innerText;
-      navigator.clipboard.writeText(code);
-      btn.textContent = "Copied ✓";
-      setTimeout(() => (btn.textContent = "Copy"), 1200);
+function enhanceCodeBlocks(c) {
+  c.querySelectorAll(".copy-btn").forEach(b => {
+    b.onclick = () => {
+      navigator.clipboard.writeText(b.nextElementSibling.innerText);
+      b.textContent = "Copied ✓";
+      setTimeout(() => b.textContent = "Copy", 1200);
     };
   });
 }
 
 /* ===============================
-   SEND MESSAGE (WITH QUOTA)
+   SEND (QUOTA SAFE)
    =============================== */
 async function sendMessage() {
   const msg = input.value.trim();
@@ -154,38 +123,28 @@ async function sendMessage() {
   addUser(msg);
   input.value = "";
 
-  history.push({ role: "user", text: msg });
+  history.push({ role:"user", text:msg });
   document.body.classList.add("ai-thinking");
 
   try {
-    const res = await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: msg, history, clientId })
+    const r = await fetch(API,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ prompt:msg, history, clientId })
     });
 
-    const data = await res.json();
+    const d = await r.json();
 
-    if (data.error) {
-      addAI(`<strong>⚠️ ${data.error}</strong>`);
+    if (d.error) {
+      addAI(`<strong>⚠️ ${d.error}</strong>`);
       return;
     }
 
-    const reply = data.reply || "⚠️ AI response not available.";
-    addAI(renderMarkdown(reply));
-    history.push({ role: "model", text: reply });
-
-    if (data.quotaStatus === "quota_warning") {
-      showAlert("⚠️ 80% of daily quota used");
-    }
-
-    if (data.quotaStatus === "quota_exceeded") {
-      showAlert("🚫 Daily quota reached");
-      disableInput();
-    }
+    addAI(renderMarkdown(d.reply));
+    history.push({ role:"model", text:d.reply });
 
   } catch {
-    addAI("⚠️ Network error. Please try again.");
+    addAI("⚠️ Network error");
   } finally {
     isProcessing = false;
     document.body.classList.remove("ai-thinking");
@@ -193,11 +152,13 @@ async function sendMessage() {
 }
 
 /* ===============================
-   SCROLL FIX
+   SCROLL (FINAL FIX)
    =============================== */
-function scrollBottom() {
+function scrollBottom(force=false) {
   requestAnimationFrame(() => {
-    box.scrollTop = box.scrollHeight + 200;
+    const last = box.lastElementChild;
+    if (last && force) last.scrollIntoView({ behavior:"smooth", block:"end" });
+    box.scrollTop = box.scrollHeight;
   });
 }
 
@@ -205,42 +166,36 @@ function scrollBottom() {
    EVENTS
    =============================== */
 sendBtn.onclick = sendMessage;
-
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+input.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
 });
 
 /* ===============================
-   ATTACH MENU
+   ATTACH
    =============================== */
-pinBtn.onclick = () => {
+pinBtn.onclick = ()=>{
   attachMenu.style.display =
-    attachMenu.style.display === "flex" ? "none" : "flex";
+    attachMenu.style.display==="flex"?"none":"flex";
 };
 
-attachMenu.onclick = e => {
-  const type = e.target.dataset.type;
-  if (!type) return;
-  attachMenu.style.display = "none";
-
-  if (type === "camera") cameraInput.click();
-  if (type === "image") imageInput.click();
-  if (type === "file")  fileInput.click();
+attachMenu.onclick = e=>{
+  const t = e.target.dataset.type;
+  if(!t)return;
+  attachMenu.style.display="none";
+  if(t==="camera")cameraInput.click();
+  if(t==="image")imageInput.click();
+  if(t==="file")fileInput.click();
 };
 
 /* ===============================
-   VOICE INPUT
+   VOICE
    =============================== */
 if ("webkitSpeechRecognition" in window) {
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = "en-IN";
-
-  micBtn.onclick = () => recognition.start();
-  recognition.onresult = e => {
-    input.value = e.results[0][0].transcript;
+  const r = new webkitSpeechRecognition();
+  r.lang="en-IN";
+  micBtn.onclick=()=>r.start();
+  r.onresult=e=>{
+    input.value=e.results[0][0].transcript;
     sendMessage();
   };
 }
