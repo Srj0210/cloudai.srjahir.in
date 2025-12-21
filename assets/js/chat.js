@@ -175,7 +175,6 @@ async function sendMessage() {
     addAI(renderMarkdown(reply));
     history.push({ role: "model", text: reply });
 
-    /* ===== QUOTA HANDLING ===== */
     if (data.quotaStatus === "quota_warning") {
       showAlert("⚠️ 80% of daily quota used");
     }
