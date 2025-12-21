@@ -1,220 +1,295 @@
 /* ===============================
    GLOBAL
-=============================== */
+   =============================== */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  overflow-x: hidden;
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 /* ===============================
-   LOGO
-=============================== */
+   LOGO TOP RIGHT
+   =============================== */
 .logo-box {
-  position: fixed;
-  right: 16px;
-  top: 16px;
-  text-align: center;
-  z-index: 1000;
+    position: fixed;
+    right: 16px;
+    top: 16px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1000;
 }
 
 .logo-img {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  box-shadow: 0 0 20px #00c8ff;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #00c8ff;
+}
+
+.tap-talk {
+    font-size: 13px;
+    margin-top: 4px;
+    opacity: 0.85;
 }
 
 /* ===============================
-   GREETING
-=============================== */
+   GREETING AREA
+   =============================== */
 .greet-area {
-  margin: 120px 16px 16px;
+    margin: 120px 16px 16px;
 }
 
 .greet-area h2 {
-  font-size: 26px;
-  margin: 0;
+    margin: 0;
+    font-size: 26px;
 }
 
 .greet-area p {
-  opacity: .7;
-  margin-top: 4px;
+    opacity: 0.7;
+    margin-top: 4px;
 }
 
 /* ===============================
-   CHAT BOX (🔥 MAIN FIX)
-=============================== */
+   CHAT BOX (MOBILE CUT FIXED)
+   =============================== */
 #chat-box {
-  margin-top: 10px;
-  padding-bottom: calc(120px + env(safe-area-inset-bottom));
+    margin-top: 10px;
+    padding-bottom: 140px; /* 🔥 IMPORTANT: mobile last line fix */
 }
 
 /* ===============================
    USER MESSAGE
-=============================== */
+   =============================== */
 .user-msg {
-  background: #007aff;
-  color: #fff;
-  padding: 10px 14px;
-  border-radius: 16px;
-  max-width: 70%;
-  margin: 8px 12px;
-  float: right;
-  clear: both;
-  font-size: 14px;
+    background: #007aff;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 16px;
+    max-width: 70%;
+    margin: 8px 12px;
+    float: right;
+    clear: both;
+    font-size: 14px;
+    word-wrap: break-word;
 }
 
 /* ===============================
-   AI MESSAGE (FLAT)
-=============================== */
+   AI MESSAGE (CHATGPT FLAT STYLE)
+   =============================== */
 .ai-msg {
-  background: #000;
-  border: none;
-  padding: 16px 18px;
-  max-width: 92%;
-  margin: 8px 12px;
-  float: left;
-  clear: both;
-  line-height: 1.7;
-  font-size: 15px;
+    background: #000;       /* body same */
+    border: 1px solid #000; /* bubble invisible */
+    padding: 16px 18px;
+    max-width: 90%;
+    margin: 8px 12px;
+    float: left;
+    clear: both;
+    line-height: 1.7;
+    font-size: 14px;
+    word-wrap: break-word;
 }
 
 /* ===============================
-   HEADINGS
-=============================== */
-.ai-msg h1 { font-size: 26px; margin: 16px 0 10px; }
-.ai-msg h2 { font-size: 22px; margin: 14px 0 8px; }
-.ai-msg h3 { font-size: 18px; margin: 12px 0 6px; }
-
-/* ===============================
-   TEXT
-=============================== */
-.ai-msg p {
-  margin: 10px 0;
+   HEADINGS (FIXED VISIBILITY)
+   =============================== */
+.ai-msg h1 {
+    font-size: 26px;
+    margin: 18px 0 10px;
+    font-weight: 700;
 }
 
+.ai-msg h2 {
+    font-size: 22px;
+    margin: 16px 0 8px;
+    font-weight: 700;
+}
+
+.ai-msg h3 {
+    font-size: 18px;
+    margin: 14px 0 6px;
+    font-weight: 600;
+}
+
+.ai-msg h4 {
+    font-size: 16px;
+    margin: 12px 0 6px;
+    font-weight: 600;
+}
+
+/* ===============================
+   MARKDOWN TEXT
+   =============================== */
 .ai-msg strong {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 .ai-msg em {
-  font-style: italic;
-  opacity: .9;
+    font-style: italic;
+    opacity: 0.9;
 }
 
 /* ===============================
    LINKS
-=============================== */
+   =============================== */
 .ai-msg a {
-  color: #4fc3f7;
-  text-decoration: underline;
+    color: #4fc3f7;
+    text-decoration: underline;
+}
+
+.ai-msg a:hover {
+    color: #81d4fa;
 }
 
 /* ===============================
    INLINE CODE
-=============================== */
+   =============================== */
 .inline-code {
-  background: #111827;
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-family: monospace;
-  color: #7dd3fc;
+    background: #111827;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-family: monospace;
+    color: #7dd3fc;
 }
 
 /* ===============================
-   CODE BLOCK (🔥 HTML NEVER RUNS)
-=============================== */
+   CODE BLOCK (SAFE – NO HTML RUN)
+   =============================== */
 .ai-msg pre {
-  background: #0d1117;
-  border: 1px solid #30363d;
-  padding: 16px;
-  border-radius: 8px;
-  overflow-x: auto;
-  white-space: pre;
-  position: relative;
-  margin: 16px 0;
+    position: relative;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 16px 0;
 }
 
 .ai-msg code {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13px;
-  color: #c9d1d9;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: #c9d1d9;
 }
 
 /* ===============================
    COPY BUTTON
-=============================== */
+   =============================== */
 .copy-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: #238636;
-  color: #fff;
-  border: none;
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 6px;
-  cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #238636;
+    color: #fff;
+    border: none;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    background: #2ea043;
 }
 
 /* ===============================
-   INPUT BAR (🔥 SAFE AREA FIX)
-=============================== */
+   INPUT BAR (HALF HEIGHT – SAFE)
+   =============================== */
 .input-area {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: env(safe-area-inset-bottom);
-  padding: 6px 8px;
-  background: #0b0f14;
-  display: flex;
-  align-items: center;
-  border-top: 1px solid rgba(255,255,255,.08);
-  z-index: 999;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: env(safe-area-inset-bottom);
+    display: flex;
+    align-items: center;
+    padding: 4px 6px;
+    background: #0b0f14;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    z-index: 999;
 }
 
+/* ===============================
+   ICON BUTTONS
+   =============================== */
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+}
+
+.icon-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* ===============================
+   TEXTAREA
+   =============================== */
 textarea {
-  flex: 1;
-  min-height: 36px;
-  max-height: 64px;
-  padding: 8px 14px;
-  background: #111827;
-  border-radius: 14px;
-  color: #fff;
-  border: 1px solid rgba(255,255,255,.08);
-  resize: none;
+    flex: 1;
+    min-height: 32px;
+    max-height: 56px;
+    padding: 6px 14px;
+    background: #111827;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.08);
+    color: #fff;
+    resize: none;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
 }
 
 /* ===============================
    ATTACH MENU
-=============================== */
+   =============================== */
 .attach-menu {
-  position: fixed;
-  bottom: calc(120px + env(safe-area-inset-bottom));
-  left: 12px;
-  background: #111827;
-  border-radius: 14px;
-  display: none;
-  flex-direction: column;
-  z-index: 1001;
+    position: fixed;
+    bottom: 140px; /* match chat safe space */
+    left: 12px;
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    z-index: 1001;
 }
 
 /* ===============================
-   AI THINKING
-=============================== */
+   AI THINKING GLOW
+   =============================== */
 body.ai-thinking .logo-img {
-  animation: pulseGlow 1.5s infinite;
+    animation: pulseGlow 1.5s infinite;
 }
 
 @keyframes pulseGlow {
-  0% { box-shadow: 0 0 10px #00c8ff; }
-  50% { box-shadow: 0 0 35px #00e5ff; }
-  100% { box-shadow: 0 0 10px #00c8ff; }
+    0%   { box-shadow: 0 0 10px #00c8ff; }
+    50%  { box-shadow: 0 0 35px #00e5ff; }
+    100% { box-shadow: 0 0 10px #00c8ff; }
+}
+
+/* ===============================
+   MOBILE
+   =============================== */
+@media (max-width: 600px) {
+    .greet-area h2 {
+        font-size: 24px;
+    }
+
+    textarea {
+        font-size: 13px;
+    }
 }
