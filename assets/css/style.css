@@ -1,6 +1,10 @@
 /* ===============================
    GLOBAL
 =============================== */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   background: #000;
@@ -28,11 +32,28 @@ body {
 }
 
 /* ===============================
-   CHAT BOX (🔥 MOBILE FIX)
+   GREETING
+=============================== */
+.greet-area {
+  margin: 120px 16px 16px;
+}
+
+.greet-area h2 {
+  font-size: 26px;
+  margin: 0;
+}
+
+.greet-area p {
+  opacity: .7;
+  margin-top: 4px;
+}
+
+/* ===============================
+   CHAT BOX (🔥 MAIN FIX)
 =============================== */
 #chat-box {
   margin-top: 10px;
-  padding-bottom: calc(90px + env(safe-area-inset-bottom));
+  padding-bottom: calc(120px + env(safe-area-inset-bottom));
 }
 
 /* ===============================
@@ -51,13 +72,13 @@ body {
 }
 
 /* ===============================
-   AI MESSAGE (FLAT LOOK)
+   AI MESSAGE (FLAT)
 =============================== */
 .ai-msg {
   background: #000;
-  border: 1px solid #000;
+  border: none;
   padding: 16px 18px;
-  max-width: 90%;
+  max-width: 92%;
   margin: 8px 12px;
   float: left;
   clear: both;
@@ -66,27 +87,31 @@ body {
 }
 
 /* ===============================
-   HEADINGS (FIXED)
+   HEADINGS
 =============================== */
-.ai-msg h1 {
-  font-size: 26px;
-  margin: 16px 0 10px;
-}
-.ai-msg h2 {
-  font-size: 22px;
-  margin: 14px 0 8px;
-}
-.ai-msg h3 {
-  font-size: 18px;
-  margin: 12px 0 6px;
-}
+.ai-msg h1 { font-size: 26px; margin: 16px 0 10px; }
+.ai-msg h2 { font-size: 22px; margin: 14px 0 8px; }
+.ai-msg h3 { font-size: 18px; margin: 12px 0 6px; }
 
 /* ===============================
-   TEXT & LINKS
+   TEXT
 =============================== */
 .ai-msg p {
   margin: 10px 0;
 }
+
+.ai-msg strong {
+  font-weight: 700;
+}
+
+.ai-msg em {
+  font-style: italic;
+  opacity: .9;
+}
+
+/* ===============================
+   LINKS
+=============================== */
 .ai-msg a {
   color: #4fc3f7;
   text-decoration: underline;
@@ -104,7 +129,7 @@ body {
 }
 
 /* ===============================
-   CODE BLOCK
+   CODE BLOCK (🔥 HTML NEVER RUNS)
 =============================== */
 .ai-msg pre {
   background: #0d1117;
@@ -140,33 +165,49 @@ body {
 }
 
 /* ===============================
-   INPUT BAR (HALF HEIGHT)
+   INPUT BAR (🔥 SAFE AREA FIX)
 =============================== */
 .input-area {
   position: fixed;
-  bottom: env(safe-area-inset-bottom);
   left: 0;
   right: 0;
-  padding: 4px 6px;
+  bottom: env(safe-area-inset-bottom);
+  padding: 6px 8px;
   background: #0b0f14;
   display: flex;
   align-items: center;
+  border-top: 1px solid rgba(255,255,255,.08);
   z-index: 999;
 }
 
 textarea {
   flex: 1;
-  min-height: 32px;
-  max-height: 56px;
-  padding: 6px 14px;
+  min-height: 36px;
+  max-height: 64px;
+  padding: 8px 14px;
   background: #111827;
-  border-radius: 12px;
+  border-radius: 14px;
   color: #fff;
   border: 1px solid rgba(255,255,255,.08);
+  resize: none;
 }
 
 /* ===============================
-   AI THINKING GLOW
+   ATTACH MENU
+=============================== */
+.attach-menu {
+  position: fixed;
+  bottom: calc(120px + env(safe-area-inset-bottom));
+  left: 12px;
+  background: #111827;
+  border-radius: 14px;
+  display: none;
+  flex-direction: column;
+  z-index: 1001;
+}
+
+/* ===============================
+   AI THINKING
 =============================== */
 body.ai-thinking .logo-img {
   animation: pulseGlow 1.5s infinite;
