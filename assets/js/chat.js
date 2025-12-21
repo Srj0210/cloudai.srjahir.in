@@ -26,7 +26,7 @@ let history = [];
 let isProcessing = false;
 
 /* ===============================
-   UI HELPERS
+   USER MESSAGE
    =============================== */
 function addUser(text) {
   const div = document.createElement("div");
@@ -35,55 +35,66 @@ function addUser(text) {
   box.appendChild(div);
 }
 
+/* ===============================
+   AI MESSAGE (WITH TYPING)
+   =============================== */
 function addAI(html) {
   const div = document.createElement("div");
   div.className = "ai-msg";
-  div.innerHTML = html;
   box.appendChild(div);
 
-  enhanceCodeBlocks(div);
-  Prism.highlightAll();
+  typeHTML(div, html, () => {
+    enhanceCodeBlocks(div);
+    Prism.highlightAll();
+    box.scrollTop = box.scrollHeight;
+  });
 }
 
 /* ===============================
-   MARKDOWN RENDER
+   MARKDOWN RENDER (BUG FREE)
    =============================== */
 function renderMarkdown(text) {
   if (!text) return "";
 
-  let html = text;
+  const blocks = [];
+  let i = 0;
 
-  // CODE BLOCKS
-  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
-    const language = lang || "javascript";
-    return `
-<pre class="language-${language}">
+  // isolate code blocks
+  text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
+    const key = `__CODE_BLOCK_${i}__`;
+    blocks.push(`
+<pre class="language-${lang || "javascript"}">
 <button class="copy-btn">Copy</button>
-<code class="language-${language}">${escapeHtml(code)}</code>
-</pre>`;
+<code class="language-${lang || "javascript"}">${escapeHtml(code)}</code>
+</pre>`);
+    i++;
+    return key;
   });
 
-  // INLINE CODE
-  html = html.replace(/`([^`]+)`/g, `<code class="inline-code">$1</code>`);
+  // text formatting
+  text = text
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/`([^`]+)`/g, `<code class="inline-code">$1</code>`)
+    .replace(
+      /(https?:\/\/[^\s<]+)/g,
+      `<a href="$1" target="_blank" rel="noopener">$1</a>`
+    )
+    .replace(/\n/g, "<br>");
 
-  // BOLD & ITALIC
-  html = html.replace(/\*\*(.*?)\*\*/g, `<strong>$1</strong>`);
-  html = html.replace(/\*(.*?)\*/g, `<em>$1</em>`);
+  // restore code blocks
+  blocks.forEach((b, idx) => {
+    text = text.replace(`__CODE_BLOCK_${idx}__`, b);
+  });
 
-  // LINKS
-  html = html.replace(
-    /(https?:\/\/[^\s<]+)/g,
-    `<a href="$1" target="_blank" rel="noopener">$1</a>`
-  );
-
-  // NORMAL LINE BREAKS
-  html = html.replace(/\n/g, "<br>");
-
-  return html;
+  return text;
 }
 
 function escapeHtml(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 /* ===============================
@@ -95,7 +106,7 @@ function enhanceCodeBlocks(container) {
       const code = btn.nextElementSibling.innerText;
       navigator.clipboard.writeText(code);
       btn.textContent = "Copied ✓";
-      setTimeout(() => (btn.textContent = "Copy"), 1500);
+      setTimeout(() => (btn.textContent = "Copy"), 1200);
     };
   });
 }
@@ -132,7 +143,6 @@ async function sendMessage() {
   } finally {
     isProcessing = false;
     document.body.classList.remove("ai-thinking");
-    box.scrollTop = box.scrollHeight;
   }
 }
 
@@ -140,6 +150,7 @@ async function sendMessage() {
    EVENTS
    =============================== */
 sendBtn.onclick = sendMessage;
+
 input.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
