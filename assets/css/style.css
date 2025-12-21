@@ -18,16 +18,6 @@ body {
     overscroll-behavior: none;
 }
 
-/* 🔥 RESET FOR MARKDOWN LIST / TITLE BUG */
-ul, ol {
-    margin: 0;
-    padding-left: 18px;
-}
-
-li {
-    list-style-position: inside;
-}
-
 /* ===============================
    LOGO TOP RIGHT
    =============================== */
@@ -71,22 +61,19 @@ li {
 }
 
 /* ===============================
-   CHAT BOX (🔥 REAL FIX)
+   CHAT BOX (SAFE BASE)
    =============================== */
 #chat-box {
     margin-top: 10px;
-    padding-bottom: 200px;
+    padding-bottom: 180px; /* base safety */
     scroll-behavior: smooth;
-
-    /* 🔥 THIS IS THE REAL FIX */
-    display: flow-root;
 }
 
-/* 🔥 FLOAT CLEAR SAFETY */
+/* 🔥 REAL FIX — 2 EXTRA LINES GUARANTEE */
 #chat-box::after {
     content: "";
     display: block;
-    clear: both;
+    height: 64px; /* ≈ 2 text lines */
 }
 
 /* ===============================
@@ -106,7 +93,7 @@ li {
 }
 
 /* ===============================
-   AI MESSAGE
+   AI MESSAGE (CHATGPT FLAT STYLE)
    =============================== */
 .ai-msg {
     background: #000;
@@ -116,50 +103,53 @@ li {
     margin: 8px 12px;
     float: left;
     clear: both;
-    line-height: 1.7;
+    line-height: 1.8; /* 🔥 spacing thoda zyada */
     font-size: 14px;
     word-wrap: break-word;
 }
 
 /* ===============================
-   HEADINGS (FINAL FIX)
+   HEADINGS (VISIBLE FIX)
    =============================== */
 .ai-msg h1,
 .ai-msg h2,
 .ai-msg h3,
 .ai-msg h4 {
     display: block;
-    width: 100%;
     clear: both;
 }
 
 .ai-msg h1 {
     font-size: 26px;
-    margin: 18px 0 10px;
+    margin: 22px 0 14px;
     font-weight: 700;
 }
 
 .ai-msg h2 {
     font-size: 22px;
-    margin: 16px 0 8px;
+    margin: 20px 0 12px;
     font-weight: 700;
 }
 
 .ai-msg h3 {
     font-size: 18px;
-    margin: 14px 0 6px;
+    margin: 18px 0 10px;
     font-weight: 600;
 }
 
 .ai-msg h4 {
     font-size: 16px;
-    margin: 12px 0 6px;
+    margin: 16px 0 10px;
     font-weight: 600;
 }
 
 /* ===============================
-   MARKDOWN TEXT
+   TEXT
    =============================== */
+.ai-msg p {
+    margin: 8px 0 14px;
+}
+
 .ai-msg strong {
     font-weight: 700;
 }
@@ -170,7 +160,7 @@ li {
 }
 
 /* ===============================
-   LINKS
+   LINKS (CLICKABLE)
    =============================== */
 .ai-msg a {
     color: #4fc3f7;
@@ -189,14 +179,14 @@ li {
    =============================== */
 .inline-code {
     background: #111827;
-    padding: 2px 6px;
+    padding: 3px 6px;
     border-radius: 6px;
     font-family: monospace;
     color: #7dd3fc;
 }
 
 /* ===============================
-   CODE BLOCK (🔥 SCROLL JUMP FIX)
+   CODE BLOCK (NO RUN, ONLY VIEW)
    =============================== */
 .ai-msg pre {
     position: relative;
@@ -206,10 +196,8 @@ li {
     border-radius: 8px;
     overflow-x: auto;
     white-space: pre;
-    margin: 16px 0;
-
-    contain: paint;
-    overscroll-behavior: contain;
+    margin: 18px 0 22px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .ai-msg code {
@@ -235,6 +223,10 @@ li {
     z-index: 5;
 }
 
+.copy-btn:hover {
+    background: #2ea043;
+}
+
 /* ===============================
    INPUT BAR
    =============================== */
@@ -245,10 +237,29 @@ li {
     bottom: env(safe-area-inset-bottom);
     display: flex;
     align-items: center;
-    padding: 6px;
+    padding: 6px 8px;
     background: #0b0f14;
     border-top: 1px solid rgba(255,255,255,0.08);
     z-index: 999;
+}
+
+/* ===============================
+   ICON BUTTONS
+   =============================== */
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+}
+
+.icon-btn img {
+    width: 24px;
+    height: 24px;
 }
 
 /* ===============================
@@ -256,9 +267,9 @@ li {
    =============================== */
 textarea {
     flex: 1;
-    min-height: 32px;
-    max-height: 56px;
-    padding: 6px 14px;
+    min-height: 34px;
+    max-height: 60px;
+    padding: 8px 14px;
     background: #111827;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,.08);
@@ -266,36 +277,49 @@ textarea {
     resize: none;
 }
 
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
 /* ===============================
    ATTACH MENU
    =============================== */
 .attach-menu {
     position: fixed;
-    bottom: 200px;
+    bottom: 180px;
     left: 12px;
     background: #111827;
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 14px;
     display: none;
     flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     z-index: 1001;
+}
+
+/* ===============================
+   AI THINKING GLOW
+   =============================== */
+body.ai-thinking .logo-img {
+    animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+    0%   { box-shadow: 0 0 10px #00c8ff; }
+    50%  { box-shadow: 0 0 35px #00e5ff; }
+    100% { box-shadow: 0 0 10px #00c8ff; }
 }
 
 /* ===============================
    MOBILE
    =============================== */
 @media (max-width: 600px) {
-    textarea { font-size: 13px; }
-}
-/* ===== HARD FIX FOR LOGO OVERFLOW ===== */
-.logo-box {
-    max-width: 80px;
-    max-height: 80px;
-}
+    .greet-area h2 {
+        font-size: 24px;
+    }
 
-.logo-img {
-    width: 72px !important;
-    height: 72px !important;
-    max-width: 72px !important;
-    max-height: 72px !important;
-    object-fit: contain;
+    textarea {
+        font-size: 13px;
+    }
 }
