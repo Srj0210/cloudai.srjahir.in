@@ -323,3 +323,34 @@ body.ai-thinking .logo-img {
         font-size: 13px;
     }
 }
+
+
+/* ===============================
+   FIX MARKDOWN BULLETS (AI TEXT)
+   =============================== */
+
+/* Remove browser default bullets */
+.ai-msg ul,
+.ai-msg ol {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+/* Each list item spacing */
+.ai-msg li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 10px; /* 🔥 2-line like space feel */
+}
+
+/* Custom bullet ● */
+.ai-msg li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #4fc3f7;
+    font-size: 14px;
+    line-height: 1.6;
+}
