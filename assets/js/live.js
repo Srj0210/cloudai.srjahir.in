@@ -1,6 +1,6 @@
 // ===================================================
 // CloudAI Live v18.0 — ElevenLabs + Better Recognition
-// by SRJahir Technologies 🔥
+// by SRJahir Technologies 
 // ===================================================
 
 const API            = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
