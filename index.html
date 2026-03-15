@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudAI — Smart AI Assistant</title>
+
+  <!-- FAVICON -->
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- SEO (single description — duplicate removed) -->
+  <meta name="description" content="CloudAI — Fast, Smart, Voice-enabled AI Assistant by SRJahir Tech." />
+  <meta name="keywords" content="CloudAI, AI Chat, AI Assistant, SRJahir Tech, Free AI" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cloudai.srjahir.in/" />
+
+  <!-- ANALYTICS -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-ZVLW6MTZ5Y");
+  </script>
+
+  <!-- PRISMJS (code highlighting) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+  <!-- marked.js + DOMPurify — XSS-safe full markdown rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+
+  <!-- MAIN CSS -->
+  <link rel="stylesheet" href="assets/css/style.css?v=102">
+</head>
+
+<body>
+
+  <!-- LOGO -->
+  <div class="logo-box" onclick="location.href='live.html'">
+    <img src="logo.png" class="logo-img" />
+    <div class="tap-talk">Tap to Talk</div>
+  </div>
+
+  <!-- GREETING -->
+  <div class="greet-area">
+    <h2>👋 Hi, I'm CloudAI.</h2>
+    <p>Ask me anything.</p>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chat-box"></div>
+
+  <!-- INPUT BAR -->
+  <div class="input-area">
+    <button class="icon-btn" id="pin-btn">
+      <img src="Pin.png" />
+    </button>
+
+    <textarea id="user-input" placeholder="Send a message..."></textarea>
+
+    <button class="icon-btn" id="mic-btn">
+      <img src="Mic.png" />
+    </button>
+
+    <button class="icon-btn" id="send-btn">
+      <img src="Send.png" />
+    </button>
+  </div>
+
+  <!-- ATTACH MENU -->
+  <div class="attach-menu" id="attachMenu">
+    <button data-type="camera">📷 Camera</button>
+    <button data-type="image">🖼️ Photo</button>
+    <button data-type="file">📄 File</button>
+  </div>
+
+  <!-- HIDDEN INPUTS -->
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+  <input type="file" id="imageInput"  accept="image/*" hidden>
+  <input type="file" id="fileInput"   hidden>
+
+  <!-- JS -->
+  <script src="assets/js/typing.js"></script>
+  <script src="assets/js/chat.js?v=102"></script>
+</body>
+</html>

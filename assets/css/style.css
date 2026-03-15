@@ -1,0 +1,516 @@
+/* ===============================
+   GLOBAL
+   =============================== */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+}
+
+/* ===============================
+   LOGO TOP RIGHT
+   =============================== */
+.logo-box {
+    position: fixed;
+    right: 16px;
+    top: 16px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.logo-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #00c8ff;
+}
+
+.tap-talk {
+    font-size: 13px;
+    margin-top: 4px;
+    opacity: 0.85;
+}
+
+/* ===============================
+   GREETING AREA
+   =============================== */
+.greet-area {
+    margin: 120px 16px 16px;
+}
+
+.greet-area h2 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.greet-area p {
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+/* ===============================
+   CHAT BOX (SAFE BASE)
+   =============================== */
+#chat-box {
+    margin-top: 10px;
+    padding-bottom: 180px; /* base safety */
+    scroll-behavior: smooth;
+}
+
+/* 🔥 REAL FIX — 2 EXTRA LINES GUARANTEE */
+#chat-box::after {
+    content: "";
+    display: block;
+    height: 64px; /* ≈ 2 text lines */
+}
+
+/* ===============================
+   USER MESSAGE
+   =============================== */
+.user-msg {
+    background: #007aff;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 16px;
+    max-width: 70%;
+    margin: 8px 12px;
+    float: right;
+    clear: both;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+/* ===============================
+   AI MESSAGE (CHATGPT FLAT STYLE)
+   =============================== */
+.ai-msg {
+    background: #000;
+    border: 1px solid #000;
+    padding: 16px 18px;
+    max-width: 90%;
+    margin: 8px 12px;
+    float: left;
+    clear: both;
+    line-height: 1.8; /* 🔥 spacing thoda zyada */
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+/* ===============================
+   HEADINGS (VISIBLE FIX)
+   =============================== */
+.ai-msg h1,
+.ai-msg h2,
+.ai-msg h3,
+.ai-msg h4 {
+    display: block;
+    clear: both;
+}
+
+.ai-msg h1 {
+    font-size: 26px;
+    margin: 22px 0 14px;
+    font-weight: 700;
+}
+
+.ai-msg h2 {
+    font-size: 22px;
+    margin: 20px 0 12px;
+    font-weight: 700;
+}
+
+.ai-msg h3 {
+    font-size: 18px;
+    margin: 18px 0 10px;
+    font-weight: 600;
+}
+
+.ai-msg h4 {
+    font-size: 16px;
+    margin: 16px 0 10px;
+    font-weight: 600;
+}
+
+/* ===============================
+   TEXT
+   =============================== */
+.ai-msg p {
+    margin: 8px 0 14px;
+}
+
+.ai-msg strong {
+    font-weight: 700;
+}
+
+.ai-msg em {
+    font-style: italic;
+    opacity: 0.9;
+}
+
+/* ===============================
+   LINKS (CLICKABLE)
+   =============================== */
+.ai-msg a {
+    color: #4fc3f7;
+    text-decoration: underline;
+    cursor: pointer;
+    pointer-events: auto;
+    word-break: break-all;
+}
+
+.ai-msg a:hover {
+    color: #81d4fa;
+}
+
+/* ===============================
+   INLINE CODE
+   =============================== */
+.inline-code {
+    background: #111827;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-family: monospace;
+    color: #7dd3fc;
+}
+
+/* ===============================
+   CODE BLOCK (NO RUN, ONLY VIEW)
+   =============================== */
+.ai-msg pre {
+    position: relative;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 18px 0 22px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ai-msg code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: #c9d1d9;
+}
+
+/* ===============================
+   COPY BUTTON
+   =============================== */
+.copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #238636;
+    color: #fff;
+    border: none;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.copy-btn:hover {
+    background: #2ea043;
+}
+
+/* ===============================
+   INPUT BAR
+   =============================== */
+.input-area {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: env(safe-area-inset-bottom);
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    background: #0b0f14;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    z-index: 999;
+}
+
+/* ===============================
+   ICON BUTTONS
+   =============================== */
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+}
+
+.icon-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* ===============================
+   TEXTAREA
+   =============================== */
+textarea {
+    flex: 1;
+    min-height: 34px;
+    max-height: 60px;
+    padding: 8px 14px;
+    background: #111827;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.08);
+    color: #fff;
+    resize: none;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* ===============================
+   ATTACH MENU
+   =============================== */
+.attach-menu {
+    position: fixed;
+    bottom: 180px;
+    left: 12px;
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    z-index: 1001;
+}
+
+/* ===============================
+   AI THINKING GLOW
+   =============================== */
+body.ai-thinking .logo-img {
+    animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+    0%   { box-shadow: 0 0 10px #00c8ff; }
+    50%  { box-shadow: 0 0 35px #00e5ff; }
+    100% { box-shadow: 0 0 10px #00c8ff; }
+}
+
+/* ===============================
+   MOBILE
+   =============================== */
+@media (max-width: 600px) {
+    .greet-area h2 {
+        font-size: 24px;
+    }
+
+    textarea {
+        font-size: 13px;
+    }
+}
+
+
+/* ===============================
+   FIX MARKDOWN BULLETS (AI TEXT)
+   =============================== */
+
+/* Remove browser default bullets */
+.ai-msg ul,
+.ai-msg ol {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+/* Each list item spacing */
+.ai-msg li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 10px; /* 🔥 2-line like space feel */
+}
+
+/* Custom bullet ● */
+.ai-msg li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #4fc3f7;
+    font-size: 14px;
+    line-height: 1.6;
+}
+/* ===============================
+   THINKING DOTS ANIMATION
+   =============================== */
+.thinking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 16px !important;
+  min-height: 40px;
+}
+.thinking-indicator .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #00c8ff;
+  animation: dotBounce 1.2s infinite ease-in-out;
+  display: inline-block;
+}
+.thinking-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+.thinking-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%           { transform: scale(1.0); opacity: 1;   }
+}
+
+/* File preview bar adjustment */
+#file-preview-bar img {
+  max-height: 48px;
+  max-width: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* ===============================
+   REVIEW FIXES v17.1
+   (moved from inline JS styles)
+   =============================== */
+
+/* Thinking dots */
+.thinking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 16px !important;
+  min-height: 40px;
+}
+.thinking-indicator .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #00c8ff;
+  display: inline-block;
+  animation: dotBounce 1.2s infinite ease-in-out;
+}
+.thinking-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+.thinking-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotBounce {
+  0%,80%,100% { transform:scale(0.6); opacity:0.4; }
+  40%          { transform:scale(1.0); opacity:1; }
+}
+
+/* File preview bar (fixed bottom) */
+.file-preview-bar {
+  position: fixed;
+  bottom: 72px; left: 0; right: 0;
+  padding: 8px 16px;
+  background: #111;
+  border-top: 1px solid #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 200;
+}
+.file-preview-bar img {
+  max-height: 48px;
+  max-width: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.file-bar-name {
+  font-size: 12px;
+  opacity: 0.6;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-bar-remove {
+  background: #c00;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* File chip (non-image file preview in chat) */
+.file-chip {
+  background: #1a1a2e;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.file-size { opacity: 0.5; }
+
+/* File image preview in chat */
+.file-preview-img {
+  max-width: 220px;
+  max-height: 180px;
+  border-radius: 10px;
+  display: block;
+}
+
+/* Alert banner (single instance) */
+.cloudai-alert {
+  position: fixed;
+  top: 16px; left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  animation: alertFade 4s ease forwards;
+}
+@keyframes alertFade {
+  0%   { opacity:0; transform:translateX(-50%) translateY(-10px); }
+  10%  { opacity:1; transform:translateX(-50%) translateY(0); }
+  80%  { opacity:1; }
+  100% { opacity:0; }
+}
+
+/* Mic active state */
+.mic-active img { filter: hue-rotate(180deg) brightness(1.4); }
+
+/* marked.js output — fix spacing */
+.ai-msg h1,.ai-msg h2,.ai-msg h3 { margin: 10px 0 4px; }
+.ai-msg ul,.ai-msg ol  { padding-left: 20px; margin: 6px 0; }
+.ai-msg li  { margin-bottom: 4px; }
+.ai-msg p   { margin: 4px 0; }
+.ai-msg blockquote {
+  border-left: 3px solid #444;
+  padding-left: 12px;
+  margin: 8px 0;
+  opacity: 0.75;
+}
+.ai-msg table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 13px;
+  width: 100%;
+}
+.ai-msg th,.ai-msg td {
+  border: 1px solid #333;
+  padding: 6px 10px;
+}
+.ai-msg th { background: #1a1a1a; }
