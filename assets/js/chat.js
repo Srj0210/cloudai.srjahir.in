@@ -261,8 +261,21 @@ async function sendMessage() {
    =============================== */
 function scrollBottom(force = false) {
   requestAnimationFrame(() => {
-    if (force && box.lastElementChild)
-      box.lastElementChild.scrollIntoView({ behavior: "smooth", block: "end" });
+    // Get input bar height dynamically so last message is never hidden
+    const inputBar  = document.querySelector(".input-area");
+    const barHeight = inputBar ? inputBar.getBoundingClientRect().height + 24 : 100;
+    
+    if (force && box.lastElementChild) {
+      const last   = box.lastElementChild;
+      const rect   = last.getBoundingClientRect();
+      const bottom = window.innerHeight - barHeight;
+
+      if (rect.bottom > bottom) {
+        // Scroll just enough to bring last message above the input bar
+        window.scrollBy({ top: rect.bottom - bottom + 16, behavior: "smooth" });
+      }
+    }
+    // Fallback
     box.scrollTop = box.scrollHeight;
   });
 }
