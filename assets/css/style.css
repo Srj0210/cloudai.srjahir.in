@@ -65,7 +65,7 @@ body {
    =============================== */
 #chat-box {
     margin-top: 10px;
-    padding-bottom: 180px; /* base safety */
+    padding-bottom: 140px; /* input bar height + safe area */
     scroll-behavior: smooth;
 }
 
@@ -73,7 +73,7 @@ body {
 #chat-box::after {
     content: "";
     display: block;
-    height: 64px; /* ≈ 2 text lines */
+    height: 80px;
 }
 
 /* ===============================
@@ -234,7 +234,8 @@ body {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: env(safe-area-inset-bottom);
+    bottom: 0;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
     display: flex;
     align-items: center;
     padding: 6px 8px;
@@ -514,3 +515,93 @@ body.ai-thinking .logo-img {
   padding: 6px 10px;
 }
 .ai-msg th { background: #1a1a1a; }
+
+/* ===============================
+   v18.0 UI POLISH
+   =============================== */
+
+/* Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+body { font-family: "Inter", Arial, sans-serif; }
+
+/* Chat background subtle gradient */
+body {
+  background: linear-gradient(180deg, #060c14 0%, #0b1220 100%);
+  min-height: 100vh;
+}
+
+/* User messages — rounded pill style */
+.user-msg {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+  box-shadow: 0 2px 12px rgba(37,99,235,0.35);
+  border-radius: 18px 18px 4px 18px !important;
+}
+
+/* AI messages — subtle card */
+.ai-msg {
+  border-radius: 4px 18px 18px 18px !important;
+  border-left: 3px solid #1e40af22;
+  padding: 14px 16px !important;
+  line-height: 1.65;
+}
+
+/* Greeting area */
+.greet-area h2 { 
+  font-size: 28px; 
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.greet-area p { 
+  opacity: 0.5; 
+  font-size: 15px;
+  margin-top: 2px;
+}
+
+/* Logo box hover */
+.logo-box { transition: transform 0.2s; }
+.logo-box:hover { transform: scale(1.05); }
+
+/* Input textarea */
+#user-input {
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  border-radius: 16px !important;
+  padding: 11px 14px !important;
+}
+
+/* Send button pulse when active */
+#send-btn:active { transform: scale(0.93); }
+#mic-btn.mic-active { filter: brightness(1.6) hue-rotate(160deg); }
+
+/* Smoother code blocks */
+.ai-msg pre {
+  border-radius: 10px;
+  margin: 10px 0;
+  overflow-x: auto;
+}
+.ai-msg .copy-btn {
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+}
+
+/* Table improvements */
+.ai-msg table { border-radius: 8px; overflow: hidden; }
+.ai-msg th { font-weight: 600; letter-spacing: 0.3px; }
+
+/* Mobile: full-width messages */
+@media (max-width: 480px) {
+  .user-msg { max-width: 88% !important; }
+  .ai-msg   { margin: 6px 8px; }
+  .greet-area { margin: 100px 14px 14px; }
+  .greet-area h2 { font-size: 24px; }
+}
+
+/* Smooth message appear animation */
+.user-msg, .ai-msg {
+  animation: msgIn 0.22s ease-out;
+}
+@keyframes msgIn {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
