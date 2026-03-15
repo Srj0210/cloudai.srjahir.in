@@ -3,63 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>CloudAI Live — Voice Chat | SRJahir Tech</title>
-  <meta name="description" content="CloudAI Live — Talk with CloudAI using real-time voice. Tap, speak, and your AI listens and replies instantly. Built by SRJahir Technologies." />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://cloudai.srjahir.in/live.html" />
-
-  <!-- Auto-Favicon (from main logo) -->
+  <title>CloudAI Live — Voice Chat</title>
+  <meta name="description" content="CloudAI Live — Talk with CloudAI using real-time voice." />
   <link rel="icon" type="image/png" href="logo.png" />
-
-  <!-- SEO PREVIEW -->
-  <meta property="og:title" content="CloudAI Live — Voice Chat AI" />
-  <meta property="og:description" content="Real-time voice assistant powered by Gemini + SRJahir Tech." />
-  <meta property="og:image" content="https://cloudai.srjahir.in/assets/img/cloudai-preview.png" />
-
-  <!-- STYLE -->
   <link rel="stylesheet" href="assets/css/live.css" />
-
-  <!-- marked.js + DOMPurify -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-
-  <!-- Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag("js", new Date());
-    gtag("config", "G-T4XBK86HZ2");
-  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
-
-  <!-- MAIN CONTAINER -->
   <div class="live-container">
 
-    <!-- BIG GLOWING LOGO -->
+    <!-- LOGO -->
     <div class="logo-wrapper">
-      <img src="logo.png" id="live-logo" class="logo" alt="CloudAI logo" />
+      <img src="logo.png" id="live-logo" class="logo" alt="CloudAI" />
       <div id="status-text" class="status-text">Tap to Talk</div>
+      <div id="interim-text" class="interim-text"></div>
     </div>
 
-    <!-- WAVE ANIMATION -->
-    <div class="wave" id="voice-wave"></div>
+    <!-- WAVE BARS (animated when speaking) -->
+    <div class="wave-bars" id="voice-wave">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
 
     <!-- BUTTONS -->
     <div class="controls">
-      <button id="speak-btn" class="main-button"> Tap to Speak</button>
-      <button id="stop-btn" class="stop-button" style="display:none;"> Stop</button>
+      <button id="speak-btn" class="main-button">🎙️ Tap to Speak</button>
+      <button id="stop-btn"  class="stop-button" style="display:none">⏹ Stop</button>
     </div>
 
-    <!-- BACK BUTTON -->
-    <a href="index.html" class="back-btn">⬅ Back to Chat</a>
-
+    <!-- BACK -->
+    <a href="index.html" class="back-btn">← Back to Chat</a>
   </div>
 
   <script src="assets/js/live.js"></script>
-
 </body>
 </html>
