@@ -5,7 +5,7 @@
 
 const API            = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
 const ELEVEN_API_KEY = "YOUR_ELEVENLABS_API_KEY";  // 🔑 Replace with your key
-const ELEVEN_VOICE   = "21m00Tcm4TlvDq8ikWAM";     // Rachel — natural female voice
+const ELEVEN_VOICE   = "oAKdg6EnYhdB1k5CzaJs";     // Rachel — natural female voice
 // Other free voices: EXAVITQu4vr4xnSDxMaL (Bella), AZnzlk1XvdvUeBnXmlld (Domi)
 
 const logo       = document.getElementById("live-logo");
