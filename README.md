@@ -95,7 +95,7 @@ cloudai.srjahir.in/
 ├── indexnow-key.txt        # IndexNow key for instant URL indexing
 ├── favicon.svg / .png      # App icons
 ├── assets/                 # Styles, scripts, and static assets
-└── UPGRADE_GUIDE.md        # Upgrade and versioning notes
+
 ```
 
 ---
