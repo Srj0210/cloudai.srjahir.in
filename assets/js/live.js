@@ -5,7 +5,7 @@
 
 const API            = "https://dawn-smoke-b354.sleepyspider6166.workers.dev/";
 const ELEVEN_API_KEY = "YOUR_ELEVENLABS_API_KEY";  // 🔑 Replace with your key
-const ELEVEN_VOICE   = "SZfY4K69FwXus87eayHK";     // Rachel — natural female voice
+const ELEVEN_VOICE   = "SZfY4K69FwXus87eayHK";     // Nikita - Encouraging, Clear and Serious
 // Other free voices: EXAVITQu4vr4xnSDxMaL (Bella), AZnzlk1XvdvUeBnXmlld (Domi)
 
 const logo       = document.getElementById("live-logo");
