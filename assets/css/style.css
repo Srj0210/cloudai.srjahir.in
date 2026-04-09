@@ -407,3 +407,79 @@ body.ai-thinking .logo-img { animation: logoGlow 1.5s infinite ease-in-out; }
   .input-area     { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); }
   .attach-menu    { left: 16px; transform: none; }
 }
+/* ═══════════════════════════════════════════════
+   CloudAI v20.0 — Additional CSS
+   Add this to your existing style.css
+   ═══════════════════════════════════════════════ */
+
+/* ── Model Badge ──────────────────────────────── */
+.model-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.4);
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+/* ── Streaming cursor ─────────────────────────── */
+.ai-msg.streaming::after {
+  content: "▊";
+  animation: blink 0.7s infinite;
+  color: #00c8ff;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ── Image Generation ─────────────────────────── */
+.img-gen-loading {
+  padding: 16px;
+  color: #a78bfa;
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.generated-image-wrap {
+  text-align: center;
+}
+
+.generated-image {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 12px;
+  margin: 8px 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.img-gen-caption {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  margin: 4px 0 8px;
+}
+
+.download-btn {
+  background: rgba(0,200,255,0.15);
+  color: #00c8ff;
+  border: 1px solid rgba(0,200,255,0.3);
+  padding: 6px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.download-btn:hover {
+  background: rgba(0,200,255,0.25);
+}

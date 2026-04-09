@@ -23,7 +23,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=19">
+  <link rel="stylesheet" href="assets/css/style.css?v=20">
 </head>
 <body>
 
@@ -70,6 +70,12 @@
   <input type="file" id="imageInput"  accept="image/*" hidden>
   <input type="file" id="fileInput"   hidden>
 
+  <!-- Chat Actions -->
+  <div style="text-align:center;padding:10px 0 0">
+    <button onclick="exportChat()" style="background:none;border:1px solid #333;color:#777;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;margin:0 4px">📥 Export Chat</button>
+    <button onclick="clearChat()" style="background:none;border:1px solid #333;color:#777;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;margin:0 4px">🗑 Clear Chat</button>
+  </div>
+
   <!-- Footer -->
   <div style="text-align:center;padding:20px 16px 12px;font-size:12px;color:#555;border-top:1px solid #1a1a1a;margin-top:20px">
     <div style="margin-bottom:8px">
@@ -83,7 +89,7 @@
   </div>
 
   <script src="assets/js/typing.js"></script>
-  <script src="assets/js/chat.js?v=19"></script>
+  <script src="assets/js/chat.js?v=20"></script>
 
   <script>
     // Auto-resize textarea like Claude
