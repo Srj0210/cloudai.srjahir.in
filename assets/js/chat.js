@@ -102,6 +102,12 @@ function afterAI(div) {
 function enhanceCodeBlocks(container) {
   container.querySelectorAll("pre code").forEach(block => {
     if (block.parentElement.querySelector(".copy-btn")) return;
+    // Add language label
+    const cls = [...block.classList].find(c => c.startsWith("language-"));
+    if (cls) {
+      block.parentElement.setAttribute("data-language", cls.replace("language-", ""));
+    }
+    // Copy button
     const btn = document.createElement("button");
     btn.className = "copy-btn";
     btn.textContent = "Copy";
