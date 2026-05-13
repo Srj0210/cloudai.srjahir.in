@@ -3,34 +3,238 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudAI — Smart AI Assistant</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-  <meta name="description" content="CloudAI — Fast, Smart AI Assistant by SRJahir Tech." />
+  <title>CloudAI — India's Free AI Assistant | Chat, Code, Create</title>
+  <meta name="description" content="CloudAI is India's smartest free AI assistant. Ask anything in Hindi, English or Hinglish. Code, analyze files, generate images, search the web — all free." />
+  <meta name="keywords" content="free AI chatbot India, AI assistant Hindi, CloudAI, ChatGPT alternative India, free AI 2026, Hinglish AI" />
+  <meta name="author" content="SRJahir Tech" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://cloudai.srjahir.in/" />
 
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="CloudAI — India's Free AI Assistant" />
+  <meta property="og:description" content="Ask anything in Hindi, English or Hinglish. Code, analyze files, generate images. 100% free." />
+  <meta property="og:image" content="https://cloudai.srjahir.in/logo.png" />
+  <meta property="og:url" content="https://cloudai.srjahir.in/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CloudAI — Free AI for India" />
+  <meta name="twitter:description" content="Hindi, English, Hinglish — CloudAI samjhe. 100% free." />
+
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag("js", new Date()); gtag("config", "G-ZVLW6MTZ5Y");
-  </script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-ZVLW6MTZ5Y");</script>
 
-  <!-- Prism: GitHub Dark Theme + Languages -->
   <link rel="stylesheet" href="assets/css/prism-github-dark.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=20">
+  <link rel="stylesheet" href="assets/css/style.css?v=25">
+
+  <style>
+    /* ── SUGGESTION CHIPS ─────────────────────── */
+    .suggestions-wrap {
+      padding: 20px 16px 8px;
+      animation: fadeUp 0.4s ease;
+    }
+    .suggestions-title {
+      text-align: center;
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+    .chips-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .chip {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      color: #ccc;
+      text-align: left;
+      transition: all 0.2s;
+      line-height: 1.4;
+    }
+    .chip:hover {
+      background: rgba(0,200,255,0.08);
+      border-color: rgba(0,200,255,0.3);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .chip-icon { font-size: 18px; flex-shrink: 0; margin-top: -1px; }
+    .chip-text { flex: 1; }
+
+    /* ── AI ACTIONS ───────────────────────────── */
+    .ai-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .action-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: #888;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .action-btn:hover { background: rgba(0,200,255,0.1); color: #00c8ff; border-color: rgba(0,200,255,0.3); }
+    .share-btn:hover  { background: rgba(34,197,94,0.1);  color: #22c55e; border-color: rgba(34,197,94,0.3); }
+
+    /* ── SHARE MODAL ──────────────────────────── */
+    .share-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+    .share-modal-inner {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 32px 28px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+    .share-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none; border: none;
+      color: #888; font-size: 18px; cursor: pointer;
+    }
+    .share-icon { font-size: 40px; margin-bottom: 12px; }
+    .share-modal-inner h3 { color: #fff; margin: 0 0 6px; font-size: 18px; }
+    .share-modal-inner p  { color: #888; margin: 0 0 14px; font-size: 13px; }
+    .share-url {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #00c8ff;
+      font-size: 12px;
+      font-family: monospace;
+      margin-bottom: 16px;
+    }
+    .share-btns { display: flex; gap: 10px; justify-content: center; margin-bottom: 12px; }
+    .share-twitter, .share-wa {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .share-twitter { background: #000; color: #fff; border: 1px solid #333; }
+    .share-wa      { background: #25d366; color: #fff; }
+    .share-twitter:hover, .share-wa:hover { opacity: 0.85; }
+    .share-note { color: #555; font-size: 11px; margin: 0; }
+
+    /* ── SHARED CHAT BANNER ───────────────────── */
+    .shared-banner {
+      background: rgba(0,200,255,0.08);
+      border: 1px solid rgba(0,200,255,0.2);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #888;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .shared-banner a { color: #00c8ff; text-decoration: none; font-weight: 600; }
+
+    /* ── IMAGE ACTIONS ────────────────────────── */
+    .img-actions { display: flex; gap: 10px; margin-top: 10px; }
+
+    /* ── TOP NAV ACTIONS ──────────────────────── */
+    .nav-actions {
+      position: fixed;
+      top: 14px; right: 14px;
+      display: flex; gap: 8px;
+      z-index: 100;
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-size: 12px;
+      color: #888;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .nav-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
+    /* ── BRANDING ─────────────────────────────── */
+    .brand-badge {
+      text-align: center;
+      font-size: 11px;
+      color: #444;
+      padding: 4px 0 8px;
+    }
+    .brand-badge a { color: #555; text-decoration: none; }
+    .brand-badge a:hover { color: #888; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @media(max-width: 500px) {
+      .chips-grid { grid-template-columns: 1fr; }
+      .nav-actions { top: 8px; right: 8px; }
+      .nav-btn { padding: 6px 10px; font-size: 11px; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Logo -->
-  <div class="logo-box" onclick="location.href='live.html'">
+  <!-- Top navigation -->
+  <div class="nav-actions">
+    <a href="blog.html" class="nav-btn">📝 Blog</a>
+    <button class="nav-btn" onclick="clearChat()">🗑 Clear</button>
+    <button class="nav-btn" onclick="exportChat()">⬇ Export</button>
+  </div>
+
+  <!-- Logo / Tap to Talk -->
+  <div class="logo-box" onclick="location.href='live.html'" title="Tap to Talk — Voice Mode">
     <img src="logo.png" class="logo-img" alt="CloudAI" />
     <div class="tap-talk">Tap to Talk</div>
   </div>
@@ -38,19 +242,43 @@
   <!-- Greeting -->
   <div class="greet-area">
     <h2>👋 Hi, I'm CloudAI.</h2>
-    <p>Ask me anything.</p>
+    <p>Ask me anything — in Hindi, English, or Hinglish.</p>
+    <div class="feature-pills">
+      <span>🔍 Web Search</span>
+      <span>👁 Vision</span>
+      <span>🎨 Image Gen</span>
+      <span>📄 Files</span>
+      <span>🗣 Voice</span>
+    </div>
   </div>
 
   <!-- Chat -->
   <div id="chat-box"></div>
 
-  <!-- Input Bar — Claude style -->
+  <!-- Brand badge -->
+  <div class="brand-badge">
+    Powered by CloudAI Engine · <a href="https://srjahir.in" target="_blank">srjahir.in</a>
+  </div>
+
+  <!-- Input Bar -->
   <div class="input-area">
     <div class="input-inner">
       <button class="icon-btn" id="pin-btn" title="Attach file">
         <img src="Pin.png" alt="attach" />
       </button>
-      <textarea id="user-input" placeholder="Message CloudAI..." rows="1"></textarea>
+
+      <div class="attach-menu" id="attachMenu">
+        <button data-type="camera">📷 Camera</button>
+        <button data-type="image">🖼 Image</button>
+        <button data-type="file">📎 File</button>
+      </div>
+
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+      <input type="file" id="imageInput"  accept="image/*" style="display:none">
+      <input type="file" id="fileInput"   accept=".pdf,.docx,.doc,.txt,.csv,.json,.js,.py,.md" style="display:none">
+
+      <textarea id="user-input" placeholder="Ask anything... (Hinglish bhi chalega 🇮🇳)" rows="1"></textarea>
+
       <button class="icon-btn" id="mic-btn" title="Voice input">
         <img src="Mic.png" alt="mic" />
       </button>
@@ -60,46 +288,12 @@
     </div>
   </div>
 
-  <!-- Attach Menu -->
-  <div class="attach-menu" id="attachMenu">
-    <button data-type="camera">📷 Camera</button>
-    <button data-type="image">🖼️ Photo</button>
-    <button data-type="file">📄 File</button>
-  </div>
-
-  <!-- Hidden inputs -->
-  <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
-  <input type="file" id="imageInput"  accept="image/*" hidden>
-  <input type="file" id="fileInput"   hidden>
-
-  <!-- Chat Actions -->
-  <div style="text-align:center;padding:10px 0 0">
-    <button onclick="exportChat()" style="background:none;border:1px solid #333;color:#777;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;margin:0 4px">📥 Export Chat</button>
-    <button onclick="clearChat()" style="background:none;border:1px solid #333;color:#777;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;margin:0 4px">🗑 Clear Chat</button>
-  </div>
-
-  <!-- Footer -->
-  <div style="text-align:center;padding:20px 16px 12px;font-size:12px;color:#555;border-top:1px solid #1a1a1a;margin-top:20px">
-    <div style="margin-bottom:8px">
-      <a href="blog.html" style="color:#777;text-decoration:none;margin:0 8px">Blog</a><a href="about.html" style="color:#777;text-decoration:none;margin:0 8px">About</a>
-      <a href="contact.html" style="color:#777;text-decoration:none;margin:0 8px">Contact</a>
-      <a href="privacy.html" style="color:#777;text-decoration:none;margin:0 8px">Privacy</a>
-      <a href="terms.html" style="color:#777;text-decoration:none;margin:0 8px">Terms</a>
-      <a href="disclaimer.html" style="color:#777;text-decoration:none;margin:0 8px">Disclaimer</a>
-    </div>
-    <div>© 2026 <a href="https://srjahir.in" target="_blank" style="color:#666;text-decoration:none">SRJahir Tech</a> — cloudai.srjahir.in</div>
-  </div>
+  <!-- Schema -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"CloudAI","url":"https://cloudai.srjahir.in","description":"Free AI assistant for India. Supports Hindi, English and Hinglish. Code, search, analyze files, generate images.","applicationCategory":"AIApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},"author":{"@type":"Organization","name":"SRJahir Tech","url":"https://srjahir.in"}}
+  </script>
 
   <script src="assets/js/typing.js"></script>
-  <script src="assets/js/chat.js?v=20"></script>
-
-  <script>
-    // Auto-resize textarea like Claude
-    const ta = document.getElementById("user-input");
-    ta.addEventListener("input", () => {
-      ta.style.height = "auto";
-      ta.style.height = Math.min(ta.scrollHeight, 160) + "px";
-    });
-  </script>
+  <script src="assets/js/chat.js?v=25"></script>
 </body>
 </html>
