@@ -193,13 +193,22 @@ async function smartSearch(env, prompt) {
   if (!env.TAVILY_API_KEY || !prompt) return "";
   const p = prompt.toLowerCase();
 
-  const needsSearch =
-    /\b(today|latest|recent|current|now|2025|2026|price|news|score|stock|weather|election|who won|what happened|is .+ still)\b/.test(p) ||
+  // ALWAYS search for these
+  const alwaysSearch =
+    /\b(price|rate|cost|value)\s+(of|today|now)/i.test(p) ||               // gold price, dollar rate
+    /\b(today|current|latest|now)\s+.*(price|rate|cost)/i.test(p) ||
+    /\b(gold|silver|bitcoin|crypto|dollar|rupee|sensex|nifty|petrol|diesel)\s*(price|rate|today)/i.test(p) ||
+    /\b(who is|who are|current|present).*(cm|pm|ceo|president|minister|chief|head|leader)/i.test(p) || // political
+    /\b(who won|result|winner|champion|score)\b/.test(p) ||                // sports/events
+    /\bwhich day|what day|today.*date|date.*today\b/.test(p);              // date queries
+
+  const needsSearch = alwaysSearch ||
+    /\b(today|latest|recent|current|now|2025|2026|news|weather|election|what happened|is .+ still)\b/.test(p) ||
     /\b(search|look up|find|google)\b/.test(p);
 
-  const skipSearch =
+  const skipSearch = !alwaysSearch &&
     /\b(write|code|create|build|make|design|explain|teach|how to|what is|define)\b/.test(p) &&
-    !/\b(latest|current|today|2025|2026|price|news)\b/.test(p);
+    !/\b(latest|current|today|2025|2026|price|rate|news)\b/.test(p);
 
   if (!needsSearch || skipSearch) return "";
 

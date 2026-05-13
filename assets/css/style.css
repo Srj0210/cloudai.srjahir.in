@@ -467,27 +467,30 @@ body::before {
   flex-shrink: 0;
 }
 .icon-btn:hover { opacity: 1; background: rgba(255,255,255,0.12); }
-.icon-btn img   { width: 20px; height: 20px; filter: brightness(0) invert(1) opacity(0.9); }
-.icon-btn img[alt="send"] { filter: none; }
+/* emoji icons — always visible */'
+.icon-btn { font-size: 18px; }
 
 /* Send button */
 #send-btn {
-  width: 36px; height: 36px;
+  width: 38px; height: 38px;
   background: linear-gradient(135deg, #0060df, #00a8ff);
   border-radius: 11px;
   opacity: 1;
   flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(0,120,255,0.3);
   transition: all 0.2s;
+  font-size: 16px;
+  color: #fff;
 }
 #send-btn:hover  { background: linear-gradient(135deg, #0070ff, #00c0ff); box-shadow: 0 4px 20px rgba(0,150,255,0.4); }
 #send-btn:active { transform: scale(0.92); }
 
 /* Mic active */
 #mic-btn.mic-active {
-  background: rgba(239,68,68,0.15);
+  background: rgba(239,68,68,0.2);
   opacity: 1;
-  border: 1px solid rgba(239,68,68,0.3);
+  border: 1px solid rgba(239,68,68,0.5);
+  color: #ff6b6b;
   animation: micPulse 1s ease-in-out infinite;
 }
 @keyframes micPulse {

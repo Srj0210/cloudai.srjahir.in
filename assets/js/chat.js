@@ -32,7 +32,7 @@ const clientId =
 let history      = JSON.parse(localStorage.getItem("cloudai_history") || "[]");
 let isProcessing = false;
 let pendingFile  = null;
-let ttsEnabled   = localStorage.getItem("cloudai_tts") === "true";
+let ttsEnabled   = localStorage.getItem("cloudai_tts") !== "false"; // ON by default
 let currentAudio = null;
 
 /* ── SUGGESTION CHIPS ────────────────────────── */
@@ -429,7 +429,19 @@ async function getFilePreview(file) {
 async function attachFile(file) {
   if (file.size > 10 * 1024 * 1024) { showAlert("File too large. Max 10MB."); return; }
   const preview = await getFilePreview(file);
-  pendingFile = { file, previewHTML: preview };
+  
+  // Extract PDF text client-side so AI can actually READ it
+  let extractedText = "";
+  if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+    try {
+      showAlert("📄 Reading PDF...", "#0070f3");
+      extractedText = await extractPDFText(file);
+    } catch (e) {
+      console.log("PDF extract failed:", e);
+    }
+  }
+  
+  pendingFile = { file, previewHTML: preview, extractedText };
 
   let bar = document.getElementById("file-preview-bar");
   if (!bar) {
@@ -446,8 +458,14 @@ async function attachFile(file) {
 
 /* ── IMAGE GENERATION ─────────────────────────── */
 function isImageGenRequest(text) {
-  return /^(generate|imagine|create|draw|make|design)\s+(an?\s+)?(image|picture|photo|art|illustration|poster|logo)/i.test(text) ||
-         /^(imagine|draw|paint):/i.test(text);
+  const t = text.trim().toLowerCase();
+  // Exact trigger words
+  if (/^(imagine|draw|paint|sketch):/i.test(t)) return true;
+  // "generate/create/make/draw + image/picture/photo etc" with typo tolerance
+  if (/^(genrat|genrate|generate|creat|create|make|draw|imagin|imagine|design|build)e?\s+(a\s+|an\s+)?(image|img|picture|pic|photo|art|illustration|poster|logo|painting|wallpaper|avatar)/i.test(t)) return true;
+  // "image of ..." or "picture of ..."
+  if (/^(image|picture|photo|art)\s+of\s+/i.test(t)) return true;
+  return false;
 }
 
 async function generateImage(prompt) {
@@ -501,7 +519,8 @@ async function sendMessage() {
   const bar = document.getElementById("file-preview-bar");
   if (bar) bar.remove();
 
-  const fileToSend = pendingFile?.file || null;
+  const fileToSend    = pendingFile?.file || null;
+  const pendingFileText = pendingFile?.extractedText || null;
   pendingFile = null;
 
   history.push({ role: "user", text: msg || "[file attached]" });
