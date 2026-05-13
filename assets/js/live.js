@@ -1,3 +1,4 @@
+window.ttsSpeed = parseFloat(localStorage.getItem("cloudai_tts_speed") || "1.1");
 // ===================================================
 // CloudAI Live v20.0 — TTS via Worker Proxy + Streaming TTS
 // No API keys exposed in frontend!
@@ -43,15 +44,22 @@ function setStatus(msg, state = "idle") {
    Sentence-by-sentence streaming TTS
    ══════════════════════════════════════════════════ */
 
-function splitIntoSentences(text) {
-  // Clean markdown
-  const clean = text
-    .replace(/```[\s\S]*?```/g, "code block.")
-    .replace(/#{1,6} /g, "").replace(/[*_`>\[\]]/g, "")
-    .replace(/https?:\/\/\S+/g, "link")
-    .replace(/\n+/g, " ").replace(/\s{2,}/g, " ").trim();
+let ttsSpeed = parseFloat(localStorage.getItem("cloudai_tts_speed") || "1.1");
 
-  // Split on sentence boundaries
+function splitIntoSentences(text) {
+  // Remove code blocks entirely (don't speak code!)
+  let clean = text.replace(/```[\s\S]*?```/g, "")
+    .replace(/`[^`]+`/g, "")           // inline code
+    .replace(/#{1,6}\s/g, "")         // headers
+    .replace(/[*_>\[\]]/g, "")       // markdown
+    .replace(/https?:\/\/\S+/g, "") // links
+    .replace(/\d+\.\s/g, "")        // numbered lists
+    .replace(/[-•]\s/g, "")           // bullets
+    .replace(/\n+/g, ". ")
+    .replace(/\.{2,}/g, ".")
+    .replace(/\s{2,}/g, " ").trim();
+
+  if (!clean) return [];
   return clean.match(/[^.!?]+[.!?]+/g) || [clean];
 }
 
@@ -65,18 +73,27 @@ async function speakSentence(text) {
       });
 
       if (!res.ok) {
-        // Fallback to browser TTS
         speakBrowserTTS(text, resolve);
         return;
       }
 
-      const blob = await res.blob();
-      const url  = URL.createObjectURL(blob);
+      // ── CRITICAL FIX: Check if response is JSON fallback signal ──
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        // Worker said "use web speech" → use browser TTS
+        speakBrowserTTS(text, resolve);
+        return;
+      }
 
+      // Real audio from ElevenLabs
+      const blob = await res.blob();
+      if (blob.size < 200) { speakBrowserTTS(text, resolve); return; }
+
+      const url = URL.createObjectURL(blob);
       if (currentAudio) { currentAudio.pause(); URL.revokeObjectURL(currentAudio.src); }
       currentAudio = new Audio(url);
-      currentAudio.onended  = () => { URL.revokeObjectURL(url); resolve(); };
-      currentAudio.onerror  = () => { URL.revokeObjectURL(url); resolve(); };
+      currentAudio.onended = () => { URL.revokeObjectURL(url); resolve(); };
+      currentAudio.onerror = () => { URL.revokeObjectURL(url); speakBrowserTTS(text, resolve); };
       currentAudio.play().catch(() => { speakBrowserTTS(text, resolve); });
 
     } catch {
@@ -87,12 +104,21 @@ async function speakSentence(text) {
 
 // Priority 7: Stream TTS — speak sentence by sentence
 async function speakStreaming(fullText) {
+  // Show transcript text regardless of mute
+  if (window.showTranscript) window.showTranscript(fullText);
+
+  if (window.ttsGlobalMuted) {
+    setStatus("Tap to Talk", "idle");
+    return;
+  }
+
   setStatus("Speaking...", "speaking");
   const sentences = splitIntoSentences(fullText);
+  if (!sentences.length) { setStatus("Tap to Talk", "idle"); return; }
 
   for (const sentence of sentences) {
-    if (!currentAudio && !isProcessing) break; // stopped
-    await speakSentence(sentence);
+    if (window.ttsGlobalMuted) break;
+    await speakSentence(sentence.trim());
   }
 
   setStatus("Tap to Talk", "idle");
@@ -119,8 +145,8 @@ function speakBrowserTTS(text, onDone) {
   const utt = new SpeechSynthesisUtterance(text);
   if (best) utt.voice = best;
   utt.lang  = best?.lang || "en-US";
-  utt.rate  = 0.92;
-  utt.pitch = 1.05;
+  utt.rate  = ttsSpeed || 1.1;  // Faster default
+  utt.pitch = 1.0;
   utt.onend = utt.onerror = () => onDone?.();
   window.speechSynthesis.speak(utt);
 }
@@ -184,7 +210,7 @@ if (!SpeechRecognition) {
   if (speakBtn) { speakBtn.disabled = true; speakBtn.textContent = "Use Chrome"; speakBtn.style.opacity = "0.4"; }
 } else {
   const rec = new SpeechRecognition();
-  rec.lang            = "en-US";
+  rec.lang            = "en-IN"; // Indian English recognition
   rec.interimResults  = true;
   rec.continuous      = false;
   rec.maxAlternatives = 3;

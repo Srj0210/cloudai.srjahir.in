@@ -4,11 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CloudAI Live — Voice Chat</title>
-  <meta name="description" content="CloudAI Live — Talk with CloudAI using real-time voice." />
-  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="description" content="Talk with CloudAI using real-time voice. Hindi, English or Hinglish." />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="stylesheet" href="assets/css/live.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Speed + mute controls */
+    .voice-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      justify-content: center;
+      margin: 18px 0 8px;
+      flex-wrap: wrap;
+    }
+    .speed-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 7px 14px;
+    }
+    .speed-wrap label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+    .speed-wrap input[type="range"] {
+      width: 80px;
+      accent-color: #00c8ff;
+    }
+    .speed-val {
+      font-size: 12px;
+      color: #00c8ff;
+      min-width: 26px;
+    }
+    .mute-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 7px 16px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-family: "Inter", sans-serif;
+      transition: all 0.2s;
+    }
+    .mute-btn.muted {
+      background: rgba(239,68,68,0.15);
+      border-color: rgba(239,68,68,0.3);
+      color: #f87171;
+    }
+    .mute-btn:hover { opacity: 0.85; }
+    .transcript-box {
+      max-width: 400px;
+      margin: 12px auto 0;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+      display: none;
+      text-align: left;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .transcript-box.show { display: block; }
+    .transcript-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 4px;
+    }
+  </style>
 </head>
 <body>
   <div class="live-container">
@@ -20,21 +93,84 @@
       <div id="interim-text" class="interim-text"></div>
     </div>
 
-    <!-- WAVE BARS (animated when speaking) -->
+    <!-- WAVE BARS -->
     <div class="wave-bars" id="voice-wave">
       <span></span><span></span><span></span><span></span><span></span>
     </div>
 
-    <!-- BUTTONS -->
+    <!-- MAIN CONTROLS -->
     <div class="controls">
       <button id="speak-btn" class="main-button">🎙️ Tap to Speak</button>
       <button id="stop-btn"  class="stop-button" style="display:none">⏹ Stop</button>
+    </div>
+
+    <!-- SPEED + MUTE CONTROLS -->
+    <div class="voice-controls">
+      <div class="speed-wrap">
+        <label>Speed</label>
+        <input type="range" id="speedRange" min="0.7" max="1.8" step="0.1" value="1.1" />
+        <span class="speed-val" id="speedVal">1.1x</span>
+      </div>
+      <button class="mute-btn" id="muteBtn">🔊 Voice On</button>
+    </div>
+
+    <!-- LAST AI RESPONSE (text) -->
+    <div class="transcript-box" id="transcriptBox">
+      <div class="transcript-label">CloudAI said</div>
+      <div id="transcriptText"></div>
     </div>
 
     <!-- BACK -->
     <a href="index.html" class="back-btn">← Back to Chat</a>
   </div>
 
+  <script>
+    // Speed control
+    const speedRange = document.getElementById("speedRange");
+    const speedVal   = document.getElementById("speedVal");
+    const muteBtn    = document.getElementById("muteBtn");
+    let   isMuted    = localStorage.getItem("cloudai_muted") === "true";
+
+    speedRange.value = localStorage.getItem("cloudai_tts_speed") || "1.1";
+    speedVal.textContent = parseFloat(speedRange.value).toFixed(1) + "x";
+
+    speedRange.addEventListener("input", () => {
+      const v = parseFloat(speedRange.value).toFixed(1);
+      speedVal.textContent = v + "x";
+      localStorage.setItem("cloudai_tts_speed", v);
+      window.ttsSpeed = parseFloat(v);
+    });
+
+    // Mute toggle
+    function updateMuteBtn() {
+      muteBtn.textContent = isMuted ? "🔇 Voice Off" : "🔊 Voice On";
+      muteBtn.className   = isMuted ? "mute-btn muted" : "mute-btn";
+    }
+    updateMuteBtn();
+    muteBtn.addEventListener("click", () => {
+      isMuted = !isMuted;
+      localStorage.setItem("cloudai_muted", isMuted);
+      window.ttsGlobalMuted = isMuted;
+      updateMuteBtn();
+      if (isMuted) {
+        window.speechSynthesis?.cancel();
+        const audio = document.querySelector("audio");
+        if (audio) audio.pause();
+      }
+    });
+
+    // Show AI response as text too
+    window.showTranscript = (text) => {
+      const box  = document.getElementById("transcriptBox");
+      const txt  = document.getElementById("transcriptText");
+      const clean = text
+        .replace(/```[\s\S]*?```/g, "[code]")
+        .replace(/[#*_`]/g, "")
+        .slice(0, 300);
+      txt.textContent = clean + (text.length > 300 ? "..." : "");
+      box.classList.add("show");
+    };
+  </script>
   <script src="assets/js/live.js"></script>
 </body>
 </html>

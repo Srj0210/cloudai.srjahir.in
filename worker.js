@@ -657,8 +657,9 @@ async function handleTTS(request, env, cors) {
 
 const IMAGE_MODELS = [
   "stabilityai/stable-diffusion-xl-base-1.0",
-  "stabilityai/stable-diffusion-3-medium-diffusers",
   "black-forest-labs/FLUX.1-schnell",
+  "stabilityai/stable-diffusion-2-1",
+  "runwayml/stable-diffusion-v1-5",
 ];
 
 async function handleImageGen(request, env, cors) {
@@ -666,29 +667,42 @@ async function handleImageGen(request, env, cors) {
     const { prompt } = await request.json();
     if (!prompt) return jsonRes({ error: "No prompt" }, 400, cors);
 
-    const enhancedPrompt = `${prompt}, highly detailed, professional quality, 4k`;
+    const enhancedPrompt = `${prompt}, highly detailed, professional quality, 4k, beautiful`;
 
     for (const model of IMAGE_MODELS) {
       try {
-        const res = await fetch(
-          `https://api-inference.huggingface.co/models/${model}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              ...(env.HF_TOKEN ? { "Authorization": `Bearer ${env.HF_TOKEN}` } : {}),
-            },
-            body: JSON.stringify({ inputs: enhancedPrompt }),
+        // Try twice per model (handles cold start)
+        for (let attempt = 0; attempt < 2; attempt++) {
+          const res = await fetch(
+            `https://api-inference.huggingface.co/models/${model}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(env.HF_TOKEN ? { "Authorization": `Bearer ${env.HF_TOKEN}` } : {}),
+              },
+              body: JSON.stringify({
+                inputs: enhancedPrompt,
+                options: { wait_for_model: true },  // wait for warm-up
+              }),
+            }
+          );
+          if (!res.ok) {
+            // 503 = loading, wait and retry
+            if (res.status === 503 && attempt === 0) {
+              await new Promise(r => setTimeout(r, 3000));
+              continue;
+            }
+            break;
           }
-        );
-        if (!res.ok) continue;
-        const contentType = res.headers.get("content-type") || "";
-        if (!contentType.startsWith("image/")) continue;
-        return new Response(res.body, { headers: { "Content-Type": contentType, ...cors } });
+          const contentType = res.headers.get("content-type") || "";
+          if (!contentType.startsWith("image/")) break;
+          return new Response(res.body, { headers: { "Content-Type": contentType, ...cors } });
+        }
       } catch {}
     }
 
-    return jsonRes({ error: "Image generation temporarily unavailable. Try again in 30s." }, 503, cors);
+    return jsonRes({ error: "Image gen temporarily unavailable. Try again in 30s." }, 503, cors);
   } catch (err) {
     return jsonRes({ error: err.message }, 500, cors);
   }

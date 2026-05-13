@@ -211,12 +211,18 @@ async function speakText(div, btn) {
   if (currentAudio) { currentAudio.pause(); currentAudio = null; }
   window.speechSynthesis?.cancel();
 
+  // Strip code, badges, action buttons before speaking
   const rawText = div.innerText
     .replace(/📋 Copy🔊 Speak🔗 Share/g, "")
     .replace(/⚡ CloudAI Engine/g, "")
-    .replace(/Copy|Copied ✓/g, "")
+    .replace(/Copy|Copied ✓|Stop|Speak/g, "")
+    .replace(/```[\s\S]*?```/g, "")    // remove code blocks
+    .replace(/`[^`]+`/g, "")             // inline code
+    .replace(/https?:\/\/\S+/g, "")   // URLs
+    .replace(/[#*_>\[\]]/g, "")        // markdown
+    .replace(/\s{2,}/g, " ")
     .trim()
-    .slice(0, 2500);
+    .slice(0, 2000);                      // reasonable limit
 
   if (!rawText) return;
   btn.innerHTML = "⏹ Stop";
@@ -274,7 +280,7 @@ function useWebSpeech(text, btn) {
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(text);
   utt.lang  = "en-IN";
-  utt.rate  = 0.95;
+  utt.rate  = 1.1;   // Faster, natural
   utt.pitch = 1.0;
 
   // Prefer Indian English voice if available
