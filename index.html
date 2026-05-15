@@ -24,8 +24,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVLW6MTZ5Y"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-ZVLW6MTZ5Y");</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4XBK86HZ2"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-T4XBK86HZ2");</script>
 
   <link rel="stylesheet" href="assets/css/prism-github-dark.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -260,6 +260,18 @@
     Powered by CloudAI Engine · <a href="https://srjahir.in" target="_blank">srjahir.in</a>
   </div>
 
+  <!-- TTS Controls Bar -->
+  <div class="tts-controls" id="ttsControls">
+    <button class="tts-toggle-btn" id="ttsToggleBtn" onclick="toggleTTS()">🔊 Voice On</button>
+    <div class="tts-speed-wrap">
+      <span class="tts-speed-label">Speed</span>
+      <input type="range" id="ttsSpeedSlider" min="0.7" max="1.8" step="0.1" value="1.1"
+             oninput="changeTTSSpeed(this.value)" />
+      <span class="tts-speed-val" id="ttsSpeedVal">1.1x</span>
+    </div>
+    <button class="tts-stop-btn" id="ttsStopBtn" onclick="stopAllSpeech()">⏹ Stop</button>
+  </div>
+
   <!-- Input Bar -->
   <div class="input-area">
     <div class="input-inner">
@@ -288,6 +300,36 @@
   </script>
 
   <script src="assets/js/typing.js"></script>
-  <script src="assets/js/chat.js?v=25"></script>
+  <script src="assets/js/chat.js?v=26"></script>
+  <script>
+    // TTS Controls
+    function toggleTTS() {
+      ttsEnabled = !ttsEnabled;
+      localStorage.setItem("cloudai_tts", ttsEnabled);
+      const btn = document.getElementById("ttsToggleBtn");
+      btn.textContent = ttsEnabled ? "🔊 Voice On" : "🔇 Voice Off";
+      btn.className   = ttsEnabled ? "tts-toggle-btn active" : "tts-toggle-btn";
+      if (!ttsEnabled) stopAllSpeech();
+    }
+    function stopAllSpeech() {
+      if (window.currentAudio) { window.currentAudio.pause(); window.currentAudio = null; }
+      window.speechSynthesis?.cancel();
+    }
+    function changeTTSSpeed(v) {
+      document.getElementById("ttsSpeedVal").textContent = parseFloat(v).toFixed(1) + "x";
+      localStorage.setItem("cloudai_tts_speed", v);
+      window.ttsCurrentSpeed = parseFloat(v);
+    }
+    // Init
+    window.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("ttsToggleBtn");
+      const spd = parseFloat(localStorage.getItem("cloudai_tts_speed") || "1.1");
+      btn.textContent = ttsEnabled ? "🔊 Voice On" : "🔇 Voice Off";
+      btn.className   = ttsEnabled ? "tts-toggle-btn active" : "tts-toggle-btn";
+      document.getElementById("ttsSpeedSlider").value = spd;
+      document.getElementById("ttsSpeedVal").textContent = spd.toFixed(1) + "x";
+      window.ttsCurrentSpeed = spd;
+    });
+  </script>
 </body>
 </html>
