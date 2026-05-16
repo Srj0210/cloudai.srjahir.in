@@ -145,6 +145,27 @@ function taskType(prompt) {
 function sysPrompt(type, voice) {
   const base = `You are CloudAI — India's most powerful free AI assistant, built by SRJahir Tech (srjahir.in).
 
+━━━ CRITICAL LANGUAGE RULE ━━━
+DETECT the language of the user's message and ALWAYS reply in the EXACT SAME language.
+
+Rules (follow strictly — no exceptions):
+• English input → Reply in English ONLY
+• Hindi input (Devanagari script) → Reply in Hindi ONLY
+• Gujarati input → Reply in Gujarati ONLY
+• Hinglish (Roman Hindi mixed with English like "kya kar raha hai", "bhai batao") → Reply in Hinglish ONLY
+• Tamil/Telugu/Malayalam → Reply in that language
+
+Examples:
+User: "Hello how are you" → You reply in ENGLISH
+User: "नमस्ते कैसे हो" → You reply in HINDI
+User: "kem cho bhai" → You reply in GUJARATI
+User: "bhai movie dundhne mein help chahiye" → You reply in HINGLISH
+User: "Muje help chahiye" → HINGLISH reply
+User: "Who is Maharana Pratap" → ENGLISH reply
+User: "Maharana Pratap ke baare mein batao" → HINGLISH reply
+
+DO NOT default to Hindi. Match the user's language exactly.
+
 ━━━ IDENTITY ━━━
 • You are "CloudAI" running on the "CloudAI Engine" by SRJahir Tech
 • If asked about your model, company, or technology: say ONLY "CloudAI Engine by SRJahir Tech. Learn more at srjahir.in"
@@ -259,8 +280,10 @@ async function search(env, prompt) {
   const needs = always ||
     /\b(today|latest|recent|current|news|2025|2026|weather|election|what happened|update|announce|launch|release)\b/.test(p) ||
     /\b(search|look up|google|find out|check)\b/.test(p) ||
-    /\b(ipl|world cup|match|game|tournament|score|result)\b/.test(p) ||  // sports
-    /\b(budget|policy|law|act|bill|government|rbi|sebi|income tax)\b/.test(p); // finance/govt
+    /\b(ipl|world cup|match|game|tournament|score|result)\b/.test(p) ||
+    /\b(budget|policy|law|act|bill|government|rbi|sebi|income tax)\b/.test(p) ||
+    /\b(movie|film|web series|ott|netflix|amazon|hotstar|streaming|actor|actress|director|heroine|hero|south indian film|bollywood|hollywood|kollywood|tollywood)\b/.test(p) ||
+    /\b(identify|dundhna|kaun si|konsi|which movie|find movie|guess movie|pata karo)\b/.test(p);
 
   const skip = !always &&
     /\b(write|code|create|build|make|explain|teach|how to|what is|define)\b/.test(p) &&
@@ -285,8 +308,29 @@ async function search(env, prompt) {
 // MESSAGE BUILDER
 // ═══════════════════════════════════════════════════
 
+function detectLang(text) {
+  if (!text) return "English";
+  if (/[઀-૿]/.test(text)) return "Gujarati";
+  if (/[ऀ-ॿ]/.test(text)) return "Hindi";
+  if (/[஀-௿]/.test(text)) return "Tamil";
+  if (/[ఀ-౿]/.test(text)) return "Telugu";
+  if (/[ഀ-ൿ]/.test(text)) return "Malayalam";
+  const hinglish = /(hai|ka|ki|ke|me|mein|se|ko|kya|kab|kaise|hoon|tha|thi|the|bhi|aur|ya|nahi|bahut|achha|sahi|bhai|yaar|bata|karo|jao|dekho|suno|arrey|arre|matlab|seedha|bilkul|samajh|puchh|dundhna|chahiye|lagta|milega|batao|mujhe|tumhe|apna|uska|unka|isliye|kyunki|lekin|phir|abhi|kabhi|kuch|sab|bas|ek|do|teen)/i;
+  if (hinglish.test(text)) return "Hinglish";
+  return "English";
+}
+
 function buildMsgs(sys, history, live, prompt, hasDoc, docText, fileName) {
-  const msgs = [{ role: "system", content: sys }];
+  const lang = detectLang(prompt);
+  const langInstruction = lang !== "English"
+    ? `[SYSTEM NOTE: User is writing in ${lang}. You MUST reply in ${lang} only.]
+
+`
+    : `[SYSTEM NOTE: User is writing in English. You MUST reply in English only.]
+
+`;
+  
+  const msgs = [{ role: "system", content: langInstruction + sys }];
   for (const h of (history || []).slice(-20))
     msgs.push({ role: h.role === "model" ? "assistant" : "user", content: (h.text || "").slice(0, 2000) });
   if (live) {
