@@ -1,3 +1,6 @@
+const CLOUDAI_VERSION = "v27-FIXED-20260517";
+console.log("CloudAI Chat loaded:", CLOUDAI_VERSION);
+
 // ═══════════════════════════════════════════════════════════════
 // CloudAI Chat v25.0 — VIRAL EDITION
 // ✅ Web Speech API TTS fallback (unlimited, free)
@@ -158,32 +161,59 @@ function addAIActions(div) {
   const actions = document.createElement("div");
   actions.className = "ai-actions";
 
-  // Copy button
+  // ── COPY ──────────────────────────────────────────────────
   const copyBtn = document.createElement("button");
   copyBtn.className = "action-btn";
   copyBtn.innerHTML = "📋 Copy";
   copyBtn.onclick = () => {
-    const text = div.innerText.replace("📋 Copy🔊 Speak🔗 Share", "").trim();
+    const text = cleanForSpeech(div.innerHTML)
+      .replace(/📋 Copy|🔊 Speak|⏹ Stop|🔗 Share|⚡ CloudAI Engine/g, "")
+      .trim();
     navigator.clipboard.writeText(text);
     copyBtn.innerHTML = "✅ Copied!";
     setTimeout(() => copyBtn.innerHTML = "📋 Copy", 1500);
   };
 
-  // TTS Speak button
+  // ── SPEAK (toggle on/off) ─────────────────────────────────
   const speakBtn = document.createElement("button");
   speakBtn.className = "action-btn";
   speakBtn.innerHTML = "🔊 Speak";
-  speakBtn.onclick = () => speakText(div, speakBtn);
+  let isSpeaking = false;
+  speakBtn.onclick = () => {
+    if (isSpeaking) {
+      window.speechSynthesis?.cancel();
+      if (window.currentAudio) { window.currentAudio.pause(); window.currentAudio = null; }
+      isSpeaking = false;
+      speakBtn.innerHTML = "🔊 Speak";
+      const logo = document.getElementById("logoImg");
+      if (logo) logo.classList.remove("speaking");
+    } else {
+      isSpeaking = true;
+      speakText(div, speakBtn);
+    }
+  };
 
-  // Share button
+  // ── SHARE ─────────────────────────────────────────────────
   const shareBtn = document.createElement("button");
   shareBtn.className = "action-btn share-btn";
   shareBtn.innerHTML = "🔗 Share";
   shareBtn.onclick = () => shareConversation();
 
+  // ── SPEED SLIDER (right after speak button) ───────────────
+  const spd = parseFloat(localStorage.getItem("cloudai_tts_speed") || "1.05");
+  const speedWrap = document.createElement("div");
+  speedWrap.className = "inline-tts-controls";
+  speedWrap.innerHTML =
+    `<span class="spd-label">🐢</span>` +
+    `<input type="range" class="inline-speed" min="0.7" max="1.8" step="0.1" value="${spd}"
+      title="${spd.toFixed(1)}x"
+      oninput="window.ttsCurrentSpeed=parseFloat(this.value);localStorage.setItem('cloudai_tts_speed',this.value);this.title=parseFloat(this.value).toFixed(1)+'x'" />` +
+    `<span class="spd-label">🐇</span>`;
+
   actions.appendChild(copyBtn);
   actions.appendChild(speakBtn);
   actions.appendChild(shareBtn);
+  actions.appendChild(speedWrap);
   div.appendChild(actions);
 }
 
@@ -211,18 +241,11 @@ async function speakText(div, btn) {
   if (currentAudio) { currentAudio.pause(); currentAudio = null; }
   window.speechSynthesis?.cancel();
 
-  // Strip code, badges, action buttons before speaking
-  const rawText = div.innerText
-    .replace(/📋 Copy🔊 Speak🔗 Share/g, "")
-    .replace(/⚡ CloudAI Engine/g, "")
-    .replace(/Copy|Copied ✓|Stop|Speak/g, "")
-    .replace(/```[\s\S]*?```/g, "")    // remove code blocks
-    .replace(/`[^`]+`/g, "")             // inline code
-    .replace(/https?:\/\/\S+/g, "")   // URLs
-    .replace(/[#*_>\[\]]/g, "")        // markdown
+  const rawText = cleanForSpeech(div.innerHTML)
+    .replace(/📋 Copy|🔊 Speak|🔗 Share|⚡ CloudAI Engine|Copy|Copied ✓/g, "")
     .replace(/\s{2,}/g, " ")
     .trim()
-    .slice(0, 2000);                      // reasonable limit
+    .slice(0, 2000);
 
   if (!rawText) return;
   btn.innerHTML = "⏹ Stop";
@@ -271,27 +294,69 @@ async function speakText(div, btn) {
   useWebSpeech(rawText, btn);
 }
 
+// ── Clean text for speech — remove ALL markdown/code/symbols ──
+function cleanForSpeech(html) {
+  return html
+    .replace(/<pre[\s\S]*?<\/pre>/gi, "")       // remove entire code blocks
+    .replace(/<code[\s\S]*?<\/code>/gi, "")      // inline code
+    .replace(/<[^>]+>/g, " ")                       // all HTML tags
+    .replace(/={2,}/g, "")                          // === ==
+    .replace(/#{1,6}\s*/g, "")                     // ## headers
+    .replace(/\*{1,3}/g, "")                       // bold/italic **
+    .replace(/`{1,3}/g, "")                         // backticks
+    .replace(/_{2,}/g, "")                          // __underline__
+    .replace(/~{2}/g, "")                           // ~~strikethrough~~
+    .replace(/\[|\]/g, "")                        // brackets
+    .replace(/\|/g, ", ")                          // table pipes
+    .replace(/\\n/g, " ")                         // escaped newlines
+    .replace(/https?:\/\/\S+/g, "")              // URLs
+    .replace(/[<>{}\\]/g, "")                     // special chars
+    .replace(/[-•*]\s/g, "")                       // bullet points
+    .replace(/\d+\.\s/g, "")                     // numbered lists
+    .replace(/\s{2,}/g, " ")                       // multiple spaces
+    .trim();
+}
+
 function useWebSpeech(text, btn) {
   if (!window.speechSynthesis) {
-    showAlert("Speech not supported in this browser");
-    btn.innerHTML = "🔊 Speak";
+    if (btn) btn.innerHTML = "🔊 Speak";
     return;
   }
   window.speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.lang  = "en-IN";
-  utt.rate  = 1.1;   // Faster, natural
-  utt.pitch = 1.0;
 
-  // Prefer Indian English voice if available
-  const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v => v.lang.includes("en-IN")) ||
-                    voices.find(v => v.lang.startsWith("en"));
-  if (preferred) utt.voice = preferred;
+  const clean = typeof text === "string" ? text : cleanForSpeech(text);
+  if (!clean.trim()) return;
 
-  utt.onend = () => {
-    btn.innerHTML = "🔊 Speak";
-    btn.onclick = () => speakText(btn.closest(".ai-msg"), btn);
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.rate  = window.ttsCurrentSpeed || 1.05;
+  utt.pitch = 1.05;
+
+  // ── Best Indian female voice selection ─────────────────────
+  const getVoice = () => {
+    const voices = window.speechSynthesis.getVoices();
+    return voices.find(v => v.lang === "en-IN" && /female|woman|zira|heera|priya/i.test(v.name)) ||
+           voices.find(v => v.lang === "en-IN") ||
+           voices.find(v => v.lang === "hi-IN" && /female|woman/i.test(v.name)) ||
+           voices.find(v => v.name.includes("Google") && v.lang.startsWith("en")) ||
+           voices.find(v => v.lang.startsWith("en-")) ||
+           null;
+  };
+
+  const voice = getVoice();
+  if (voice) { utt.voice = voice; utt.lang = voice.lang; }
+  else utt.lang = "en-IN";
+
+  const logo = document.getElementById("logoImg");
+  utt.onstart = () => {
+    if (logo) logo.classList.add("speaking");
+    if (btn) { btn.innerHTML = "⏹ Stop"; btn.onclick = () => { window.speechSynthesis.cancel(); }; }
+  };
+  utt.onend = utt.onerror = () => {
+    if (logo) logo.classList.remove("speaking");
+    if (btn) {
+      btn.innerHTML = "🔊 Speak";
+      btn.onclick = () => speakText(btn.closest(".ai-msg"), btn);
+    }
   };
   window.speechSynthesis.speak(utt);
 }
@@ -436,14 +501,19 @@ async function attachFile(file) {
   if (file.size > 10 * 1024 * 1024) { showAlert("File too large. Max 10MB."); return; }
   const preview = await getFilePreview(file);
   
-  // Extract PDF text client-side so AI can actually READ it
+  // Extract file content client-side — AI reads REAL content!
   let extractedText = "";
-  if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+  const isExtractable = !file.type.startsWith("image/");
+  if (isExtractable) {
     try {
-      showAlert("📄 Reading PDF...", "#0070f3");
-      extractedText = await extractPDFText(file);
+      const label = file.name.endsWith(".pdf") ? "📄 Reading PDF..."
+                  : file.name.endsWith(".docx") ? "📝 Reading DOCX..."
+                  : "📎 Reading file...";
+      showAlert(label, "#0070f3");
+      extractedText = await extractFileText(file);
+      if (extractedText) showAlert("✅ File read successfully!", "#22c55e");
     } catch (e) {
-      console.log("PDF extract failed:", e);
+      console.warn("File extraction failed:", e);
     }
   }
   
@@ -465,12 +535,21 @@ async function attachFile(file) {
 /* ── IMAGE GENERATION ─────────────────────────── */
 function isImageGenRequest(text) {
   const t = text.trim().toLowerCase();
-  // Exact trigger words
-  if (/^(imagine|draw|paint|sketch):/i.test(t)) return true;
-  // "generate/create/make/draw + image/picture/photo etc" with typo tolerance
-  if (/^(genrat|genrate|generate|creat|create|make|draw|imagin|imagine|design|build)e?\s+(a\s+|an\s+)?(image|img|picture|pic|photo|art|illustration|poster|logo|painting|wallpaper|avatar)/i.test(t)) return true;
-  // "image of ..." or "picture of ..."
-  if (/^(image|picture|photo|art)\s+of\s+/i.test(t)) return true;
+
+  // Explicit image keywords
+  if (/^(imagine|draw|paint|sketch|dall.e):/i.test(t)) return true;
+  if (/^(genrat|genrate|generate|creat|create|make|draw|imagin|imagine|design)e?\s+(a\s+|an\s+)?(image|img|picture|pic|photo|art|illustration|poster|logo|painting|wallpaper|avatar)/i.test(t)) return true;
+  if (/^(image|picture|photo|art|illustration)\s+(of|for|showing)\s+/i.test(t)) return true;
+
+  // "generate image" or "create image" standalone → use prev context
+  if (/^(genrat|genrate|generate|creat|create)e?\s+image\s*$/i.test(t)) return "use_context";
+
+  // "generate a [visual noun]" — no image keyword needed
+  if (/^(genrat|genrate|generate|creat|create|draw|make|imagin|imagine)e?\s+(a\s+|an\s+)[a-z]/i.test(t)) {
+    // Skip if clearly text/code request
+    const isText = /essay|poem|story|code|script|email|letter|plan|list|summary|report|article|blog|caption|speech|function|class|program/i.test(t);
+    if (!isText) return true;
+  }
   return false;
 }
 
@@ -478,31 +557,45 @@ async function generateImage(prompt) {
   hideSuggestions();
   const div = document.createElement("div");
   div.className = "ai-msg";
-  div.innerHTML = `<div class="img-gen-loading">🎨 Generating: "${escapeHtml(prompt)}"...</div>`;
+  div.innerHTML = `<div class="img-gen-loading">🎨 Generating image...</div>`;
   box.appendChild(div);
   scrollBottom(true);
 
-  try {
-    const res = await fetch(`${API}/imagine`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
-    if (!res.ok) throw new Error("Failed");
-    const blob = await res.blob();
-    const url  = URL.createObjectURL(blob);
+  // Pollinations.ai — FREE, no API key, instant, reliable!
+  const seed   = Math.floor(Math.random() * 9999);
+  const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&enhance=true&seed=${seed}`;
+
+  const img = new Image();
+  img.onload = () => {
     div.innerHTML = `<div class="generated-image-wrap">
-      <img src="${url}" class="generated-image" alt="${escapeHtml(prompt)}">
+      <img src="${imgUrl}" class="generated-image" alt="${escapeHtml(prompt)}" />
       <div class="img-gen-caption">🎨 "${escapeHtml(prompt)}"</div>
       <div class="img-actions">
-        <button class="download-btn" onclick="downloadImage('${url}')">⬇ Download</button>
+        <button class="download-btn" onclick="downloadPollinationsImg('${imgUrl}', '${encodeURIComponent(prompt)}')">⬇ Download</button>
         <button class="action-btn share-btn" onclick="shareConversation()">🔗 Share</button>
       </div>
     </div>`;
+    afterAI(div);
     history.push({ role: "model", text: `[Generated image: ${prompt}]` });
     saveChat();
+    scrollBottom(true);
+  };
+  img.onerror = () => {
+    div.innerHTML = `<p>⚠️ Image gen failed. Try: "Imagine: a sunset over mountains"</p>`;
+  };
+  img.src = imgUrl;
+}
+
+async function downloadPollinationsImg(url, encodedPrompt) {
+  try {
+    const r = await fetch(url);
+    const blob = await r.blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `cloudai-${decodeURIComponent(encodedPrompt).slice(0,30)}.png`;
+    a.click();
   } catch {
-    div.innerHTML = `<strong>⚠️ Image gen failed — model loading. Try again in 30s.</strong>`;
+    window.open(url, "_blank");
   }
 }
 
@@ -532,11 +625,31 @@ async function sendMessage() {
   history.push({ role: "user", text: msg || "[file attached]" });
   if (history.length > 40) history = history.slice(-40);
 
-  // Image generation
-  if (msg && isImageGenRequest(msg) && !fileToSend) {
+  // Image generation detection
+  const imgCheck = msg ? isImageGenRequest(msg) : false;
+  if (imgCheck && !fileToSend) {
     isProcessing = false;
-    const imgPrompt = msg.replace(/^(generate|imagine|create|draw|make|design)\s+(an?\s+)?(image|picture|photo|art|illustration|poster|logo)\s*(of|:)?\s*/i, "").trim() || msg;
-    return generateImage(imgPrompt);
+    if (imgCheck === "use_context") {
+      // Get context from last AI message
+      const lastAI = [...box.querySelectorAll(".ai-msg:not(.thinking-indicator)")].slice(-1)[0];
+      const context = lastAI
+        ? lastAI.innerText.replace(/📋 Copy|🔊 Speak|🔗 Share|⚡ CloudAI Engine/g,"").trim().slice(0,200)
+        : "abstract digital art";
+      return generateImage(context);
+    }
+    const imgPrompt = msg
+      .replace(/^(genrat|genrate|generate|creat|create|make|draw|imagin|imagine|design)e?\s+(a\s+|an\s+)?(image|img|picture|pic|photo|art|illustration|poster|logo|painting|wallpaper)\s*(of|:)?\s*/i, "")
+      .trim() || msg;
+    return generateImage(imgPrompt || msg);
+  }
+
+  // Inject PDF context into follow-up messages automatically
+  let effectiveMsg = msg;
+  if (pdfContext && !fileToSend && msg) {
+    const isPdfRelated = msg.length < 200; // short follow-up questions
+    if (isPdfRelated) {
+      effectiveMsg = `[Context from uploaded file: "${pdfContext.fileName}"]\n${pdfContext.text.slice(0, 4000)}\n\nUser question: ${msg}`;
+    }
   }
 
   document.body.classList.add("ai-thinking");
@@ -549,16 +662,30 @@ async function sendMessage() {
 
   try {
     if (fileToSend) {
-      // Non-streaming for files
+      // Smart file routing — PDF to Gemini, images to vision
+      const ftype  = fileToSend.type || "";
+      const fname  = (fileToSend.name || "").toLowerCase();
+      const isPDF  = ftype === "application/pdf" || fname.endsWith(".pdf");
+      const isImg  = ftype.startsWith("image/");
+
       const b64 = await fileToBase64(fileToSend);
+
+      const filePrompt = isPDF
+        ? (msg || "Read this ENTIRE PDF carefully. Extract ALL real information — name, contact, skills, experience, education, projects. Do NOT invent any data.")
+        : isImg
+        ? (msg || "Analyze this image in complete detail.")
+        : (msg || "Analyze this file thoroughly.");
+
+      if (isPDF) pdfContext = { fileName: fileToSend.name, text: "[PDF uploaded]" };
+
       const res = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt: msg || "Analyze this file.",
+          prompt: filePrompt,
           history, clientId,
           fileBase64: b64,
-          fileType: fileToSend.type,
+          fileType: ftype,
           fileName: fileToSend.name,
         }),
       });
@@ -574,7 +701,7 @@ async function sendMessage() {
       const res = await fetch(`${API}/stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: msg, history, clientId }),
+        body: JSON.stringify({ prompt: effectiveMsg || msg, history, clientId }),
       });
 
       if (!res.ok || !res.headers.get("content-type")?.includes("text/event-stream")) {
@@ -635,8 +762,9 @@ async function sendMessage() {
 }
 
 function autoSpeak(text) {
-  const clean = text.replace(/[#*`_~\[\]()]/g, "").trim().slice(0, 1000);
-  useWebSpeech(clean, document.createElement("button"));
+  // Use full cleanForSpeech — removes code, ===, ##, **, | etc
+  const clean = cleanForSpeech(text).slice(0, 1500);
+  if (clean.trim()) useWebSpeech(clean, null);
 }
 
 /* ── MODEL BADGE ──────────────────────────────── */
@@ -666,9 +794,107 @@ input.addEventListener("input", () => {
 });
 
 /* ── EVENTS ───────────────────────────────────── */
+/* ── FILE TEXT EXTRACTION (Real parsing — no hallucination) ─── */
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+    const s = document.createElement("script");
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function extractPDFText(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        if (!window.pdfjsLib) {
+          await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        }
+        const arr = new Uint8Array(e.target.result);
+        const pdf = await window.pdfjsLib.getDocument({ data: arr }).promise;
+        let text = `[PDF: ${file.name} | ${pdf.numPages} pages]
+
+`;
+        const maxPages = Math.min(pdf.numPages, 15);
+        for (let i = 1; i <= maxPages; i++) {
+          const page    = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pg = content.items.map(s => s.str).join(" ").trim();
+          if (pg) text += `--- Page ${i} ---
+${pg}
+
+`;
+        }
+        resolve(text.trim().slice(0, 10000));
+      } catch(err) {
+        console.warn("PDF.js failed:", err);
+        resolve("");
+      }
+    };
+    reader.onerror = () => resolve("");
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function extractDOCXText(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        if (!window.mammoth) {
+          await loadScript("https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js");
+        }
+        const result = await window.mammoth.extractRawText({ arrayBuffer: e.target.result });
+        resolve(`[DOCX: ${file.name}]
+
+${result.value.slice(0, 10000)}`);
+      } catch(err) {
+        console.warn("Mammoth failed:", err);
+        resolve("");
+      }
+    };
+    reader.onerror = () => resolve("");
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function extractTextFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(`[${file.name}]
+
+${e.target.result.slice(0, 10000)}`);
+    reader.onerror = () => resolve("");
+    reader.readAsText(file, "utf-8");
+  });
+}
+
+async function extractFileText(file) {
+  const name = (file.name || "").toLowerCase();
+  const type = (file.type || "").toLowerCase();
+  if (type === "application/pdf" || name.endsWith(".pdf"))
+    return await extractPDFText(file);
+  if (type.includes("wordprocessingml") || name.endsWith(".docx"))
+    return await extractDOCXText(file);
+  if (type.startsWith("text/") || name.match(/\.(txt|csv|md|json|js|py|ts|html|css|xml|yaml|yml|sh|sql)$/))
+    return await extractTextFile(file);
+  return "";
+}
+
 sendBtn.onclick = sendMessage;
+// Enter = new line always (mobile-friendly)
+// Ctrl+Enter or Cmd+Enter = send (power user shortcut)
 input.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    sendMessage();
+  }
+  // Plain Enter = new line (default textarea behavior)
 });
 
 /* ── ATTACH ───────────────────────────────────── */

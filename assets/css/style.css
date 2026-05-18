@@ -65,13 +65,7 @@ body::before {
     0 0 40px rgba(0,200,255,0.1);
   transition: box-shadow 0.3s;
 }
-.tap-talk {
-  font-size: 9.5px;
-  color: rgba(255,255,255,0.3);
-  margin-top: 4px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
+
 
 /* ── GREETING AREA ──────────────────────────────────────── */
 .greet-area {
@@ -732,3 +726,89 @@ body.ai-thinking .logo-img {
   .input-area    { padding: 10px 12px calc(12px + env(safe-area-inset-bottom)); }
   .feature-pills span { font-size: 11px; padding: 4px 10px; }
 }
+
+/* ── TTS CONTROLS BAR ─────────────────────────────────────── */
+.tts-controls {
+  display: none; /* replaced by inline controls per message */
+}
+.tts-toggle-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  transition: all 0.2s;
+}
+.tts-toggle-btn.active {
+  background: rgba(0,200,255,0.08);
+  border-color: rgba(0,200,255,0.25);
+  color: #00c8ff;
+}
+.tts-toggle-btn:hover { opacity: 0.85; }
+.tts-speed-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+.tts-speed-label { font-size: 11px; color: rgba(255,255,255,0.3); }
+.tts-speed-wrap input[type="range"] {
+  width: 70px;
+  accent-color: #00c8ff;
+  height: 3px;
+}
+.tts-speed-val { font-size: 11px; color: #00c8ff; min-width: 28px; }
+.tts-stop-btn {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #f87171;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  transition: all 0.2s;
+}
+.tts-stop-btn:hover { background: rgba(239,68,68,0.15); }
+
+@media (max-width: 600px) {
+  .tts-controls { bottom: 72px; gap: 7px; }
+  .tts-speed-wrap input[type="range"] { width: 55px; }
+}
+
+/* Logo glow — synced with AI speaking */
+.logo-img.speaking {
+  box-shadow:
+    0 0 0 3px rgba(0,200,255,0.5),
+    0 0 30px rgba(0,200,255,0.6),
+    0 0 60px rgba(0,200,255,0.3) !important;
+  animation: logoSpeak 0.8s ease-in-out infinite alternate !important;
+}
+@keyframes logoSpeak {
+  from { box-shadow: 0 0 0 2px rgba(0,200,255,0.3), 0 0 20px rgba(0,200,255,0.4); }
+  to   { box-shadow: 0 0 0 4px rgba(0,200,255,0.6), 0 0 50px rgba(0,200,255,0.7), 0 0 80px rgba(0,200,255,0.3); }
+}
+
+/* ── INLINE TTS CONTROLS ──────────────────────────────────── */
+.inline-tts-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.spd-label { font-size: 12px; opacity: 0.5; }
+.inline-speed {
+  width: 70px;
+  accent-color: #00c8ff;
+  height: 3px;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.2s;
+}
+.inline-speed:hover { opacity: 1; }
