@@ -745,16 +745,23 @@ async function sendMessage() {
         }
 
         aiDiv.classList.remove("streaming");
-        afterAI(aiDiv);
-        history.push({ role: "model", text: fullReply });
-        addModelBadge();
-        if (ttsEnabled) autoSpeak(fullReply);
+        if (!fullReply.trim()) {
+          // Empty stream — remove blank div, show error
+          aiDiv.remove();
+          thinking.remove();
+          addAI("⚠️ No response received. Please try again.");
+        } else {
+          afterAI(aiDiv);
+          history.push({ role: "model", text: fullReply });
+          addModelBadge();
+          if (ttsEnabled) autoSpeak(fullReply);
+        }
       }
     }
     saveChat();
   } catch (err) {
     thinking.remove();
-    addAI("⚠️ Network error. Please check your connection and try again.");
+    addAI("⚠️ Connection error. Please try again.");
   } finally {
     isProcessing = false;
     document.body.classList.remove("ai-thinking");

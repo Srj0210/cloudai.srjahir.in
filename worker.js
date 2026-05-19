@@ -685,6 +685,17 @@ async function handleStream(request, env, cors) {
               } catch {}
             }
           }
+          // Fallback: if nothing was streamed, send a message
+          if (!fullReply) {
+            const fb = await orchestrate(env, body, request);
+            await writer.write(encoder.encode(
+              `data: ${JSON.stringify({ token: fb.reply, model: "cloudai-engine" })}
+
+data: [DONE]
+
+`
+            ));
+          }
           await saveQuota(env, clientId, q.cidUsed, q.ipKey, q.ipUsed);
         } finally { await writer.close(); }
       })();
