@@ -1,3 +1,4 @@
+let pdfContext = null; // PDF context across messages
 const CLOUDAI_VERSION = "v27-FIXED-20260517";
 console.log("CloudAI Chat loaded:", CLOUDAI_VERSION);
 
